@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0d4ee558fb8b594893995a19017ca0a, type: 3}
+  m_Name: ClotheColorVariants
+  m_EditorClassIdentifier: 
+  colors:
+  - {r: 0.18609823, g: 0.7735849, b: 0.31769326, a: 1}
+  - {r: 0.77254903, g: 0.18431373, b: 0.20807593, a: 1}
+  - {r: 0.77254903, g: 0.6855148, b: 0.18431373, a: 1}
+  - {r: 0.18431373, g: 0.23456788, b: 0.77254903, a: 1}
+  - {r: 0.64158934, g: 0.18431373, b: 0.77254903, a: 1}
+  - {r: 0.3962264, g: 0.3962264, b: 0.3962264, a: 1}
+  - {r: 0.77254903, g: 0.44914377, b: 0.18431373, a: 1}
+  - {r: 0.18431373, g: 0.43465352, b: 0.77254903, a: 1}
+  - {r: 0.46289536, g: 0.17101279, b: 0.5943396, a: 1}
+  - {r: 0.14431292, g: 0.4433962, b: 0.17200579, a: 1}
+  - {r: 0.77254903, g: 0.18431373, b: 0.69851696, a: 1}
+  - {r: 0, g: 0, b: 0, a: 1}
