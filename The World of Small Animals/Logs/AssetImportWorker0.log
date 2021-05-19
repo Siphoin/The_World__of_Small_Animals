@@ -1,0 +1,101 @@
+Using pre-set license
+Built from '2020.3/staging' branch; Version is '2020.3.5f1 (8095aa901b9b) revision 8426922'; Using compiler version '192528614'; Build Type 'Release'
+OS: 'Windows 10 Pro; OS build 19042.867; Version 2009; 64bit' Language: 'ru' Physical Memory: 8189 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1, IsPro: 0
+
+ COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\2020.3.5f1\Editor\Unity.exe
+-adb2
+-batchMode
+-noUpm
+-name
+AssetImportWorker0
+-projectPath
+D:/The World of Small Animals
+-logFile
+Logs/AssetImportWorker0.log
+-srvPort
+63860
+Successfully changed project path to: D:/The World of Small Animals
+D:/The World of Small Animals
+Using Asset Import Pipeline V2.
+Refreshing native plugins compatible for Editor in 92.73 ms, found 1 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Initialize engine version: 2020.3.5f1 (8095aa901b9b)
+[Subsystems] Discovering subsystems at path C:/Program Files/Unity/2020.3.5f1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path D:/The World of Small Animals/Assets
+GfxDevice: creating device client; threaded=0
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: NVIDIA GeForce GTX 750 Ti (ID=0x1380)
+    Vendor:   
+    VRAM:     2007 MB
+    Driver:   27.21.14.6589
+Initialize mono
+Mono path[0] = 'C:/Program Files/Unity/2020.3.5f1/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/Unity/2020.3.5f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit'
+Mono config path = 'C:/Program Files/Unity/2020.3.5f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56480
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: C:/Program Files/Unity/2020.3.5f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Registered in 0.004324 seconds.
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 69.67 ms, found 1 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.999 seconds
+Platform modules already initialized, skipping
+Registering precompiled user dll's ...
+Registered in 0.003870 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 70.94 ms, found 1 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.843 seconds
+Platform modules already initialized, skipping
+========================================================================
+Worker process is ready to serve import requests
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.11 seconds
+Refreshing native plugins compatible for Editor in 0.61 ms, found 1 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 1811 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 85.0 MB.
+System memory in use after: 84.9 MB.
+
+Unloading 27 unused Assets to reduce memory usage. Loaded Objects now: 2250.
+Total: 3.423000 ms (FindLiveObjects: 0.425400 ms CreateObjectMapping: 0.108200 ms MarkObjects: 2.668300 ms  DeleteObjects: 0.218900 ms)
+
+========================================================================
+Received Import Request.
+  path: Assets/JsonDotNet
+  artifactKey: Guid(383410ea69b17ae47961760f293c0103) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/JsonDotNet using Guid(383410ea69b17ae47961760f293c0103) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e569d7176c360dd9497e7a277aa1d0c0') in 0.019421 seconds
+  Import took 0.037790 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000305 seconds.
+  path: Assets/JsonDotNet/Documentation
+  artifactKey: Guid(76f828f47ce26cc43991113c6a39dbbf) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/JsonDotNet/Documentation using Guid(76f828f47ce26cc43991113c6a39dbbf) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '90958e4dc1cc8429b233b1efdf50f7bb') in 0.009869 seconds
+  Import took 0.020575 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000260 seconds.
+  path: Assets/JsonDotNet/JsonDotNet201Source.zip
+  artifactKey: Guid(9a6f8c7c1ea72ce46831c5e1b6150d0c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/JsonDotNet/JsonDotNet201Source.zip using Guid(9a6f8c7c1ea72ce46831c5e1b6150d0c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '624505b321b3b54937680fd51ca36eb7') in 0.072816 seconds
+  Import took 0.111771 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000292 seconds.
+  path: Assets/JsonDotNet/link.xml
+  artifactKey: Guid(06314f49bdda26043963578d60a0a7ee) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/JsonDotNet/link.xml using Guid(06314f49bdda26043963578d60a0a7ee) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'a8162672d7427ca6791cb39d300bb5ab') in 0.143437 seconds
+  Import took 0.148379 seconds .
+
+AssetImportWorkerClient::OnTransportError - code=2 error=End of file
