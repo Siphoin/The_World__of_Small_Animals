@@ -278,6 +278,4 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
     {
         photonView.RpcSecure(action.Method.Name, target, encrypt,  parameters);
     }
-
-
 }
