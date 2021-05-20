@@ -6,7 +6,7 @@ using TMPro;
 
 [RequireComponent(typeof(ContentSizeFitter))]
 [RequireComponent(typeof(TextMeshProUGUI))]
-public class UserMessage : MonoBehaviour
+public class UserMessage : MonoBehaviour, ISeterText
     {
 
     private const string PATH_USER_PARAMS_SETTINGS = "Params/UserMessageParams";
@@ -33,7 +33,7 @@ public class UserMessage : MonoBehaviour
         }
     }
 
-    private void SetText (string text)
+    public void SetText (string text)
     {
         Ini();
         textData.text = text;

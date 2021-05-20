@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: server1
   m_EditorClassIdentifier: 
   nameServer: "\u0414\u043E\u0440\u043E\u0433\u0430 \u043F\u0440\u0438\u043A\u043B\u044E\u0447\u0435\u043D\u0438\u0439"
-  appId: AppId
+  appId: 2bdeeb84-e073-47d9-9334-0ef88539d208
+  maxCountPlayers: 20
   developServer: 0

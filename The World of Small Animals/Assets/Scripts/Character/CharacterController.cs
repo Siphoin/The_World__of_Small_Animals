@@ -29,6 +29,10 @@ public class CharacterController : MonoBehaviour, ISeterSprite
     private bool move = false;
     private bool rotating = true;
 
+
+    [Header("Активен")]
+    [ReadOnlyField]
+    [SerializeField]
     private bool activeMove = true;
 
     private CharacterSettings characterSettings;
@@ -59,7 +63,7 @@ public class CharacterController : MonoBehaviour, ISeterSprite
     void Update()
     {
 #if UNITY_EDITOR
-        if (Input.GetMouseButtonUp(0) == true)
+        if (Input.GetMouseButtonUp(0) == true && activeMove)
         {
             if (!move)
             {
@@ -73,7 +77,7 @@ public class CharacterController : MonoBehaviour, ISeterSprite
 
 #if UNITY_ANDROID
 
-        if (Input.touchCount == 1)
+        if (Input.touchCount == 1 && activeMove)
         {
             Vector3 touchPos = Input.touches[0].position;
             SetWorldPositionMove(touchPos);
@@ -132,6 +136,11 @@ public class CharacterController : MonoBehaviour, ISeterSprite
         posMove = Camera.main.ScreenToWorldPoint(pos);
     }
 
+    private void SetPositionMove (Vector2 pos)
+    {
+        posMove = pos;
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.tag == "WallBlock")
@@ -144,5 +153,26 @@ public class CharacterController : MonoBehaviour, ISeterSprite
     public void SetSprite(Sprite sprite)
     {
         throw new System.NotImplementedException();
+    }
+
+    private void SetStateMoveCharacter (bool status)
+    {
+        activeMove = status;
+
+        if (move && !status)
+        {
+            move = status;
+            SetPositionMove(transform.position);
+        }
+    }
+
+    public void Disable ()
+    {
+        SetStateMoveCharacter(false);
+    }
+
+    public void Enable ()
+    {
+        SetStateMoveCharacter(true);
     }
 }

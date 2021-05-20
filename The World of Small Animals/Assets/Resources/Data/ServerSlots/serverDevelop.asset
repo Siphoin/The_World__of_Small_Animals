@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: serverDevelop
   m_EditorClassIdentifier: 
   nameServer: Develop Server
-  appId: AppId
+  appId: 9436ac37-065c-434e-8bdf-d9e76f7a4a9b
+  maxCountPlayers: 20
   developServer: 1
