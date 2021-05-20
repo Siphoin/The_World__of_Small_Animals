@@ -1,13 +1,16 @@
-﻿using System;
+﻿using Photon.Pun;
+using System;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
 
 namespace Assets.Scripts.Server
 {
-    public class ServerListWindow : MonoBehaviour
+    public class ServerListWindow : MonoBehaviourPunCallbacks
     {
         private const string PATH_PREFAB_BUTTON_SELECT_SERVER = "Prefabs/UI/buttonServerSlot";
+
+        private const string START_START_SCENE = "SampleScene";
 
         private const string PATH_DATA_SLOTS_SERVERS = "Data/ServerSlots";
 
@@ -23,6 +26,10 @@ namespace Assets.Scripts.Server
         private ServerSlotData[] slots;
 
         private ServerSlot slotServerPrefab;
+
+        private event Action ac;
+
+        LoadingWait loadingWait;
         // Use this for initialization
         void Start()
         {
@@ -85,7 +92,33 @@ namespace Assets.Scripts.Server
 
         private void SelectServer(ServerSlotData data)
         {
-           
+          loadingWait =  LoadingWaitManager.Manager.CreateLoadingWait();
+            loadingWait.SetText($"Подключение к серверу {data.NameServer}");
+
+            PhotonNetwork.PhotonServerSettings.AppSettings.AppIdRealtime = data.AppId;
+
+
+            if (PhotonNetwork.IsConnected)
+            {
+                PhotonNetwork.Disconnect();
+            }
+
+
+            PhotonNetwork.ConnectUsingSettings();
         }
+
+        public override void OnConnectedToMaster()
+        {
+            loadingWait.Remove();
+            Loading.LoadScene(START_START_SCENE);
+        }
+
     }
+
+    
+
+    #region Server Connection
+    
+    
+    #endregion
 }

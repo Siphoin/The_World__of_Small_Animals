@@ -10,18 +10,33 @@ public class ElementBlockerMoveCharacter : MonoBehaviour, IPointerEnterHandler, 
     private CharacterController myPlayer;
     public void OnPointerEnter(PointerEventData eventData)
     {
-        
+        if (myPlayer != null)
+        {
         myPlayer.Disable();
+        }
+
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        if (myPlayer != null)
+        {
         myPlayer.Enable();
+        }
+
     }
 
     private void Awake()
     {
+        try
+        {
         myPlayer = GameObject.FindGameObjectWithTag(TAG_MY_PLAYER).GetComponent<CharacterController>();
+        }
+        catch
+        {
+
+        }
+
     }
 
     private void OnDestroy()

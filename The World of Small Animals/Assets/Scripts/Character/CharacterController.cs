@@ -1,12 +1,18 @@
+using Photon.Pun;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(BoxCollider2D))]
-public class CharacterController : MonoBehaviour, ISeterSprite
+public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, IRPCSender
 {
     private const string PATH_SETTINGS_CHARACTER = "Data/Character/CharacterSettings";
+    private const string TAG_WALL_BLOCK = "WallBlock";
 
+    [Header("Настройки ракурсов")]
+    [SerializeField]
+    private CharacterCameraAngles characterCameraAnglesSettings;
 
     private Rigidbody2D body2d;
 
@@ -19,7 +25,6 @@ public class CharacterController : MonoBehaviour, ISeterSprite
     [SerializeField]
     private float startedSpeed = 0f;
 
-
     Vector2 posMove;
 
 
@@ -27,7 +32,21 @@ public class CharacterController : MonoBehaviour, ISeterSprite
     [ReadOnlyField]
     [SerializeField]
     private bool move = false;
+
+
+    [Header("Вращается")]
+    [ReadOnlyField]
+    [SerializeField]
     private bool rotating = true;
+
+    [Header("Номер активного ракурса")]
+    [ReadOnlyField]
+    [SerializeField]
+    private int numberCameraAngle = 0;
+
+    private bool initialized = false;
+
+
 
 
     [Header("Активен")]
@@ -39,12 +58,48 @@ public class CharacterController : MonoBehaviour, ISeterSprite
 
     private Camera cameraMain;
 
+    private PhotonView photonView;
+
     public bool ActiveMove { get => activeMove; }
     public float CurrentSpeed { get => currentSpeed; }
+
+
 
     // Start is called before the first frame update
     private void Start()
     {
+        Ini();
+
+        startedSpeed = characterSettings.Speed;
+
+        SetCurrentSpeed(startedSpeed);
+
+        cameraMain = Camera.main;
+
+    }
+
+    private void Ini()
+    {
+
+        if (initialized)
+        {
+            return;
+        }
+
+
+        if (characterCameraAnglesSettings == null)
+        {
+            throw new CharacterException("character camera angles not seted");
+        }
+
+
+
+        if (!TryGetComponent(out photonView))
+        {
+            throw new CharacterException($"{name} not have component Photon View");
+        }
+
+
         if (!TryGetComponent(out body2d))
         {
             throw new CharacterException($"{name} not have component Rightbody2D");
@@ -52,14 +107,14 @@ public class CharacterController : MonoBehaviour, ISeterSprite
 
         characterSettings = Resources.Load<CharacterSettings>(PATH_SETTINGS_CHARACTER);
 
+        if (characterSettings == null)
+        {
+            throw new CharacterException("character settings not found");
+        }
 
-        startedSpeed = characterSettings.Speed;
-        
-        SetCurrentSpeed(startedSpeed);
-
-        cameraMain = Camera.main;
-       
+        initialized = true;
     }
+
     void Update()
     {
 #if UNITY_EDITOR
@@ -87,6 +142,7 @@ public class CharacterController : MonoBehaviour, ISeterSprite
 #endif
 
         CheckMove();
+        CheckRotation();
 
     }
 
@@ -120,6 +176,18 @@ public class CharacterController : MonoBehaviour, ISeterSprite
         }
     }
 
+    private void CheckRotation ()
+    {
+        if (!activeMove || move)
+        {
+            return;
+        }
+
+        Vector3 posMouse = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        float angle = Mathf.Atan2(posMouse.y - transform.position.y, posMouse.x - transform.position.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+    }
+
     private void SetActiveCharacter(bool status)
     {
         move = status;
@@ -143,7 +211,7 @@ public class CharacterController : MonoBehaviour, ISeterSprite
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "WallBlock")
+        if (collision.gameObject.tag == TAG_WALL_BLOCK)
         {
             SetCurrentSpeed(startedSpeed);
             SetActiveCharacter(false);
@@ -175,4 +243,41 @@ public class CharacterController : MonoBehaviour, ISeterSprite
     {
         SetStateMoveCharacter(true);
     }
+
+    private void SetCameraAngleSprite()
+    {
+        SetSprite(characterCameraAnglesSettings.CameraAngles[numberCameraAngle]);
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        
+        if (stream.IsWriting)
+        {
+            stream.SendNext(numberCameraAngle);
+        }
+
+        else
+        {
+            Ini();
+
+
+            numberCameraAngle = (int)stream.ReceiveNext();
+            SetCameraAngleSprite();
+
+
+        }
+    }
+
+    public void SendRPC(Action action, RpcTarget target = RpcTarget.All, params object[] parameters)
+    {
+        photonView.RPC(action.Method.Name, target, parameters);
+    }
+
+    public void SendSecureRPC(Action action, RpcTarget target = RpcTarget.All, bool encrypt = true, params object[] parameters)
+    {
+        photonView.RpcSecure(action.Method.Name, target, encrypt,  parameters);
+    }
+
+
 }

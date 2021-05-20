@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0a33143cd8043449bc2eccff6ea66e3, type: 3}
+  m_Name: character_1_camera_angles
+  m_EditorClassIdentifier: 
+  cameraAngles:
+  - {fileID: 7482667652216324306, guid: 32edb97720a530844a139063398a711a, type: 3}
+  - {fileID: 21300000, guid: 18ed29bd969fb3b4484da5207ac0d1ad, type: 3}
+  - {fileID: 21300000, guid: 91ef57295803f564e8adf9540c22ebee, type: 3}
+  - {fileID: 21300000, guid: 3bf34d2f43619a34fb03c3a89964ecc7, type: 3}
+  - {fileID: 21300000, guid: 6eaa216119358f04b96131c657d64675, type: 3}
+  - {fileID: 21300000, guid: 6b78166e8cd98424cbe9fde15213ffc6, type: 3}
+  - {fileID: 21300000, guid: 00a6e6d4eef479b48bbb55761be8f4da, type: 3}
+  - {fileID: 21300000, guid: 172783152a0ea3242b00b794a0b8f1c7, type: 3}
