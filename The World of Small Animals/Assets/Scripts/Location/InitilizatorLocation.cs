@@ -4,13 +4,9 @@ using UnityEngine;
     public class InitilizatorLocation : MonoBehaviour, IRemoveObject
     {
 
-    private const string PATH_PREFAB_PANEL_NAME_LOCATION = "Prefabs/UI/locationPanel";
 
     private const string PATH_PREFAB_JOIN_LOCATION_OBJECT = "System/JoinLocation";
 
-    private const string NAME_CANVAS_MAIN = "MainCanvas";
-
-    private PanelNameLocation panelNameLocationPrefab;
 
     private JoinLocation joinLocationPrefab;
 
@@ -34,12 +30,6 @@ using UnityEngine;
         }
 
 
-        panelNameLocationPrefab = Resources.Load<PanelNameLocation>(PATH_PREFAB_PANEL_NAME_LOCATION);
-
-        if (panelNameLocationPrefab == null)
-        {
-            throw new InitilizatorLocationException("panel location name prefab not found");
-        }
 
         joinLocationPrefab = Resources.Load<JoinLocation>(PATH_PREFAB_JOIN_LOCATION_OBJECT);
 
@@ -48,11 +38,9 @@ using UnityEngine;
             throw new InitilizatorLocationException("join location prefab not found");
         }
 
-        GameObject mainCanvas = GameObject.Find(NAME_CANVAS_MAIN);
 
-        Instantiate(panelNameLocationPrefab, mainCanvas.transform).SetText(locationData.NameLocation);
 
-        Instantiate(joinLocationPrefab);
+        Instantiate(joinLocationPrefab).SetLocationData(locationData);
 
         Remove();
 

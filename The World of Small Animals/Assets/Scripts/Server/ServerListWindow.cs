@@ -1,16 +1,18 @@
 ﻿using Photon.Pun;
+using Photon.Realtime;
 using System;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
+using shortid;
 
 namespace Assets.Scripts.Server
 {
-    public class ServerListWindow : MonoBehaviourPunCallbacks
+    public class ServerListWindow : MonoBehaviourPunCallbacks, ICallerLoadingWaitWindow
     {
         private const string PATH_PREFAB_BUTTON_SELECT_SERVER = "Prefabs/UI/buttonServerSlot";
 
-        private const string START_START_SCENE = "SampleScene";
+        private const string START_SCENE = "SampleScene";
 
         private const string PATH_DATA_SLOTS_SERVERS = "Data/ServerSlots";
 
@@ -27,7 +29,6 @@ namespace Assets.Scripts.Server
 
         private ServerSlot slotServerPrefab;
 
-        private event Action ac;
 
         LoadingWait loadingWait;
         // Use this for initialization
@@ -92,7 +93,7 @@ namespace Assets.Scripts.Server
 
         private void SelectServer(ServerSlotData data)
         {
-          loadingWait =  LoadingWaitManager.Manager.CreateLoadingWait();
+            loadingWait = LoadingWaitManager.Manager.CreateLoadingWait();
             loadingWait.SetText($"Подключение к серверу {data.NameServer}");
 
             PhotonNetwork.PhotonServerSettings.AppSettings.AppIdRealtime = data.AppId;
@@ -103,22 +104,51 @@ namespace Assets.Scripts.Server
                 PhotonNetwork.Disconnect();
             }
 
-
+            SetLevelLoggingServer();
             PhotonNetwork.ConnectUsingSettings();
         }
 
-        public override void OnConnectedToMaster()
+        private static void SetLevelLoggingServer()
         {
-            loadingWait.Remove();
-            Loading.LoadScene(START_START_SCENE);
+#if UNITY_EDITOR
+            PhotonNetwork.LogLevel = PunLogLevel.Informational;
+            PhotonNetwork.PhotonServerSettings.EnableSupportLogger = true;
+
+#else
+            PhotonNetwork.LogLevel = PunLogLevel.ErrorsOnly;
+            PhotonNetwork.PhotonServerSettings.EnableSupportLogger = false;
+
+#endif
         }
 
+        public void DestroyLoadingWaitWindow()
+        {
+            loadingWait.Remove();
+        }
+        #region Server Callbacks
+
+
+        public override void OnConnectedToMaster()
+        {
+            DestroyLoadingWaitWindow();
+
+            if (string.IsNullOrEmpty(PhotonNetwork.NickName))
+            {
+                PhotonNetwork.NickName = $"Avatar_{ShortId.Generate(false, false, 10 + PhotonNetwork.CountOfPlayers)}";
+            }
+
+
+            Loading.LoadScene(START_SCENE);
+        }
+
+
+        public override void OnDisconnected(DisconnectCause cause)
+        {
+            DestroyLoadingWaitWindow();
+            ManagerWindowsNotfications.Manager.CreateNotfication($"Не удалось подключиться к серверу.\n Код ошибки: {cause}\n Возможно сервер переполнен. Проверьте подключение к Интернету.", MessageNotficationType.Error);
+        }
+
+        #endregion
+
     }
-
-    
-
-    #region Server Connection
-    
-    
-    #endregion
 }

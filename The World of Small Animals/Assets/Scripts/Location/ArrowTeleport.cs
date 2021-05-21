@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Photon.Pun;
+using System;
 using System.Collections;
 using UnityEngine;
 [RequireComponent(typeof(SpriteRenderer))]
@@ -66,7 +67,7 @@ using UnityEngine;
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.CompareTag("MyPlayer"))
+        if (collision.CompareTag(TAG_MY_PLAYER))
         {
             if (clicked)
             {
@@ -77,6 +78,11 @@ using UnityEngine;
 
     private void LoadLocation()
     {
+        if (PhotonNetwork.InRoom)
+        {
+            PhotonNetwork.LeaveRoom();
+        }
+
         Loading.LoadScene(locationName);
     }
 

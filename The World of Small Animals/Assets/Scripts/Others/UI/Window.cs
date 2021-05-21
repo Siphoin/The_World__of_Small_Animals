@@ -12,12 +12,27 @@ public class Window : MonoBehaviour, IRemoveObject
 
     public void Remove()
     {
-        Destroy(gameObject);
+        try
+        {
+            Destroy(gameObject);
+        }
+        catch 
+        {
+
+        }
     }
 
     public void Remove(float time)
     {
+        try
+        {
         Destroy(gameObject, time);
+        }
+        catch 
+        {
+
+        }
+
     }
 
 }

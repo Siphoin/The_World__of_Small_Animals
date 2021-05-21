@@ -29,7 +29,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5250124397414427015, guid: fe89d9c7a2086d147830ec147a027846, type: 3}
       propertyPath: m_text
-      value: Error
+      value: "\u041E\u0448\u0438\u0431\u043A\u0430"
       objectReference: {fileID: 0}
     - target: {fileID: 5598876180241042420, guid: fe89d9c7a2086d147830ec147a027846, type: 3}
       propertyPath: m_Color.b
@@ -138,6 +138,22 @@ PrefabInstance:
     - target: {fileID: 8016819225551726998, guid: fe89d9c7a2086d147830ec147a027846, type: 3}
       propertyPath: m_Color.r
       value: 0.5764706
+      objectReference: {fileID: 0}
+    - target: {fileID: 8566595909105887956, guid: fe89d9c7a2086d147830ec147a027846, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.000023842
+      objectReference: {fileID: 0}
+    - target: {fileID: 8736293417748567056, guid: fe89d9c7a2086d147830ec147a027846, type: 3}
+      propertyPath: m_Color.b
+      value: 0.105882354
+      objectReference: {fileID: 0}
+    - target: {fileID: 8736293417748567056, guid: fe89d9c7a2086d147830ec147a027846, type: 3}
+      propertyPath: m_Color.g
+      value: 0.18532376
+      objectReference: {fileID: 0}
+    - target: {fileID: 8736293417748567056, guid: fe89d9c7a2086d147830ec147a027846, type: 3}
+      propertyPath: m_Color.r
+      value: 0.34901962
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fe89d9c7a2086d147830ec147a027846, type: 3}

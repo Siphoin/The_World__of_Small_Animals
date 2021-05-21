@@ -12,7 +12,7 @@ public class ElementBlockerMoveCharacter : MonoBehaviour, IPointerEnterHandler, 
     {
         if (myPlayer != null)
         {
-        myPlayer.Disable();
+            myPlayer.Disable();
         }
 
     }
@@ -21,7 +21,7 @@ public class ElementBlockerMoveCharacter : MonoBehaviour, IPointerEnterHandler, 
     {
         if (myPlayer != null)
         {
-        myPlayer.Enable();
+            myPlayer.Enable();
         }
 
     }
@@ -30,7 +30,10 @@ public class ElementBlockerMoveCharacter : MonoBehaviour, IPointerEnterHandler, 
     {
         try
         {
-        myPlayer = GameObject.FindGameObjectWithTag(TAG_MY_PLAYER).GetComponent<CharacterController>();
+
+            myPlayer = GameObject.FindGameObjectWithTag(TAG_MY_PLAYER).GetComponent<CharacterController>();
+
+
         }
         catch
         {
@@ -51,7 +54,7 @@ public class ElementBlockerMoveCharacter : MonoBehaviour, IPointerEnterHandler, 
                 myPlayer.Enable();
             }
         }
-        catch 
+        catch
         {
 
         }

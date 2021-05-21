@@ -60,6 +60,7 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
 
     private PhotonView photonView;
 
+
     public bool ActiveMove { get => activeMove; }
     public float CurrentSpeed { get => currentSpeed; }
 
@@ -78,6 +79,18 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
 
     }
 
+    private void Awake()
+    {
+        if (!TryGetComponent(out photonView))
+        {
+            throw new CharacterException($"{name} not have component Photon View");
+        }
+
+        name = photonView.Owner.NickName;
+
+       
+    }
+
     private void Ini()
     {
 
@@ -94,10 +107,6 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
 
 
 
-        if (!TryGetComponent(out photonView))
-        {
-            throw new CharacterException($"{name} not have component Photon View");
-        }
 
 
         if (!TryGetComponent(out body2d))
@@ -115,7 +124,7 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
         initialized = true;
     }
 
-    void Update()
+    private void Control ()
     {
 #if UNITY_EDITOR
         if (Input.GetMouseButtonUp(0) == true && activeMove)
@@ -143,6 +152,14 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
 
         CheckMove();
         CheckRotation();
+    }
+
+    void Update()
+    {
+        if (photonView.IsMine)
+        {
+            Control();
+        }
 
     }
 
@@ -183,9 +200,36 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
             return;
         }
 
+#if UNITY_EDITOR
         Vector3 posMouse = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        float angle = Mathf.Atan2(posMouse.y - transform.position.y, posMouse.x - transform.position.x) * Mathf.Rad2Deg;
+        RootCameraAngleCharacter(posMouse);
+#endif
+
+
+
+#if UNITY_ANDROID
+
+
+        if (Input.touchCount == 1)
+        {
+            Vector3 posTouch = Camera.main.ScreenToWorldPoint(Input.touches[0].position);
+            RootCameraAngleCharacter(posTouch);
+        }
+#endif
+
+    }
+
+    private void RootCameraAngleCharacter (Vector3 point)
+    {
+        float distancePoint = Vector2.Distance(point, transform.position);
+
+
+        if (distancePoint > 0f)
+        {
+        float angle = Mathf.Atan2(point.y - transform.position.y, point.x - transform.position.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+        }
+
     }
 
     private void SetActiveCharacter(bool status)
@@ -263,7 +307,7 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
 
 
             numberCameraAngle = (int)stream.ReceiveNext();
-            SetCameraAngleSprite();
+        //  SetCameraAngleSprite();
 
 
         }
