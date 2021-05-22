@@ -10,6 +10,8 @@ public class ManagerWindowsNotfications : MonoBehaviour, IRemoveObject
 
     private WindowNotfication windowNotficationErrorPrefab;
 
+    private static WindowNotfication activeNotfication;
+
     private static ManagerWindowsNotfications manager;
 
     public static ManagerWindowsNotfications Manager { get => manager; }
@@ -56,6 +58,16 @@ public class ManagerWindowsNotfications : MonoBehaviour, IRemoveObject
 
     public WindowNotfication CreateNotfication (string text, MessageNotficationType typeNotfication = MessageNotficationType.Message, bool loadStartScene = false)
     {
+
+        if (!Application.isPlaying)
+        {
+            return null;
+        }
+        if (activeNotfication != null)
+        {
+            return activeNotfication;
+        }
+
         WindowNotfication notfication = null;
 
         switch (typeNotfication)
@@ -72,6 +84,8 @@ public class ManagerWindowsNotfications : MonoBehaviour, IRemoveObject
 
         notfication.SetText(text);
         notfication.LoadStartScene = loadStartScene;
+
+        activeNotfication = notfication;
 
         return notfication;
     }

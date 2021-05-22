@@ -13,6 +13,9 @@ public class JoinLocation : MonoBehaviourPunCallbacks, ICallerLoadingWaitWindow,
     private const string PATH_PREFAB_PANEL_NAME_LOCATION = "Prefabs/UI/locationPanel";
 
 
+    private const string PREFIX_CLONE_PREFAB = "(Clone)";
+
+
     private LoadingWait loadingWait;
 
     private CharactersList characterList;
@@ -101,6 +104,7 @@ public class JoinLocation : MonoBehaviourPunCallbacks, ICallerLoadingWaitWindow,
 
         GameObject mainCanvas = Instantiate(mainCanvasPrefab);
 
+        mainCanvas.name = mainCanvas.name.Replace(PREFIX_CLONE_PREFAB, string.Empty);
 
         Instantiate(panelNameLocationPrefab, mainCanvas.transform).SetText(locationData.NameLocation);
 

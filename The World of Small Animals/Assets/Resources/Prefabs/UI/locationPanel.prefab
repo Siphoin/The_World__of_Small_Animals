@@ -74,7 +74,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 16777215
   m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -146,6 +146,7 @@ GameObject:
   - component: {fileID: 7220345558543028953}
   - component: {fileID: 7220345558543028952}
   - component: {fileID: 6018495394284416104}
+  - component: {fileID: 7992998565708040414}
   m_Layer: 5
   m_Name: locationPanel
   m_TagString: Untagged
@@ -171,7 +172,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.09200001, y: 0.9517038}
   m_AnchorMax: {x: 0.09200001, y: 0.9517038}
-  m_AnchoredPosition: {x: 2.0999756, y: 1}
+  m_AnchoredPosition: {x: 2.0999756, y: 0}
   m_SizeDelta: {x: 343, y: 61}
   m_Pivot: {x: 0.50000006, y: 0.5}
 --- !u!222 &7220345558543028953
@@ -225,6 +226,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textNameLocation: {fileID: 7220345558223653563}
+--- !u!95 &7992998565708040414
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7220345558543028954}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 7864734d46f0b9a4188bc4f663948ff0, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &9050834029130293329
 GameObject:
   m_ObjectHideFlags: 0

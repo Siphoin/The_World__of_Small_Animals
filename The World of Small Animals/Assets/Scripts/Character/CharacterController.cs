@@ -62,6 +62,8 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
 
     private PhotonView photonView;
 
+    public event Action<Vector3> onMove;
+
 
     public bool ActiveMove { get => activeMove; }
     public float CurrentSpeed { get => currentSpeed; }
@@ -206,7 +208,7 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
 
     private void CheckRotation ()
     {
-        if (!activeMove || move)
+        if (!activeMove)
         {
             return;
         }
@@ -223,8 +225,8 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
 
         if (Input.touchCount == 1)
         {
-            
-            Vector3 posTouch = Camera.main.ScreenToWorldPoint(Input.touches[0].position);
+            Touch touch = Input.touches[0];
+            Vector3 posTouch = Camera.main.ScreenToWorldPoint(touch.position);
             RootCameraAngleCharacter(posTouch);
         }
 #endif
@@ -258,6 +260,8 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
     private void SetWorldPositionMove (Vector2 pos)
     {     
         posMove = Camera.main.ScreenToWorldPoint(pos);
+
+        onMove?.Invoke(posMove);
     }
 
     private void SetPositionMove (Vector2 pos)
@@ -276,7 +280,7 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
 
     public void SetSprite(Sprite sprite)
     {
-        throw new System.NotImplementedException();
+
     }
 
     private void SetStateMoveCharacter (bool status)
@@ -319,7 +323,7 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
 
 
             numberCameraAngle = (int)stream.ReceiveNext();
-        //  SetCameraAngleSprite();
+          SetCameraAngleSprite();
 
 
         }
