@@ -13,10 +13,12 @@ using UnityEngine.UI;
     private CharacterController myPlayer;
 
     private bool clicked = false;
+
+
         // Use this for initialization
         void Start()
         {
-
+        Destroy(this);
         if (!TryGetComponent(out button))
         {
             throw new ButtonBlockerMoveCharacterException($"{name} not have component UnityEngine.UI.Button");

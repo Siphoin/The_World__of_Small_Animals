@@ -3,6 +3,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(BoxCollider2D))]
 public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, IRPCSender
@@ -141,11 +143,20 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
 
 #if UNITY_ANDROID
 
+
+        RaycastHit hit;
+
         if (Input.touchCount == 1 && activeMove)
         {
-            Vector3 touchPos = Input.touches[0].position;
+            Touch touch = Input.touches[0];
+
+            if (touch.phase == TouchPhase.Began)
+            {
+            Vector3 touchPos = touch.position;
             SetWorldPositionMove(touchPos);
             StartMoving();
+            }
+
         }
 
 #endif
@@ -212,6 +223,7 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
 
         if (Input.touchCount == 1)
         {
+            
             Vector3 posTouch = Camera.main.ScreenToWorldPoint(Input.touches[0].position);
             RootCameraAngleCharacter(posTouch);
         }

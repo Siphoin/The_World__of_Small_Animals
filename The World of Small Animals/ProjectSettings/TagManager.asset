@@ -6,6 +6,7 @@ TagManager:
   tags:
   - WallBlock
   - MyPlayer
+  - BlockedUI
   layers:
   - Default
   - TransparentFX
