@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: character_1_camera_angles
   m_EditorClassIdentifier: 
   cameraAngles:
-  - {fileID: -4316444275247669567, guid: 560d9f8538b9e0b49a96d1b580cd2f55, type: 3}
-  - {fileID: -3789217675878712817, guid: 560d9f8538b9e0b49a96d1b580cd2f55, type: 3}
-  - {fileID: 3991179672557273920, guid: 560d9f8538b9e0b49a96d1b580cd2f55, type: 3}
+  - {fileID: 2125089176983795848, guid: 560d9f8538b9e0b49a96d1b580cd2f55, type: 3}
+  - {fileID: 7660161156207505736, guid: 560d9f8538b9e0b49a96d1b580cd2f55, type: 3}
   - {fileID: 6644465560019247506, guid: 560d9f8538b9e0b49a96d1b580cd2f55, type: 3}
   - {fileID: 8003996640476631849, guid: 560d9f8538b9e0b49a96d1b580cd2f55, type: 3}
-  - {fileID: 7660161156207505736, guid: 560d9f8538b9e0b49a96d1b580cd2f55, type: 3}
+  - {fileID: -3789217675878712817, guid: 560d9f8538b9e0b49a96d1b580cd2f55, type: 3}
+  - {fileID: 3991179672557273920, guid: 560d9f8538b9e0b49a96d1b580cd2f55, type: 3}
+  - {fileID: -4316444275247669567, guid: 560d9f8538b9e0b49a96d1b580cd2f55, type: 3}
   - {fileID: -2342640082102118758, guid: 560d9f8538b9e0b49a96d1b580cd2f55, type: 3}
-  - {fileID: 2125089176983795848, guid: 560d9f8538b9e0b49a96d1b580cd2f55, type: 3}

@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(BoxCollider2D))]
+[RequireComponent(typeof(SpriteRenderer))]
 public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, IRPCSender
 {
     private const string PATH_SETTINGS_CHARACTER = "Data/Character/CharacterSettings";
@@ -62,7 +63,21 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
 
     private PhotonView photonView;
 
+    private SpriteRenderer spriteRenderer;
+
     public event Action<Vector3> onMove;
+
+    // rotation
+
+    private List<TupleAngle> cameraAngles = 
+        new List<TupleAngle> { 
+        new TupleAngle(-22.5f, 22.5f), 
+        new TupleAngle(22.5f, 67.5f), 
+        new TupleAngle(67.5f, 112.5f),
+        new TupleAngle(112.5f, 167.5f), 
+        new TupleAngle(-67.5f, -22.5f), 
+        new TupleAngle(-112.5f, -67.5f), new TupleAngle(-167.5f, -112.5f),
+        new TupleAngle(float.MinValue, float.MaxValue) };
 
 
     public bool ActiveMove { get => activeMove; }
@@ -85,6 +100,11 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
 
     private void Awake()
     {
+        if (!TryGetComponent(out spriteRenderer))
+        {
+            throw new CharacterException($"{name} not have component Sprite Renderer");
+        }
+
         if (!TryGetComponent(out photonView))
         {
             throw new CharacterException($"{name} not have component Photon View");
@@ -240,8 +260,18 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
 
         if (distancePoint > 0f)
         {
-        float angle = Mathf.Atan2(point.y - transform.position.y, point.x - transform.position.x) * Mathf.Rad2Deg;
-    //    transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+            Vector3 direction = new Vector3();
+
+
+            direction.x = point.x - transform.position.x;
+            direction.y = point.y - transform.position.y;
+
+
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+            numberCameraAngle = cameraAngles.FindIndex(x => angle >= x.MinAngle && angle <= x.MaxAngle);
+
+            SetCameraAngleSprite();
         }
 
     }
@@ -280,7 +310,7 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
 
     public void SetSprite(Sprite sprite)
     {
-
+        spriteRenderer.sprite = sprite;
     }
 
     private void SetStateMoveCharacter (bool status)
