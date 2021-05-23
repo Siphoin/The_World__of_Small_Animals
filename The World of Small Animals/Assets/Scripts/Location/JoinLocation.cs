@@ -1,9 +1,11 @@
 ﻿using Photon.Pun;
 using Photon.Realtime;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class JoinLocation : MonoBehaviourPunCallbacks, ICallerLoadingWaitWindow, IInstantiateNetworkObject
+public class JoinLocation : MonoBehaviourPunCallbacks, ICallerLoadingWaitWindow, IInstantiateNetworkObject, IRequestSender
     {
 
     private const string PATH_PREFAB_LISTENER_CALLBACKS_SERVER = "System/ListenerCallbacksServer";
@@ -25,6 +27,8 @@ public class JoinLocation : MonoBehaviourPunCallbacks, ICallerLoadingWaitWindow,
 
 
     private GameObject mainCanvasPrefab;
+
+    private string idRequest;
 
     [Header("Данные о локации")]
     [SerializeField]
@@ -108,6 +112,8 @@ public class JoinLocation : MonoBehaviourPunCallbacks, ICallerLoadingWaitWindow,
 
         Instantiate(panelNameLocationPrefab, mainCanvas.transform).SetText(locationData.NameLocation);
 
+        SendRequest();
+
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message)
@@ -144,7 +150,29 @@ public class JoinLocation : MonoBehaviourPunCallbacks, ICallerLoadingWaitWindow,
         return PhotonNetwork.InstantiateRoomObject(gameObject.name, position, Quaternion.identity, group, data);
     }
 
+    public void SendRequest()
+    {
+        loadingWait = LoadingWaitManager.Manager.CreateLoadingWait();
+
+        idRequest = RequestManager.Manager.GenerateRequestID();
+
+        RequestManager.Manager.onRequestFinish += ReceiveRequest;
+
+        Dictionary<string, object> data = new Dictionary<string, object>();
+        data.Add("name", "max");
+       data.Add("job", "unity developer");
+        RequestManager.Manager.SendRequestToServer(idRequest, "api/users2", RequestType.PUT, data);
 
 
+    }
 
+    public void ReceiveRequest(string id, string text, RequestResult requestResult, long responseCode)
+    {
+        if (id == idRequest)
+        {
+            Debug.Log(text);
+        }
+
+        RequestManager.Manager.onRequestFinish -= ReceiveRequest;
+    }
 }

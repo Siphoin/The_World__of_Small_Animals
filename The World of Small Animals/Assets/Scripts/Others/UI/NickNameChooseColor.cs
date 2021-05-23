@@ -8,6 +8,10 @@ public class NickNameChooseColor : ScriptableObject
     [Header("Цвет никнейма при персонаже, который принадлежит игроку")]
     [SerializeField] private Color isMineColorText = Color.green;
 
+    [Header("Цвет никнейма при персонаже, который является другом локальному игроку")]
+    [SerializeField] private Color friendColorText = Color.green;
+
     public Color DefaultColorText { get => defaultColorText; }
     public Color IsMineColorText { get => isMineColorText; }
+    public Color FriendColorText { get => friendColorText; }
 }

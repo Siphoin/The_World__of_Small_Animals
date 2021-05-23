@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 334545221cb20d041a1f6c0ee3de9a65, type: 3}
   m_Name: ServerAddress
   m_EditorClassIdentifier: 
-  address: 
+  address: https://reqres.in/

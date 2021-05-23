@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   defaultColorText: {r: 1, g: 1, b: 1, a: 1}
   isMineColorText: {r: 0.42352942, g: 0.90588236, b: 0.42352942, a: 1}
+  friendColorText: {r: 0.42352942, g: 0.6995817, b: 0.90588236, a: 1}
