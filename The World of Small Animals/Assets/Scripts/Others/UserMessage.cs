@@ -1,49 +1,84 @@
-﻿using System.Collections;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 using TMPro;
-
-
-[RequireComponent(typeof(ContentSizeFitter))]
-[RequireComponent(typeof(TextMeshProUGUI))]
-public class UserMessage : MonoBehaviour, ISeterText
+using Photon.Pun;
+using UnityEngine.UI;
+[RequireComponent(typeof(Image))]
+public class UserMessage : UserMessageBase, ISeterText, ISeterColor,  IPunObservable
     {
+    [Header("Компонент текста")]
+  [SerializeField]  private TextMeshProUGUI textData;
 
-    private const string PATH_USER_PARAMS_SETTINGS = "Params/UserMessageParams";
-    private TextMeshProUGUI textData;
-    private ContentSizeFitter contentSizeFitter;
+    private string textSync = "";
 
-    private UserMessageParams messageParams;
         // Use this for initialization
         void Start()
     {
+
         Ini();
     }
 
-    private void Ini()
-    {
-        if (!TryGetComponent(out textData))
-        {
-            throw new UserMessageException($"{name} not have component TMPro.TextMeshProUGUI");
-        }
-
-        if (!TryGetComponent(out contentSizeFitter))
-        {
-            throw new UserMessageException($"{name} not have component Content Size Fitler");
-        }
-    }
 
     public void SetText (string text)
     {
         Ini();
+
+        text = text.Trim();
+
         textData.text = text;
-    }
 
-    private void CheckFitlerSizeWidth ()
-    {
-        if (textData.text.Length >= messageParams.LengthCheckWidthMessage)
+        if (View.IsMine)
         {
-
+            textSync = text;
         }
     }
+
+    public override void Ini()
+    {
+        if (textData == null)
+        {
+            throw new UserMessageException("text object not seted for user text message");
+        }
+        base.Ini();
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(textSync);
+            stream.SendNext(isLast);
+        }
+
+        else
+        {
+            textSync = (string)stream.ReceiveNext();
+            SetText(textSync);
+
+            isLast = (bool)stream.ReceiveNext();
+            CheckCloudMessageisLast();
+        }
+    }
+
+    public void SetColor(Color color)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    private void Update()
+    {
+
+        if (!View.IsMine)
+        {
+            return;
+        }
+
+
+        if (transform.GetSiblingIndex() != transform.parent.childCount - 1)
+        {
+            isLast = true;
+            CheckCloudMessageisLast();
+            return;
+        }
+    }
+
 }

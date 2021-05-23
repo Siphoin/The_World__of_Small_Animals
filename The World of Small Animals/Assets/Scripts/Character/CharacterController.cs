@@ -241,7 +241,7 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
         if (distancePoint > 0f)
         {
         float angle = Mathf.Atan2(point.y - transform.position.y, point.x - transform.position.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+    //    transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
         }
 
     }
