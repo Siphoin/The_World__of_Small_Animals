@@ -72,13 +72,18 @@ public class UserMessage : UserMessageBase, ISeterText, ISeterColor,  IPunObserv
             return;
         }
 
+        CheckParamsMessage();
+    }
 
-        if (transform.GetSiblingIndex() != transform.parent.childCount - 1)
+    public override void CheckCloudMessageisLast()
+    {
+        if (isLast)
         {
-            isLast = true;
-            CheckCloudMessageisLast();
-            return;
+            textData.color = GetAlphaColor(textData.color);
+
         }
+
+        base.CheckCloudMessageisLast();
     }
 
 }

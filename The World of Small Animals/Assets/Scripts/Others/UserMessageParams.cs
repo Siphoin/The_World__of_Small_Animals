@@ -2,9 +2,12 @@
 [CreateAssetMenu(menuName = "Params/Message Params", order = 0)]
 public class UserMessageParams : ScriptableObject
     {
-    [Header("Расширять текст при значении длинны сообщения")]
-    [SerializeField]
-    private int lengthCheckWidthMessage = 15;
+    [Header("Максимпльное кол-во символов в поле чата")]
+    [SerializeField] private int maxCountSymbolsInput = 30;
 
-    public int LengthCheckWidthMessage { get => lengthCheckWidthMessage; }
+    [Header("Время уничтожения пользовательского сообщения")]
+    [SerializeField] private float timeDestroyUserMessage = 11;
+
+    public int MaxCountSymbolsInput { get => maxCountSymbolsInput; }
+    public float TimeDestroyUserMessage { get => timeDestroyUserMessage; }
 }

@@ -11,7 +11,11 @@ using UnityEngine.UI;
 
     private const string PREFIX_GRID_MESSAGES = "Grid_Messages_";
 
+    private const string PATH_DATA_PARAMS_USER_MESSAGE = "Params/UserMessageParams";
+
     private RectTransform rectTransform;
+
+    private UserMessageParams userMessageParams;
 
     private Image image;
 
@@ -33,29 +37,41 @@ using UnityEngine.UI;
             Remove();
 
         }
+
+        if (userMessageParams == null)
+        {
+            userMessageParams = Resources.Load<UserMessageParams>(PATH_DATA_PARAMS_USER_MESSAGE);
+
+            if (userMessageParams == null)
+            {
+                throw new UserMessageException("user message params not found");
+            }
+
+        }
         if (photonView == null)
         {
-
 
         if (!TryGetComponent(out photonView))
         {
             throw new UserMessageException($"{name} not have component Photon View");
         }
 
-            if (rectTransform == null)
-            {
-                if (!TryGetComponent(out rectTransform))
-                {
-                    throw new UserMessageException($"{name} not have component Rect Transform");
-                }
-            }
 
-            if (image == null)
+        }
+
+        if (image == null)
+        {
+            if (!TryGetComponent(out image))
             {
-                if (!TryGetComponent(out image))
-                {
-                    throw new UserMessageException($"{name} not have component Image");
-                }
+                throw new UserMessageException($"{name} not have component Image");
+            }
+        }
+
+        if (rectTransform == null)
+        {
+            if (!TryGetComponent(out rectTransform))
+            {
+                throw new UserMessageException($"{name} not have component Rect Transform");
             }
         }
 
@@ -69,7 +85,7 @@ using UnityEngine.UI;
 
         if (photonView.IsMine)
         {
-            CallInvokingMethod(Remove, 7);
+            CallInvokingMethod(Remove, userMessageParams.TimeDestroyUserMessage);
         }
 
        
@@ -106,16 +122,37 @@ using UnityEngine.UI;
         }
     }
 
-    public void CheckCloudMessageisLast()
+    public virtual void CheckCloudMessageisLast()
     {
-        Color alphaColor = image.color;
-        alphaColor.a = 0.5f;
-
 
         if (isLast)
         {
-            image.color = alphaColor;
+            image.color = GetAlphaColor(image.color);
+            
         }
+    }
+
+    protected void CheckParamsMessage ()
+    {
+        if (isLast)
+        {
+            return;
+        }
+
+
+        if (transform.GetSiblingIndex() != transform.parent.childCount - 1)
+        {
+            isLast = true;
+            CheckCloudMessageisLast();
+            return;
+        }
+    }
+
+    protected Color GetAlphaColor(Color original)
+    {
+        Color alphaColor = CloudImage.color;
+        alphaColor.a = 0.5f;
+        return alphaColor;
     }
 
     public void CallInvokingEveryMethod(Action method, float time)
@@ -127,5 +164,7 @@ using UnityEngine.UI;
     {
         Invoke(method.Method.Name, time);
     }
+
+
 
 }
