@@ -7,6 +7,10 @@ using Photon.Pun;
     public class ChatInput : MonoBehaviour, IInstantiateNetworkObject, ISeterText
     {
 
+    private const string PATH_DATA_PARAMS_USER_MESSAGE = "Params/UserMessageParams";
+
+    private UserMessageParams userMessageParams;
+
     private TMP_InputField input;
 
 
@@ -41,6 +45,22 @@ using Photon.Pun;
             throw new ChatInputException("user message prefab not seted");
         }
 
+        if (userMessageParams == null)
+        {
+            userMessageParams = Resources.Load<UserMessageParams>(PATH_DATA_PARAMS_USER_MESSAGE);
+
+            if (userMessageParams == null)
+            {
+                throw new ChatInputException("user message params not found");
+            }
+
+            if (userMessageParams.MaxCountSymbolsInput < 0)
+            {
+                throw new ChatInputException("max count symbols in input not that newer that 0");
+            }
+
+        }
+
         if (input == null)
         {
             if (!TryGetComponent(out input))
@@ -48,6 +68,8 @@ using Photon.Pun;
                 throw new ChatInputException($"{name} not have component TMP InputField");
             }
         }
+
+        input.characterLimit = userMessageParams.MaxCountSymbolsInput;
     }
 
     private void TrimingInput(string arg0)

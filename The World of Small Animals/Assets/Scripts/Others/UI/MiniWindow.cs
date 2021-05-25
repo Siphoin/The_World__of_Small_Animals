@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
-    public class MiniWindow : ActivatorGameObject, IRemoveObject
+    public class MiniWindow : ActivatorGameObject, IRemoveObject, IFinderLocalPlayer
     {
     private const string TAG_MY_PLAYER = "MyPlayer";
 
@@ -31,7 +31,7 @@ using UnityEngine.UI;
             throw new MiniWindowException("button exit not seted");
         }
 
-        myPlayer = GameObject.FindGameObjectWithTag(TAG_MY_PLAYER).GetComponent<CharacterController>();
+        myPlayer = FindLocalPlayerWithTag(TAG_MY_PLAYER);
 
 
         buttonExit.onClick.AddListener(Exit);
@@ -70,5 +70,10 @@ using UnityEngine.UI;
     public void Remove(float time)
     {
         Destroy(gameObject, time);
+    }
+
+    public CharacterController FindLocalPlayerWithTag(string tag)
+    {
+        return GameObject.FindGameObjectWithTag(tag).GetComponent<CharacterController>();
     }
 }

@@ -8,22 +8,31 @@ using UnityEngine.SceneManagement;
 public class JoinLocation : MonoBehaviourPunCallbacks, ICallerLoadingWaitWindow, IInstantiateNetworkObject, IRequestSender
     {
 
-    private const string PATH_PREFAB_LISTENER_CALLBACKS_SERVER = "System/ListenerCallbacksServer";
+    private const string PATH_PREFABS_CALLBACKS_OBJECTS = "System/joinLocation_components";
 
     private const string PATH_CHARACTER_LIST_DATA = "Data/Character/CharacterList";
 
     private const string PATH_PREFAB_PANEL_NAME_LOCATION = "Prefabs/UI/locationPanel";
 
+    private const string PATH_PREFAB_MAIN_CANVAS = "Prefabs/UI/MainCanvas";
+
+    private const string NAME_OBJECT_CONTAINER_CALLBACK_OBJECTS = "callbackObjects";
+
 
     private const string PREFIX_CLONE_PREFAB = "(Clone)";
 
+    private const string TAG_POINT_SPAWN = "PointSpawn";
 
+    
     private LoadingWait loadingWait;
 
     private CharactersList characterList;
 
+    private GameObject[] callbacksObjects;
 
-    private ListenerCallbacksServer listenerCallbacksServerPrefab;
+    private PointSpawn[] pointSpawns;
+
+
 
 
     private GameObject mainCanvasPrefab;
@@ -44,12 +53,19 @@ public class JoinLocation : MonoBehaviourPunCallbacks, ICallerLoadingWaitWindow,
             throw new JoinLocationException("loading wait manager not found");
         }
 
+        pointSpawns = FindObjectsOfType<PointSpawn>();
 
-        listenerCallbacksServerPrefab = Resources.Load<ListenerCallbacksServer>(PATH_PREFAB_LISTENER_CALLBACKS_SERVER);
-
-        if (listenerCallbacksServerPrefab == null)
+        if (pointSpawns.Length == 0)
         {
-            throw new JoinLocationException("listener callbacks server prefab not found");
+            throw new JoinLocationException("points spawns not found");
+        }
+
+
+        callbacksObjects = Resources.LoadAll<GameObject>(PATH_PREFABS_CALLBACKS_OBJECTS);
+
+        if (callbacksObjects == null || callbacksObjects.Length == 0)
+        {
+            throw new JoinLocationException("callbacksObjects not found");
         }
 
         characterList = Resources.Load<CharactersList>(PATH_CHARACTER_LIST_DATA);
@@ -94,17 +110,27 @@ public class JoinLocation : MonoBehaviourPunCallbacks, ICallerLoadingWaitWindow,
     #region Server Callbacks
     public override void OnJoinedRoom()
     {
-        DestroyLoadingWaitWindow();
-        Instantiate(listenerCallbacksServerPrefab);
-        InstantiatePlayerObject(characterList.GetCharacter(0).gameObject, Vector3.zero);
-
-
-        mainCanvasPrefab = Resources.Load<GameObject>("Prefabs/UI/MainCanvas");
+        mainCanvasPrefab = Resources.Load<GameObject>(PATH_PREFAB_MAIN_CANVAS);
 
         if (mainCanvasPrefab == null)
         {
             throw new InitilizatorLocationException("main canvas prefab not found");
         }
+
+
+        DestroyLoadingWaitWindow();
+        
+        InstantiatePlayerObject(characterList.GetCharacter(0).gameObject, pointSpawns[Random.Range(0, pointSpawns.Length)].Position);
+
+        GameObject containerCallbackObjects = new GameObject(NAME_OBJECT_CONTAINER_CALLBACK_OBJECTS);
+
+
+        for (int i = 0; i < callbacksObjects.Length; i++)
+        {
+            Instantiate(callbacksObjects[i], containerCallbackObjects.transform);
+        }
+
+
 
         GameObject mainCanvas = Instantiate(mainCanvasPrefab);
 
@@ -112,7 +138,7 @@ public class JoinLocation : MonoBehaviourPunCallbacks, ICallerLoadingWaitWindow,
 
         Instantiate(panelNameLocationPrefab, mainCanvas.transform).SetText(locationData.NameLocation);
 
-        SendRequest();
+     //   SendRequest();
 
     }
 

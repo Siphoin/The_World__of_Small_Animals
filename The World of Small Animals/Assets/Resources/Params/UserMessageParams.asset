@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 352d19b7554272f43809d0b2b36eb51f, type: 3}
   m_Name: UserMessageParams
   m_EditorClassIdentifier: 
-  lengthCheckWidthMessage: 15
+  maxCountSymbolsInput: 45
+  timeDestroyUserMessage: 11

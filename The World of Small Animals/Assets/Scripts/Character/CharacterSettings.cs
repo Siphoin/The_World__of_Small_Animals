@@ -11,6 +11,11 @@ public class CharacterSettings : ScriptableObject
     [SerializeField]
     private float speedDecrement = 0.5f;
 
+    [Header("Через какое время игрок будет отключен от сервекра если персонаж не движется")]
+    [SerializeField]
+    private float afkTimeOut = 180;
+
     public float Speed { get => speed; }
     public float SpeedDecrement { get => speedDecrement; }
+    public float AfkTimeOut { get => afkTimeOut; }
 }

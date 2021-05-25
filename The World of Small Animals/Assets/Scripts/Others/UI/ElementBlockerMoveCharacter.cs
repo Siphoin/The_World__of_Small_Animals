@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 [RequireComponent(typeof(EventTrigger))]
-public class ElementBlockerMoveCharacter : MonoBehaviour
+public class ElementBlockerMoveCharacter : MonoBehaviour, IFinderLocalPlayer
 {
     private const string TAG_MY_PLAYER = "MyPlayer";
 
@@ -95,7 +95,7 @@ public class ElementBlockerMoveCharacter : MonoBehaviour
         try
         {
 
-            myPlayer = GameObject.FindGameObjectWithTag(TAG_MY_PLAYER).GetComponent<CharacterController>();
+            myPlayer = FindLocalPlayerWithTag(TAG_MY_PLAYER);
 
 
         }
@@ -124,4 +124,8 @@ public class ElementBlockerMoveCharacter : MonoBehaviour
         }
     }
 
+    public CharacterController FindLocalPlayerWithTag(string tag)
+    {
+     return   GameObject.FindGameObjectWithTag(tag).GetComponent<CharacterController>();
+    }
 }

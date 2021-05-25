@@ -67,21 +67,32 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
 
     public event Action<Vector3> onMove;
 
+    public event Action<bool> onMoveStatusChanged;
+
     // rotation
 
-    private List<TupleAngle> cameraAngles = 
-        new List<TupleAngle> { 
+    private List<TupleAngle> cameraAngles =
+
+
+        new List<TupleAngle> {
+
+
         new TupleAngle(-22.5f, 22.5f), 
         new TupleAngle(22.5f, 67.5f), 
         new TupleAngle(67.5f, 112.5f),
         new TupleAngle(112.5f, 167.5f), 
         new TupleAngle(-67.5f, -22.5f), 
-        new TupleAngle(-112.5f, -67.5f), new TupleAngle(-167.5f, -112.5f),
-        new TupleAngle(float.MinValue, float.MaxValue) };
+        new TupleAngle(-112.5f, -67.5f), 
+        new TupleAngle(-167.5f, -112.5f),
+        new TupleAngle(float.MinValue, float.MaxValue) 
+
+    };
 
 
     public bool ActiveMove { get => activeMove; }
     public float CurrentSpeed { get => currentSpeed; }
+    public bool Moved { get => move; }
+
 
 
 
@@ -92,7 +103,7 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
 
         startedSpeed = characterSettings.Speed;
 
-        SetCurrentSpeed(startedSpeed);
+        currentSpeed = startedSpeed;
 
         cameraMain = Camera.main;
 
@@ -130,9 +141,6 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
         {
             throw new CharacterException("character camera angles not seted");
         }
-
-
-
 
 
         if (!TryGetComponent(out body2d))
@@ -193,9 +201,17 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
     {
         if (photonView.IsMine)
         {
+        	body2d.velocity = Vector2.zero;
             Control();
         }
 
+    }
+
+    void FixedUpdate () {
+    	        if (photonView.IsMine)
+        {
+        	body2d.velocity = Vector2.zero;
+        }
     }
 
     private void StartMoving()
@@ -223,7 +239,7 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
             if (Vector2.Distance(transform.position, posMove) <= 0.01f)
             {
                 SetActiveCharacter(false);
-                SetCurrentSpeed(startedSpeed);
+               
             }
         }
     }
@@ -282,12 +298,11 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
     {
         move = status;
         rotating = !status;
+
+        onMoveStatusChanged?.Invoke(move);
+
     }
 
-    private void SetCurrentSpeed (float speed)
-    {
-        currentSpeed = speed;
-    }
 
     private void SetWorldPositionMove (Vector2 pos)
     {     
@@ -305,7 +320,6 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
     {
         if (collision.gameObject.tag == TAG_WALL_BLOCK)
         {
-            SetCurrentSpeed(startedSpeed);
             SetActiveCharacter(false);
         }
     }
