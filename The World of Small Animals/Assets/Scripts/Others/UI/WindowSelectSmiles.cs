@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class WindowSelectSmiles : MonoBehaviour, IActivatorGameObject
+public class WindowSelectSmiles : MiniWindow
     {
     private const string PATH_SMILES_DATA = "Data/UI/Smiles/SmileContainer";
 
@@ -22,19 +22,11 @@ public class WindowSelectSmiles : MonoBehaviour, IActivatorGameObject
     [Header("Задержка появления кнопки смайла")]
     [SerializeField] float timeOutShowSmiles = 0.4f;
 
-    [Header("Кнопка закрытия окна")]
-    [SerializeField] Button buttonExit;
     // Use this for initialization
     void Awake()
     {
-        if (buttonExit == null)
-        {
-            throw new WindowSelectSmilesException("button exit not seted");
-        }
 
-
-        buttonExit.onClick.AddListener(Exit);
-
+        Ini();
 
         Exit();
     }
@@ -118,10 +110,6 @@ public class WindowSelectSmiles : MonoBehaviour, IActivatorGameObject
         }
     }
 
-    public void SetActiveSelfGameObject(GameObject gameObject, bool activeState)
-    {
-        gameObject.SetActive(activeState);
-    }
 
     private void SetActiveSelfSmileButton (int index, bool activeState)
     {

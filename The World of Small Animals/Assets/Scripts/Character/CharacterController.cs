@@ -8,11 +8,11 @@ using UnityEngine.EventSystems;
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(BoxCollider2D))]
 [RequireComponent(typeof(SpriteRenderer))]
-public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, IRPCSender
+public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, IRPCSender, IInvokerMono
 {
     private const string PATH_SETTINGS_CHARACTER = "Data/Character/CharacterSettings";
     private const string TAG_WALL_BLOCK = "WallBlock";
-
+    private const string TAG_PLAYER = "Player";
     [Header("Настройки ракурсов")]
     [SerializeField]
     private CharacterCameraAngles characterCameraAnglesSettings;
@@ -111,6 +111,8 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
         }
 
         name = photonView.Owner.NickName;
+
+        tag = photonView.IsMine ? $"My{TAG_PLAYER}" : TAG_PLAYER;
 
        
     }
@@ -334,6 +336,16 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
         SetStateMoveCharacter(true);
     }
 
+    public void Disable(float timeOut)
+    {
+        CallInvokingMethod(Disable, timeOut);
+    }
+
+    public void Enable(float timeOut)
+    {
+        CallInvokingMethod(Enable, timeOut);
+    }
+
     private void SetCameraAngleSprite()
     {
         SetSprite(characterCameraAnglesSettings.CameraAngles[numberCameraAngle]);
@@ -367,5 +379,23 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
     public void SendSecureRPC(Action action, RpcTarget target = RpcTarget.All, bool encrypt = true, params object[] parameters)
     {
         photonView.RpcSecure(action.Method.Name, target, encrypt,  parameters);
+    }
+
+    public void CallInvokingEveryMethod(Action method, float time)
+    {
+        InvokeRepeating(method.Method.Name, time, time);
+    }
+
+    public void CallInvokingMethod(Action method, float time)
+    {
+        Invoke(method.Method.Name, time);
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag.Contains(TAG_PLAYER))
+        {
+            body2d.velocity = Vector2.zero;
+        }
     }
 }

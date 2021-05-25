@@ -19,7 +19,16 @@ using UnityEngine.UI;
 
     private Image image;
 
+
+    [Header("Является прошлым сообщением")]
+    [SerializeField]
+    [ReadOnlyField]
     protected bool isLast = false;
+
+    [Header("Индекс сообщения")]
+    [SerializeField]
+    [ReadOnlyField]
+    protected int indexMessage = 0;
 
     protected PhotonView View { get => photonView; }
     public Image CloudImage { get => image; }
@@ -134,23 +143,23 @@ using UnityEngine.UI;
 
     protected void CheckParamsMessage ()
     {
-        if (isLast)
-        {
-            return;
-        }
 
-
-        if (transform.GetSiblingIndex() != transform.parent.childCount - 1)
+        
+        if (transform.GetSiblingIndex() < transform.parent.childCount - 1)
         {
             isLast = true;
             CheckCloudMessageisLast();
-            return;
         }
+        if (photonView.IsMine)
+        {
+            indexMessage = transform.GetSiblingIndex();
+        }
+
     }
 
     protected Color GetAlphaColor(Color original)
     {
-        Color alphaColor = CloudImage.color;
+        Color alphaColor = original;
         alphaColor.a = 0.5f;
         return alphaColor;
     }

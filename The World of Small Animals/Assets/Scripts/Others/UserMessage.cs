@@ -47,6 +47,7 @@ public class UserMessage : UserMessageBase, ISeterText, ISeterColor,  IPunObserv
         {
             stream.SendNext(textSync);
             stream.SendNext(isLast);
+            stream.SendNext(indexMessage);
         }
 
         else
@@ -56,6 +57,10 @@ public class UserMessage : UserMessageBase, ISeterText, ISeterColor,  IPunObserv
 
             isLast = (bool)stream.ReceiveNext();
             CheckCloudMessageisLast();
+
+            indexMessage = (int)stream.ReceiveNext();
+
+            transform.SetSiblingIndex(indexMessage);
         }
     }
 

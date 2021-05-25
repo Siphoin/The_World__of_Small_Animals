@@ -10,10 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 5584024140349232284}
   - component: {fileID: 5584024140349232286}
+  - component: {fileID: 2211640838149045876}
   - component: {fileID: 5584024140349232287}
   - component: {fileID: 2794941569436082704}
   - component: {fileID: 4769667855050223893}
-  - component: {fileID: 2211640838149045876}
   - component: {fileID: 808525531598309575}
   m_Layer: 0
   m_Name: smile_message
@@ -50,6 +50,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5584024140349232285}
   m_CullTransparentMesh: 1
+--- !u!114 &2211640838149045876
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5584024140349232285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 796a63d164eebb44a9dde70118279ac8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isLast: 0
+  indexMessage: 0
+  imageSmile: {fileID: 5335928179303763395}
 --- !u!114 &5584024140349232287
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -122,19 +137,6 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &2211640838149045876
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5584024140349232285}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 796a63d164eebb44a9dde70118279ac8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  imageSmile: {fileID: 5335928179303763395}
 --- !u!114 &808525531598309575
 MonoBehaviour:
   m_ObjectHideFlags: 0

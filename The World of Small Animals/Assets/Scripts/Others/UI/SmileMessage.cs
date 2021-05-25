@@ -28,6 +28,9 @@ public class SmileMessage : UserMessageBase, IPunObservable, ISeterSprite, ISete
         if (stream.IsWriting)
         {
             stream.SendNext(indexSpriteSmile);
+            stream.SendNext(isLast);
+            stream.SendNext(indexMessage);
+
         }
 
         else
@@ -39,6 +42,13 @@ public class SmileMessage : UserMessageBase, IPunObservable, ISeterSprite, ISete
 
             }
             indexSpriteSmile = (long)stream.ReceiveNext();
+
+            isLast = (bool)stream.ReceiveNext();
+            CheckCloudMessageisLast();
+
+            indexMessage = (int)stream.ReceiveNext();
+
+            transform.SetSiblingIndex(indexMessage);
 
             SetSpriteAtCurrentIndex();
         }
