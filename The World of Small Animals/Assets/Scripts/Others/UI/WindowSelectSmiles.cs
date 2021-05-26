@@ -71,13 +71,17 @@ public class WindowSelectSmiles : MiniWindow
 
     private IEnumerator ShowSmilesButtons ()
     {
-        if (contentSmiles.childCount > 1)
+        if (contentSmiles.childCount < smileContainer.SmilesSprites.Length)
         {
-        for (int i = 0; i < contentSmiles.childCount; i++)
-        {
-            SetActiveSelfSmileButton(i, false);
+            RemoveAllSmilesButtons();
         }
 
+        else
+        {
+            for (int i = 0; i < contentSmiles.childCount; i++)
+            {
+                SetActiveSelfSmileButton(i, false);
+            }
         }
 
         yield return new WaitForSeconds(timeOutShowSmiles);
@@ -99,7 +103,7 @@ public class WindowSelectSmiles : MiniWindow
             }
         }
 
-        else
+        else if (contentSmiles.childCount == smileContainer.SmilesSprites.Length)
         {
 
             for (int i = 0; i < contentSmiles.childCount; i++)
@@ -114,6 +118,15 @@ public class WindowSelectSmiles : MiniWindow
     private void SetActiveSelfSmileButton (int index, bool activeState)
     {
         SetActiveSelfGameObject(contentSmiles.GetChild(index).gameObject, activeState);
+    }
+
+    private void RemoveAllSmilesButtons ()
+    {
+        for (int i = 0; i < contentSmiles.childCount; i++)
+        {
+            GameObject smile = contentSmiles.GetChild(i).gameObject;
+            Destroy(smile);
+        }
     }
 
 }

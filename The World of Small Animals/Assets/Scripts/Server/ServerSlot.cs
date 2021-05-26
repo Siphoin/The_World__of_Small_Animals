@@ -5,11 +5,18 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Button))]
-    public class ServerSlot : MonoBehaviour, ISeterText, ICheckValidStats
+    public class ServerSlot : MonoBehaviour, ISeterText, ICheckValidStats, ISeterColor
     {
+    private const string PATH_DATA_COLOR_SLOT = "Data/UI/ServerSlot/ServerSlotColorData";
+
+
     private ServerSlotData serverSlotData;
 
     private Button button;
+
+    private Image image;
+
+    private ServerSlotColorData colorDataSlot;
 
     public event Action<ServerSlotData> onClick;
 
@@ -34,6 +41,21 @@ using UnityEngine.UI;
             throw new SlotServerException("radial progress not seted");
         }
 
+        colorDataSlot = Resources.Load<ServerSlotColorData>(PATH_DATA_COLOR_SLOT);
+
+        if (colorDataSlot == null)
+        {
+            throw new SlotServerException("color data slot not found");
+        }
+
+        if (image == null)
+        {
+            if (!TryGetComponent(out image))
+            {
+                throw new SlotServerException($"{name} not have component UnityEngine.UI.Image");
+            }
+        }
+
 
         if (button == null)
         {
@@ -45,7 +67,6 @@ using UnityEngine.UI;
             button.onClick.AddListener(Select);
         }
 
-        radialProgress.UpdateProgress(1f);
 
     }
 
@@ -70,6 +91,8 @@ using UnityEngine.UI;
 
         textNameServer.text = text;
     }
+
+
 
     public void SetData (ServerSlotData data)
     {
@@ -102,6 +125,17 @@ using UnityEngine.UI;
        
     }
 
+    public void SetOccupancyRate (float value)
+    {
+        radialProgress.UpdateProgress(value / (float)serverSlotData.MaxCountPlayers);
+
+        if (value == serverSlotData.MaxCountPlayers)
+        {
+            button.interactable = false;
+            SetColor(colorDataSlot.BlockedButtonColor);
+        }
+    }
+
     public void CheckValidStats()
     {
         foreach (var prop in serverSlotData.GetType().GetFields())
@@ -131,4 +165,8 @@ using UnityEngine.UI;
         }
     }
 
+    public void SetColor(Color color)
+    {
+        image.color = color;
+    }
 }

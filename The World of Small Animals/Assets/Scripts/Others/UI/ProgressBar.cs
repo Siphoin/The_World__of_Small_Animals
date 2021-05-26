@@ -16,6 +16,9 @@ using UnityEngine.UI;
     public bool LerpingValue { get => lerpingValue; }
     public float LerpingSpeed { get => lerpingSpeed; }
 
+    public float Value { get => slider.value; }
+
+
     protected void Ini ()
         {
         if (LerpingValue && LerpingSpeed <= 0)

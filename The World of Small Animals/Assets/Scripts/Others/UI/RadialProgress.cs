@@ -9,6 +9,8 @@ using UnityEngine.UI;
     [SerializeField]
     private Image fillImage;
 
+    public float Value { get => fillImage.fillAmount; }
+
 
         // Use this for initialization
         void Start()
