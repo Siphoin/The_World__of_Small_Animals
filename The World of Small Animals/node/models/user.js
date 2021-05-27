@@ -38,6 +38,10 @@ const userScheme = new Schema({
 
     characters: {
         type: Array
+    },
+    role: {
+        type: String,
+        default: 'user'
     }
 });
 

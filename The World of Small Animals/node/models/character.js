@@ -1,5 +1,5 @@
 const configCharacter = require('../others/character_config')
-var dateFormat = require('dateformat');
+const dateFormat = require('dateformat');
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 

@@ -1,3 +1,4 @@
+  
 const config = require('./crypto_config')
 
 
@@ -23,7 +24,12 @@ function decrypt(text){
   return dec;
 }
 
+function generate_token() {
+return crypto.randomBytes(64).toString('hex');
+}
+
 module.exports = {
     encrypt,
-     decrypt
+     decrypt,
+     generate_token
 }

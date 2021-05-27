@@ -5,18 +5,26 @@
   "main": "app.js",
   "scripts": {
     "run": "node app.js",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "retire": "retire"
   },
   "author": "Max Kosolapov & TWSA Developer Group",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "dateformat": "^4.5.1",
     "email-validator": "^2.0.4",
     "express": "^4.17.1",
-    "mongoose": "^5.12.11",
+    "express-rate-limit": "^5.2.6",
+    "express-session": "^1.17.2",
+    "helmet": "^4.6.0",
+    "mongoose": "^5.12.11"
+  },
+  "devDependencies": {
+    "eslint": "^7.27.0",
     "nodemon": "^2.0.7"
   }
 }
