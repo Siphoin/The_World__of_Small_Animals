@@ -475,7 +475,7 @@ router.post('/character',  async function (req, res) {
 
             if (doc) {
               const  characters = doc.characters
-                characters.push(mongoose.Types.ObjectId(data.userId))
+                characters.push(mongoose.Types.ObjectId(character._id))
 
                 const newDataUser = {
                     $set: {
@@ -545,7 +545,7 @@ router.post('/character/info', async function (req, res) {
                     }
                     
                     if (character) {
-                        if (!user.characters.contains(character.userId)) {
+                        if (!user.characters.contains(character._id)) {
                             res.sendStatus(404)
                         }
 
@@ -618,7 +618,7 @@ router.post('/character/info', async function (req, res) {
                     }
 
                     else {
-                        await Character.findOne({userId: mongoose.Types.ObjectId(req.body.characterId)},  async function(err, character) {
+                        await Character.findOne({_id: mongoose.Types.ObjectId(req.body.characterId)},  async function(err, character) {
                             if  (err) {
                                 res.sendStatus(500)
                                 return console.log(err);
@@ -714,7 +714,7 @@ router.post('/character/info', async function (req, res) {
                     }
 
                     else {
-                        await Character.findOne({userId: mongoose.Types.ObjectId(req.body.characterId)},  async function(err, character) {
+                        await Character.findOne({_id: mongoose.Types.ObjectId(req.body.characterId)},  async function(err, character) {
                             if  (err) {
                                 res.sendStatus(500)
                                 return console.log(err);
@@ -818,7 +818,7 @@ router.post('/character/info', async function (req, res) {
                     }
 
                     else {
-                        await Character.findOne({userId: mongoose.Types.ObjectId(req.body.characterId)},  async function(err, character) {
+                        await Character.findOne({_id: mongoose.Types.ObjectId(req.body.characterId)},  async function(err, character) {
                             if  (err) {
                                 res.sendStatus(500)
                                 return console.log(err);
@@ -917,7 +917,7 @@ router.post('/character/info', async function (req, res) {
                     }
 
                     else {
-                        await Character.findOne({userId: mongoose.Types.ObjectId(req.body.characterId)},  async function(err, character) {
+                        await Character.findOne({_id: mongoose.Types.ObjectId(req.body.characterId)},  async function(err, character) {
                             if  (err) {
                                 res.sendStatus(500)
                                 return console.log(err);
@@ -938,6 +938,111 @@ router.post('/character/info', async function (req, res) {
 
 
                                 await character.updateOne(newLastReg,  async function(err, result) {
+                                    if  (err) {
+                                        res.sendStatus(500)
+                                        return console.log(err);
+                                    }
+
+                                    res.sendStatus(204)
+                                })
+                            }
+
+                            else {
+                                console.log(`character (id: ${req.body.characterId}) not found`)
+                                res.sendStatus(404)
+                            }
+    
+    
+                        })
+                    }
+
+                   }
+
+                   else {
+                    console.log('user not found')
+                       res.sendStatus(404)
+                   }
+               })
+            }
+        }
+
+        else {
+            console.log(`token ${req.body.token} not found`)
+            res.sendStatus(404)
+        }
+    })
+ 
+ });
+
+ router.post('/character/friends/add', async function (req, res) {
+    if (!req.body.characterId || !req.body.token || !req.body.friend) {
+        res.sendStatus(400)
+        return
+    }
+
+    let jsonData = undefined
+
+
+    
+
+
+    await TokenUser.findOne({token: req.body.token},  async function(err, docToken) {
+        if  (err) {
+            res.sendStatus(500)
+            return console.log(err);
+        }
+
+        if (docToken) {
+            if (check_token_date(docToken)) {
+
+
+                await TokenUser.deleteOne({token: docToken.token},  async function(err, deleteToken) {
+                    if  (err) {
+                        res.sendStatus(500)
+                        return console.log(err);
+                    }
+
+                    res.sendStatus(400)
+                    
+                })
+            }
+
+            else {
+               await User.findOne({_id: docToken.idUser},  async function(err, user) {
+                if  (err) {
+                    res.sendStatus(500)
+                    return console.log(err);
+                }
+
+
+                   if (user) {
+                    if (!user.characters.contains(req.body.characterId)) {
+                        console.log(`user ${user.name} not have character ${req.body.characterId}`)
+                        res.sendStatus(404)
+                    }
+
+                    else {
+                        await Character.findOne({_id: mongoose.Types.ObjectId(req.body.characterId)},  async function(err, character) {
+                            if  (err) {
+                                res.sendStatus(500)
+                                return console.log(err);
+                            }
+
+                            if (character) {
+                                  const dataCharacter = character.data
+
+                                  dataCharacter.friendsList.push(mongoose.Types.ObjectId(req.body.friend))
+
+
+                                const newFriendsList = {
+                                    nane: character.name,
+                                    $set: {
+                                       data: dataCharacter
+                                    }
+                                }
+
+
+                                await character.updateOne(newFriendsList,  async function(err, result) {
                                     if  (err) {
                                         res.sendStatus(500)
                                         return console.log(err);
@@ -1037,6 +1142,7 @@ router.get('/characters', async function (req, res) {
    });
 
 });
+
 
 router.post("/server", async function (req, res) {
     if  (!req.body.playerList || !req.body.name) {

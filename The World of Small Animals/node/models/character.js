@@ -54,7 +54,7 @@ const characterSchema = new Schema({
       data: {
 
           friendsList: {
-              type: [String]
+              type: [mongoose.Types.ObjectId]
           },
 
           location: {
