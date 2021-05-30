@@ -10,7 +10,9 @@ const serverSchema = new Schema({
     countPlayers: {
         type: Number,
         default: 1
-    }
+    },
+
+    players: [String]
 }, {versionKey: false})
 
 module.exports = serverSchema;

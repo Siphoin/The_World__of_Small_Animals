@@ -21,7 +21,8 @@
     "express-rate-limit": "^5.2.6",
     "express-session": "^1.17.2",
     "helmet": "^4.6.0",
-    "mongoose": "^5.12.11"
+    "mongoose": "^5.12.11",
+    "shortid": "^2.2.16"
   },
   "devDependencies": {
     "eslint": "^7.27.0",

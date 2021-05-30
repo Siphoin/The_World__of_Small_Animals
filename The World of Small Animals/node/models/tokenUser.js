@@ -2,10 +2,8 @@
 
 const config = require('../others/tokenUser_config')
 
-const encrypter = require('../crypto/encypter')
 const mongoose = require("mongoose");
 
-const dateFormat = require('dateformat');
 
 
 Date.prototype.addDays = function(days) {

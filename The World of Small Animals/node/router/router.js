@@ -2,9 +2,13 @@
 
 const cors = require('cors');
 
+const dateFormat = require('dateformat');
+
 
 const config = require('../config.js')
 const encrypter = require('../crypto/encypter')
+
+const bencrypter = require('../crypto/bencrypter')
 const mongoose = require("mongoose");
 const express = require('express');
 
@@ -33,6 +37,18 @@ const User = mongoose.model("User", schemaUser);
 
 const Character = mongoose.model("Character", schemaCharacter);
 
+//#endregion
+
+//#region  Prototypes
+
+Array.prototype.contains = function(value) {
+  return   this.includes(value)
+}
+
+Object.prototype.isNaN = function() {
+    return    typeof this === Number
+  }
+    
 //#endregion
 
 const router = express.Router();
@@ -65,6 +81,42 @@ function clearDataCharacter(character) {
     character.userId = undefined
 }
 
+function check_token_date(token) {
+    const dateNow = new Date()
+
+
+    const dateToken = token.time
+     const conditions = dateToken.getDay() != dateNow.getDay() + 1 || dateToken.getMonth() != dateToken.getMonth() ||  dateToken.getFullYear() != dateToken.getFullYear()
+
+     return conditions
+}
+
+async function playerContainsOnServer(name) {
+
+    var result = false
+    await   Server.find({}, function(err, docs){
+        if(err) {
+            return console.error(err);
+        }
+        
+        for (let index = 0; index < docs.length; index++) {
+            const server = docs[index];
+            
+            if (server.players.contains(name)) {
+                result = true
+                break
+            }
+        }
+    })
+
+    return result
+}
+
+function convertToInt(value) {
+    value = value.isNaN(value) ? Number.parseInt(value) : value
+    return value
+}
+
 
 
 
@@ -72,6 +124,8 @@ function clearDataCharacter(character) {
 router.get('/', function(req, res) {
   res.send('home api');
 });
+
+
 
 router.get('/users', async function (req, res) {
  await   User.find({}, function(err, docs){
@@ -92,13 +146,18 @@ router.get('/users', async function (req, res) {
 });
 
 
-router.delete('/users/:name', async function (req, res) {
-    if (!req.params.name) {
-        res.sendStatus(500)
+   
+   
+
+
+
+ router.delete('/users/auth/:id', async function (req, res) {
+    if (!req.body.id) {
+        res.sendStatus(400)
         return
     }
  
-    await User.deleteOne({name: req.params.name},  async function(err, result) {
+    await TokenUser.deleteOne({idUser: req.params.id},  async function(err, result) {
         
         if(err) {
             res.sendStatus(500)
@@ -117,63 +176,7 @@ router.delete('/users/:name', async function (req, res) {
     })
  });
 
- router.delete('/users/auth/token/:token', async function (req, res) {
-    if (!req.params.token) {
-        res.sendStatus(500)
-        return
-    }
- 
-    await TokenUser.deleteOne({token: req.params.token},  async function(err, result) {
-        
-        if(err) {
-            res.sendStatus(500)
-            return console.log(err);
-        } 
- 
-       if (result.deletedCount < 1) {
-            res.sendStatus(404)
-       }
- 
-       else {
-        
-        res.sendStatus(204)
-       }
-       
-    })
- });
 
- router.get('/users/auth/:token', async function (req, res) {
-    if (!req.params.token) {
-        res.sendStatus(500)
-        return
-    }
- 
-    await TokenUser.findOne({token: req.params.token},  async function(err, doc) {
-        
-        if(err) {
-            res.sendStatus(500)
-            return console.log(err);
-        } 
-
-       if  (doc) {
-        await User.findOne({_id: mongoose.Types.ObjectId(),  async function(err, doc) {
-            if (doc) {
-                res.json(doc)
-            }
-
-            else {
-                res.sendStatus(404)
-            }
-        }
-       })
-    }
-
-    else {
-        res.sendStatus(404)
-    }
-    
-    })
- })
 
  router.post('/users/auth/', async function (req, res) {
     if(!req.body) return res.sendStatus(400);
@@ -228,18 +231,16 @@ await User.findOne(checkData,  async function(err, doc) {
 
             const data = {
                 idUser: mongoose.Types.ObjectId(doc._id),
-                token: encrypter.generate_token()
+                token: bencrypter.encrypt(encrypter.generate_token())
             }
             const newToken = new TokenUser(data)
           
 
             if (docToken) {
-                const dateNow = new Date()
-                const dateToken = docToken.time
-                 const conditions = dateToken.getDay() != dateNow.getDay() + 1 || dateToken.getMonth() != dateNow.getMonth() ||  dateToken.getFullYear() != dateNow.getFullYear()
+                
 
 
-             if (conditions) {
+             if (check_token_date(docToken)) {
                 await TokenUser.deleteOne({idUser: mongoose.Types.ObjectId(doc._id)},  async function(err, result) {
                     if(err) {
                         res.sendStatus(500)
@@ -251,8 +252,25 @@ await User.findOne(checkData,  async function(err, doc) {
              }
 
              else {
+                  const playerContainsOtherServer = await playerContainsOnServer(checkData.name)
+                if  (!playerContainsOtherServer) {
+
+
+                    await TokenUser.deleteOne({idUser: mongoose.Types.ObjectId(doc._id)},  async function(err, result) {
+                        if(err) {
+                            res.sendStatus(500)
+                            return console.log(err);
+                        }
+    
+    
+                    })
+                }
+
+                else {
                 res.send('token already exits')
-                return
+                return                    
+                }
+
             }
 
             
@@ -268,6 +286,62 @@ await User.findOne(checkData,  async function(err, doc) {
     }
 })
  })
+
+ router.post('/users/auth/info', async function(req, res) {
+    if (!req.body.token) {
+        res.sendStatus(400)
+        return
+    }
+ 
+    await TokenUser.findOne({token: req.body.token},  async function(err, result) {
+        
+        if(err) {
+            res.sendStatus(500)
+            return console.log(err);
+        } 
+ 
+       if (result) {
+            if (check_token_date(result)) {
+
+
+                await TokenUser.deleteOne({token: result.token},  async function(err, deleteToken) {
+                    if  (err) {
+                        res.sendStatus(500)
+                        return console.log(err);
+                    } 
+                  
+                   res.sendStatus(400)
+                   
+
+                })
+            }
+
+            else {
+                await User.findOne({_id: result.idUser},  async function(err, user) {
+                    if (err) {
+                        res.sendStatus(500)
+                        return console.log(err);
+                    } 
+                      if (user) {
+                          clearDataUser(user)
+                          res.json(user)
+                      }
+        
+                      else {
+                        res.sendStatus(404)
+                      }
+                })
+            }
+
+       }
+ 
+       else {
+        
+        res.sendStatus(404)
+       }
+       
+    })
+  });
 
 router.post("/users",  async function (req, res) {
         
@@ -404,7 +478,6 @@ router.post('/character',  async function (req, res) {
                 characters.push(mongoose.Types.ObjectId(data.userId))
 
                 const newDataUser = {
-                    _id: doc._id,
                     $set: {
                         characters: characters
                     }
@@ -442,55 +515,467 @@ router.post('/character',  async function (req, res) {
 
 });
 
-router.get('/character/:name',  async function (req, res) {
-    if (!req.params.name) {
-        res.sendStatus(500)
-        return
-    }
- 
-    await Character.findOne({name: req.params.name},  async function(err, doc) {
-        if(err) {
-            res.sendStatus(500)
-            return console.log(err);
-        } 
- 
- 
-       if (!doc) {
-            res.sendStatus(404)
-       }
- 
-       else {
-           clearDataCharacter(doc)
-           res.json(doc)
-       }
-       
-    })
-})
 
-router.delete('/character/:name', async function (req, res) {
-    if (!req.params.name) {
-        res.sendStatus(500)
+router.post('/character/info', async function (req, res) {
+    if (!req.body.id || !req.body.token) {
+        res.sendStatus(400)
         return
     }
  
-    await Character.deleteOne({name: req.params.name},  async function(err, result) {
-        if(err) {
+    await TokenUser.findOne({token: req.body.token},  async function(err, docToken) {
+        if  (err) {
             res.sendStatus(500)
             return console.log(err);
         } 
  
- 
-       if (result.deletedCount < 1) {
-            res.sendStatus(404)
-       }
- 
-       else {
-        
-        res.sendStatus(204)
-       }
+     if (docToken) {
+
+
+        await User.findOne({_id: docToken.idUser},  async function(err, user) {
+
+            if  (err) {
+                res.sendStatus(500)
+                return console.log(err);
+            } 
+            if (user) {
+                await Character.findOne({_id: mongoose.Types.ObjectId(req.body.id)},  async function(err, character) {
+                    if  (err) {
+                        res.sendStatus(500)
+                        return console.log(err);
+                    }
+                    
+                    if (character) {
+                        if (!user.characters.contains(character.userId)) {
+                            res.sendStatus(404)
+                        }
+
+                        else {
+                            clearDataCharacter(character)
+                            res.json(character)
+                        }
+                    }
+
+                    else {
+                        res.sendStatus(404)
+                    }
+
+                })
+            }
+        })
+     }
+
+     else {
+        res.sendStatus(400)
+     }
+       
        
     })
  });
+
+ router.post('/character/status', async function (req, res) {
+    if (!req.body.characterId || !req.body.token || !req.body.status) {
+        res.sendStatus(400)
+        return
+    }
+
+    
+    req.body.status = convertToInt(req.body.status)
+
+
+    await TokenUser.findOne({token: req.body.token},  async function(err, docToken) {
+        if  (err) {
+            res.sendStatus(500)
+            return console.log(err);
+        }
+
+        if (docToken) {
+            if (check_token_date(docToken)) {
+
+
+                await TokenUser.deleteOne({token: docToken.token},  async function(err, deleteToken) {
+                    if  (err) {
+                        res.sendStatus(500)
+                        return console.log(err);
+                    }
+
+                    res.sendStatus(400)
+                    
+                })
+            }
+
+            else {
+               await User.findOne({_id: docToken.idUser},  async function(err, user) {
+                if  (err) {
+                    res.sendStatus(500)
+                    return console.log(err);
+                }
+
+
+                   if (user) {
+                    if (!user.characters.contains(req.body.characterId)) {
+                        console.log(`user ${user.name} not have character ${req.body.characterId}`)
+                        res.sendStatus(404)
+                    }
+
+                    else {
+                        await Character.findOne({userId: mongoose.Types.ObjectId(req.body.characterId)},  async function(err, character) {
+                            if  (err) {
+                                res.sendStatus(500)
+                                return console.log(err);
+                            }
+
+                            if (character) {
+                                  
+                                const newStatus = {
+                                    $set: {
+                                        online: Boolean(req.body.status)
+                                    }
+                                }
+                                await Character.updateOne(newStatus,  async function(err, result) {
+                                    if  (err) {
+                                        res.sendStatus(500)
+                                        return console.log(err);
+                                    }
+
+                                    res.sendStatus(204)
+                                })
+                            }
+
+                            else {
+                                console.log(`character (id: ${req.body.characterId}) not found`)
+                                res.sendStatus(404)
+                            }
+    
+    
+                        })
+                    }
+
+                   }
+
+                   else {
+                    console.log('user not found')
+                       res.sendStatus(404)
+                   }
+               })
+            }
+        }
+
+        else {
+            console.log(`token ${req.body.token} not found`)
+            res.sendStatus(404)
+        }
+    })
+ 
+ });
+
+
+ router.post('/character/location', async function (req, res) {
+    if (!req.body.characterId || !req.body.token || !req.body.location) {
+        res.sendStatus(400)
+        return
+    }
+
+    
+
+
+    await TokenUser.findOne({token: req.body.token},  async function(err, docToken) {
+        if  (err) {
+            res.sendStatus(500)
+            return console.log(err);
+        }
+
+        if (docToken) {
+            if (check_token_date(docToken)) {
+
+
+                await TokenUser.deleteOne({token: docToken.token},  async function(err, deleteToken) {
+                    if  (err) {
+                        res.sendStatus(500)
+                        return console.log(err);
+                    }
+
+                    res.sendStatus(400)
+                    
+                })
+            }
+
+            else {
+               await User.findOne({_id: docToken.idUser},  async function(err, user) {
+                if  (err) {
+                    res.sendStatus(500)
+                    return console.log(err);
+                }
+
+
+                   if (user) {
+                    if (!user.characters.contains(req.body.characterId)) {
+                        console.log(`user ${user.name} not have character ${req.body.characterId}`)
+                        res.sendStatus(404)
+                    }
+
+                    else {
+                        await Character.findOne({userId: mongoose.Types.ObjectId(req.body.characterId)},  async function(err, character) {
+                            if  (err) {
+                                res.sendStatus(500)
+                                return console.log(err);
+                            }
+
+                            if (character) {
+                                  const dataCharacter = character.data
+
+                                  dataCharacter.location = req.body.location
+
+
+                                const newLocation = {
+                                    nane: character.name,
+                                    $set: {
+                                       data: dataCharacter
+                                    }
+                                }
+
+
+                                await character.updateOne(newLocation,  async function(err, result) {
+                                    if  (err) {
+                                        res.sendStatus(500)
+                                        return console.log(err);
+                                    }
+
+                                    res.sendStatus(204)
+                                })
+                            }
+
+                            else {
+                                console.log(`character (id: ${req.body.characterId}) not found`)
+                                res.sendStatus(404)
+                            }
+    
+    
+                        })
+                    }
+
+                   }
+
+                   else {
+                    console.log('user not found')
+                       res.sendStatus(404)
+                   }
+               })
+            }
+        }
+
+        else {
+            console.log(`token ${req.body.token} not found`)
+            res.sendStatus(404)
+        }
+    })
+ 
+ });
+
+ router.post('/character/valute', async function (req, res) {
+    if (!req.body.characterId || !req.body.token || !req.body.anicoins) {
+        res.sendStatus(400)
+        return
+    }
+
+    req.body.anicoins = convertToInt(req.body.anicoins)
+    req.body.gems = convertToInt(req.body.gems)
+    
+
+
+    await TokenUser.findOne({token: req.body.token},  async function(err, docToken) {
+        if  (err) {
+            res.sendStatus(500)
+            return console.log(err);
+        }
+
+        if (docToken) {
+            if (check_token_date(docToken)) {
+
+
+                await TokenUser.deleteOne({token: docToken.token},  async function(err, deleteToken) {
+                    if  (err) {
+                        res.sendStatus(500)
+                        return console.log(err);
+                    }
+
+                    res.sendStatus(400)
+                    
+                })
+            }
+
+            else {
+               await User.findOne({_id: docToken.idUser},  async function(err, user) {
+                if  (err) {
+                    res.sendStatus(500)
+                    return console.log(err);
+                }
+
+
+                   if (user) {
+                    if (!user.characters.contains(req.body.characterId)) {
+                        console.log(`user ${user.name} not have character ${req.body.characterId}`)
+                        res.sendStatus(404)
+                    }
+
+                    else {
+                        await Character.findOne({userId: mongoose.Types.ObjectId(req.body.characterId)},  async function(err, character) {
+                            if  (err) {
+                                res.sendStatus(500)
+                                return console.log(err);
+                            }
+
+                            if (character) {
+                                
+                                const newValueValues = {
+                                    nane: character.name,
+                                    $set: {
+                                       anicoins: req.body.anicoins,
+                                       gems: req.body.gems
+                                    }
+                                }
+
+
+                                await character.updateOne(newValueValues,  async function(err, result) {
+                                    if  (err) {
+                                        res.sendStatus(500)
+                                        return console.log(err);
+                                    }
+
+                                    res.sendStatus(204)
+                                })
+                            }
+
+                            else {
+                                console.log(`character (id: ${req.body.characterId}) not found`)
+                                res.sendStatus(404)
+                            }
+    
+    
+                        })
+                    }
+
+                   }
+
+                   else {
+                    console.log('user not found')
+                       res.sendStatus(404)
+                   }
+               })
+            }
+        }
+
+        else {
+            console.log(`token ${req.body.token} not found`)
+            res.sendStatus(404)
+        }
+    })
+ 
+ });
+
+ router.post('/character/date', async function (req, res) {
+    if (!req.body.characterId || !req.body.token) {
+        res.sendStatus(400)
+        return
+    }
+
+    
+
+
+    await TokenUser.findOne({token: req.body.token},  async function(err, docToken) {
+        if  (err) {
+            res.sendStatus(500)
+            return console.log(err);
+        }
+
+        if (docToken) {
+            if (check_token_date(docToken)) {
+
+
+                await TokenUser.deleteOne({token: docToken.token},  async function(err, deleteToken) {
+                    if  (err) {
+                        res.sendStatus(500)
+                        return console.log(err);
+                    }
+
+                    res.sendStatus(400)
+                    
+                })
+            }
+
+            else {
+               await User.findOne({_id: docToken.idUser},  async function(err, user) {
+                if  (err) {
+                    res.sendStatus(500)
+                    return console.log(err);
+                }
+
+
+                   if (user) {
+                    if (!user.characters.contains(req.body.characterId)) {
+                        console.log(`user ${user.name} not have character ${req.body.characterId}`)
+                        res.sendStatus(404)
+                    }
+
+                    else {
+                        await Character.findOne({userId: mongoose.Types.ObjectId(req.body.characterId)},  async function(err, character) {
+                            if  (err) {
+                                res.sendStatus(500)
+                                return console.log(err);
+                            }
+
+                            if (character) {
+                                  const dataCharacter = character.data
+
+                                  dataCharacter.lastDate = dateFormat(new Date(), "dd.mm.yyyy")
+
+
+                                const newLastReg = {
+                                    nane: character.name,
+                                    $set: {
+                                       data: dataCharacter
+                                    }
+                                }
+
+
+                                await character.updateOne(newLastReg,  async function(err, result) {
+                                    if  (err) {
+                                        res.sendStatus(500)
+                                        return console.log(err);
+                                    }
+
+                                    res.sendStatus(204)
+                                })
+                            }
+
+                            else {
+                                console.log(`character (id: ${req.body.characterId}) not found`)
+                                res.sendStatus(404)
+                            }
+    
+    
+                        })
+                    }
+
+                   }
+
+                   else {
+                    console.log('user not found')
+                       res.sendStatus(404)
+                   }
+               })
+            }
+        }
+
+        else {
+            console.log(`token ${req.body.token} not found`)
+            res.sendStatus(404)
+        }
+    })
+ 
+ });
+
+
+ 
 
 
 
@@ -521,7 +1006,7 @@ router.get('/characters', async function (req, res) {
         name: req.body.name
     }
 
-    await User.findOne({name: data.name},  async function(err, doc){
+    await Server.findOne({name: data.name},  async function(err, doc){
          
         if(err) {
             res.sendStatus(500)
@@ -529,7 +1014,8 @@ router.get('/characters', async function (req, res) {
         } 
        
         if (doc) {
-            res.sendStatus(500)
+            res.send(`server ${doc.name} exits`)
+            return
         }
 
         else {
@@ -543,6 +1029,70 @@ router.get('/characters', async function (req, res) {
             console.log(`server data ${data.name} created`)
             res.sendStatus(201)
         });
+
+        }
+
+
+
+   });
+
+});
+
+router.post("/server", async function (req, res) {
+    if  (!req.body.playerList || !req.body.name) {
+        return res.sendStatus(400)
+    }
+   
+    let jsonData = undefined
+
+      try {
+          jsonData = JSON.parse(req.body.playerList)
+
+          if (!jsonData.playerList) {
+              console.log(`not valid json data server schema.\nYour schema\n${JSON.stringify(jsonData)}`)
+            return res.sendStatus(400)
+          }
+      } catch (err) {
+          console.log(`JSON data server parse error ${err}`)
+        return res.sendStatus(400)
+        
+      }
+    
+    console.log(`new server data sended:\n${JSON.stringify(req.body)}`)
+
+    const data = {
+        name: req.body.name
+    }
+
+    await Server.findOne({name: data.name},  async function(err, doc){
+         
+        if(err) {
+            res.sendStatus(500)
+            return console.log(err);
+        } 
+       
+        if (doc) {
+            const newDataServer = {
+                $set: {
+                    players: jsonData.playerList,
+                    countPlayers: jsonData.playerList.length
+                }
+            }
+          
+            await Server.updateOne(newDataServer,  async function(err, result){
+                if(err) {
+                    res.sendStatus(500)
+                    return console.log(err);
+                }
+                
+                res.sendStatus(204) 
+            })
+            
+        }
+
+        else {
+            console.log(`server ${req.body.name} not found`)
+         res.sendStatus(404)
 
         }
 

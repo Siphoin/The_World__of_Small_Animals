@@ -1,6 +1,7 @@
 const configCharacter = require('../others/character_config')
 const dateFormat = require('dateformat');
 const mongoose = require("mongoose");
+const config = require('../crypto/crypto_config');
 const Schema = mongoose.Schema;
 
 const characterSchema = new Schema({
@@ -52,13 +53,37 @@ const characterSchema = new Schema({
 
       data: {
 
-          location: String,
-          friendsList: [String],
+          friendsList: {
+              type: [String]
+          },
+
+          location: {
+            type: String,
+            default: ''
+        },
+
+
           gifts: [Object],
           lastDate: {
               type: String,
               default: dateFormat(new Date(), "dd.mm.yyyy"),
-          }
+          },
+
+         level: {
+             currentLevel: {
+                 type: Number,
+                 default: configCharacter.levelDefault
+             },
+             xpNext: {
+                 type: Number,
+                 default: configCharacter.xpToNextLevelDefault
+             },
+
+             xpCurrent: {
+                 type: Number,
+                 default: 0
+             }
+         }
       }
 }, {versionKey: false})
 

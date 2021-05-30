@@ -1,9 +1,8 @@
   
 const config = require('./crypto_config')
 
+const shordid = require('shortid')
 
-const encoding = 'utf8'
-const inputEncoding = 'hex'
 
 var crypto = require('crypto'),
     algorithm =  config.algoritme,
