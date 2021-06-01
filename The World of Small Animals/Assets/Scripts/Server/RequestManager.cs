@@ -73,7 +73,7 @@ public class RequestManager : MonoBehaviour, IRemoveObject
 
     public string GenerateRequestID ()
     {
-        return ShortId.Generate(true, true, UnityEngine.Random.Range(5, 31));
+        return ShortId.Generate(true, false, UnityEngine.Random.Range(12, 31));
     }
 
     private void AddRequest (string key)

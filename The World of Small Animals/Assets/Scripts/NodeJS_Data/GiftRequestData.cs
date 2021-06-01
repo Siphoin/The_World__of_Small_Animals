@@ -1,6 +1,6 @@
 ﻿using System;
 [Serializable]
- public   class GiftRequestData
+ public   class GiftRequestData : MongoSchema
     {
     public GiftRequestData ()
     {

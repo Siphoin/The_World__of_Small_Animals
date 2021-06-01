@@ -1,6 +1,6 @@
 ﻿using System;
 [Serializable]
- public   class CharacterRequestData
+ public   class CharacterRequestData : MongoSchema
     {
     public string dateReg;
     public CharacterRequestDynamicData data;
