@@ -572,6 +572,64 @@ router.post('/character/info', async function (req, res) {
     })
  });
 
+
+ router.post('/users/characterList', async function (req, res) {
+    if (!req.body.id || !req.body.token) {
+        res.sendStatus(400)
+        return
+    }
+ 
+    await TokenUser.findOne({token: req.body.token},  async function(err, docToken) {
+        if  (err) {
+            res.sendStatus(500)
+            return console.log(err);
+        } 
+ 
+     if (docToken) {
+
+
+        await User.findOne({_id: docToken.idUser},  async function(err, user) {
+
+            if  (err) {
+                res.sendStatus(500)
+                return console.log(err);
+            } 
+            if (user) {
+                await Character.find({userId: mongoose.Types.ObjectId(req.body.id)},  async function(err, characters) {
+                    if  (err) {
+                        res.sendStatus(500)
+                        return console.log(err);
+                    }
+                    
+                    if (characters.length > 0) {
+                          
+
+                        for (let i = 0; i < characters.length; i++) {
+                            const element = characters[i];
+                            clearDataCharacter(element)
+                        }
+
+                            res.json(characters)
+
+                    }
+
+                    else {
+                        res.sendStatus(404)
+                    }
+
+                })
+            }
+        })
+     }
+
+     else {
+        res.sendStatus(400)
+     }
+       
+       
+    })
+ });
+
  router.post('/character/status', async function (req, res) {
     if (!req.body.characterId || !req.body.token || !req.body.status) {
         res.sendStatus(400)
