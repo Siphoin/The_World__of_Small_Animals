@@ -1038,8 +1038,6 @@ router.post('/character/info', async function (req, res) {
         return
     }
 
-    let jsonData = undefined
-
 
     
 

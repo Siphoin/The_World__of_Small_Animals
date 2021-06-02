@@ -55,22 +55,19 @@ using UnityEngine;
 
                  if (text == TEXT_REQUEST_TOKEN_EXITS)
                 {
-                    ManagerWindowsNotfications.Manager.CreateNotfication("Вы уже зашли в игру в этом аккаунте с одним из персонажей.");
-                    DestroyLoadingWaitWindow();
+                    ShowNotficationInvalidData("Вы уже зашли в игру в этом аккаунте с одним из персонажей.");
                     return;
                 }
 
                  if (text == "user not found")
                 {
-                    ManagerWindowsNotfications.Manager.CreateNotfication("Пользователь не найден. Возможно ты вел(a) неправильные данные. Пожалуйста, проверь все поля.");
-                    DestroyLoadingWaitWindow();
+                    ShowNotficationInvalidData("Пользователь не найден. Возможно ты вел(a) неправильные данные. Пожалуйста, проверь все поля.");
                     return;
                 }
 
                 if (text == "password not found")
                 {
-                    ManagerWindowsNotfications.Manager.CreateNotfication("Пароль неверный. Возможно ты вел(a) неправильные данные. Пожалуйста, проверь, правильный ли пароль.");
-                    DestroyLoadingWaitWindow();
+                    ShowNotficationInvalidData("Пароль неверный. Возможно ты вел(a) неправильные данные. Пожалуйста, проверь, правильный ли пароль.");
                     return;
                 }
                 tokenString = JsonConvert.DeserializeObject<TokenString>(text);
@@ -103,8 +100,10 @@ using UnityEngine;
         }
     }
 
-    private void AuthingCharacter()
+
+    private void ShowNotficationInvalidData (string text)
     {
-        
+        ManagerWindowsNotfications.Manager.CreateNotfication(text);
+        DestroyLoadingWaitWindow();
     }
 }
