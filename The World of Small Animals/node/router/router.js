@@ -17,6 +17,10 @@ const helmet = require('helmet')
 const bodyParser = require('body-parser');
 const  validatorEmail = require("email-validator");
 
+const fs = require('fs');
+
+const pathPublicFolber = "/public/"
+
 
 
 //#region Schemas
@@ -1343,6 +1347,38 @@ router.get('/servers/:name',  async function (req, res) {
        });
    
    });
+
+   router.get('/images/public/picSelectCharactersBanners/:number', async function (req, res) {
+       try {
+        res.sendFile( __dirname + pathPublicFolber + `${req.params.number}.png` );
+       } catch  {
+           res.sendStatus(404)
+       }
+
+   
+   });
+
+   router.get('/images/public/picSelectCharactersBanners', async function (req, res) {
+
+    
+       const dir = __dirname + pathPublicFolber
+    try {
+        fs.readdir(dir, (err, files) => {
+            if(err) {
+                res.sendStatus(500)
+                return console.log(err);
+            } 
+
+            res.json({count: files.length});
+          });
+    } catch  {
+        res.sendStatus(404)
+    }
+
+
+});
+
+
 
 
 
