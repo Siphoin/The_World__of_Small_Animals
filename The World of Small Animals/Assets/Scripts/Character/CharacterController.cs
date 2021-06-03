@@ -92,6 +92,7 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
     public bool ActiveMove { get => activeMove; }
     public float CurrentSpeed { get => currentSpeed; }
     public bool Moved { get => move; }
+    public CharacterCameraAngles CharacterCameraAnglesSettings { get => characterCameraAnglesSettings; }
 
 
 

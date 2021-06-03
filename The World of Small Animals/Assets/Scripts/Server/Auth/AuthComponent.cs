@@ -11,7 +11,7 @@ using UnityEngine;
 
     protected RequestManager requestManager;
 
-    protected string tokenActive = null;
+    public string TokenActive { get; protected set; }
 
     protected bool isAuthing = false;
 

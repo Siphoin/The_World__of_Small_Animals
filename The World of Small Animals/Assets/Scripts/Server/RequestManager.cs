@@ -17,6 +17,8 @@ public class RequestManager : MonoBehaviour, IRemoveObject
 
     public event Action<string, string, RequestResult, long> onRequestFinish;
 
+    public event Action<string, Texture2D, RequestResult, long> onRequestGetTextureFinish;
+
     public static RequestManager Manager { get => manager; }
 
     // Use this for initialization
@@ -114,14 +116,29 @@ public class RequestManager : MonoBehaviour, IRemoveObject
         ManagerWindowsNotfications.Manager.CreateNotfication($"Произошла ошибка сервера\nОшибка: {requestTarget.downloadHandler.error}\nКод ошибки: {requestTarget.result}", MessageNotficationType.Error, true);
     }
 
+    private void ShowErrorNotficationServer(WWW requestTarget)
+    {
+        ManagerWindowsNotfications.Manager.CreateNotfication($"Произошла ошибка сервера\nОшибка: {requestTarget.error}", MessageNotficationType.Error, true);
+    }
+
     private void ShowLogError (UnityWebRequest requestTarget)
     {
         Debug.LogError($"Server request error: (URL: {requestTarget.url}). Error: {requestTarget.downloadHandler.error} Result: {requestTarget.result}");
     }
 
+    private void ShowLogError(WWW requestTarget)
+    {
+        Debug.LogError($"Server request error: (URL: {requestTarget.url}). Error: {requestTarget.error}");
+    }
+
     private void SendObserversEventRequest (string id, string dataText, RequestResult result, long requestCode)
     {
         onRequestFinish?.Invoke(id, dataText, result, requestCode);
+    }
+
+    private void SendObserversEventRequestTexture(string id, Texture2D texture, RequestResult result, long requestCode)
+    {
+        onRequestGetTextureFinish?.Invoke(id, texture, result, requestCode);
     }
 
 
@@ -555,9 +572,54 @@ public class RequestManager : MonoBehaviour, IRemoveObject
         }
     }
 
+    private IEnumerator SendRequestGetImage (string idRequest, string path, bool catchError = true)
+    {
+        string url = serverAddress.Address + path;
+
+        WWW www = new WWW(url);
+        yield return www;
+
+        bool isOk = string.IsNullOrEmpty(www.error);
+
+       
+        if (isOk)
+        {
+            www.LoadImageIntoTexture(www.texture);
+            SendObserversEventRequestTexture(idRequest, www.texture, RequestResult.OK, 200);
+        }
+
+        else
+        {
+            if (catchError)
+            {
+                ShowErrorNotficationServer(www);
+            }
+
+            else
+            {
+#if UNITY_EDITOR
+
+
+                ShowLogError(www);
+
+#endif
+            }
+
+            SendObserversEventRequestTexture(idRequest, null, RequestResult.Error, 500);
+        }
+
+        www.Dispose();
+        www = null;
+    }
+
     public void SendRequestToServer (string idRequest, string page, RequestType requestType = RequestType.GET, Dictionary<string, object> form = null, bool catchError = true)
     {
         StartCoroutine(SendRequest(idRequest, page, requestType, form, catchError));
+    }
+
+    public void SendRequestGetTextureToServer(string idRequest, string page, bool catchError = true)
+    {
+        StartCoroutine(SendRequestGetImage(idRequest, page, catchError));
     }
 
     #endregion

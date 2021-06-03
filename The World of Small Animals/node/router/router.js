@@ -550,7 +550,9 @@ router.post('/character/info', async function (req, res) {
                     
                     if (character) {
                         if (!user.characters.contains(character._id)) {
+                            
                             res.sendStatus(404)
+                            console.log(`user ${user.name} not have character ${character.name}`)
                         }
 
                         else {
@@ -561,6 +563,7 @@ router.post('/character/info', async function (req, res) {
 
                     else {
                         res.sendStatus(404)
+                        console.log(`character ${character.name} not found`)
                     }
 
                 })

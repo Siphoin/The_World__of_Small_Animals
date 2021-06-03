@@ -7,6 +7,8 @@ using UnityEngine;
     {
     private const string TEXT_REQUEST_TOKEN_EXITS = "token already exits";
 
+    private const string SCENE_NAME_SELECT_CHARACTER = "characters";
+
 
     // Use this for initialization
     void Start()
@@ -20,16 +22,33 @@ using UnityEngine;
         base.Ini();
 
 
+        authUser = AuthUser.Manager == null ? authUser : AuthUser.Manager;
+
+
         webForm.onRequestFinish += ReceiveDataForm;
         webForm.onSubmit += WebForm_onSubmit;
         webForm.onInvalidData += WebForm_onInvalidData;
         authUser.onAuthFinish += AuthingUser;
+        authUser.onAuthFalled += AuthingUserFalled;
+    }
+
+    private void AuthingUserFalled()
+    {
+        ShowNotficationInvalidData("Не удалось войти в учетную запись, попробуйте зайти позже.");
     }
 
     private void AuthingUser()
     {
-        SetTextActiveLoadingWait("Еще минуточку...");
+        UncribeAuthEvents();
+        DestroyLoadingWaitWindow();
+        Loading.LoadScene(SCENE_NAME_SELECT_CHARACTER);
 
+    }
+
+    private void UncribeAuthEvents()
+    {
+        authUser.onAuthFinish -= AuthingUser;
+        authUser.onAuthFalled -= AuthingUserFalled;
     }
 
     private void WebForm_onInvalidData(WebFormTypeInvalidData type)
@@ -70,7 +89,10 @@ using UnityEngine;
                     ShowNotficationInvalidData("Пароль неверный. Возможно ты вел(a) неправильные данные. Пожалуйста, проверь, правильный ли пароль.");
                     return;
                 }
+
+
                 tokenString = JsonConvert.DeserializeObject<TokenString>(text);
+
                authUser.Auth(tokenString);
             }
             catch (Exception e)
@@ -87,9 +109,9 @@ using UnityEngine;
     {
         try
         {
-            if (authCharacter)
+            if (authUser)
             {
-                authUser.onAuthFinish -= AuthingUser;
+                UncribeAuthEvents();
             }
 
            

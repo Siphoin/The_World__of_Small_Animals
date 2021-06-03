@@ -4,7 +4,7 @@ using TMPro;
 public class WindowNotfication : Window, ISeterText
     {
 
-    private const string START_SCENE_NAME = "servers";
+    private const string START_SCENE_NAME = "auth";
 
     public bool LoadStartScene { get; set; } = false;
 

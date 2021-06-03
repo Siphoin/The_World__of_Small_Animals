@@ -9,7 +9,7 @@ using UnityEngine;
     {
     private const string PREFIX_ID_REQUEST = "auth_character_";
 
-
+    private string idCharacter;
 
 
     private static AuthCharacter manager;
@@ -41,6 +41,7 @@ using UnityEngine;
     {
         if (id == idRequest)
         {
+
             SetAuthingStatus(false);
             if (responseCode != 200)
             {
@@ -72,9 +73,13 @@ using UnityEngine;
         {
             case AuthCharacterType.Info:
 
+                if (string.IsNullOrEmpty(idCharacter))
+                {
+                    throw new AuthCharacterException("id character must be seted");
+                }
 
-                form.Add("id", AuthUser.Manager.UserData.characters[0]);
-                form.Add("token", tokenActive);
+                form.Add("id", idCharacter);
+                form.Add("token", TokenActive);
 
 
                 break;
@@ -137,7 +142,7 @@ using UnityEngine;
             throw new AuthCharacterException("string token is null");
         }
 
-        tokenActive = data.token;
+        TokenActive = data.token;
 
         authType = AuthCharacterType.Info;
 
@@ -150,6 +155,16 @@ using UnityEngine;
         }
 
         SendRequest();
+    }
+
+    public void SetIdCharacter (string id)
+    {
+        if (string.IsNullOrEmpty(id))
+        {
+            throw new AuthCharacterException("id character is null");
+        }
+
+        idCharacter = id;
     }
 
     private string TrimText (string value)

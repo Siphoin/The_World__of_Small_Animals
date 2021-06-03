@@ -45,7 +45,7 @@ using UnityEngine;
             return;
         }
 
-        tokenActive = data.token;
+        TokenActive = data.token;
         SendRequest();
         
     }
@@ -54,7 +54,7 @@ using UnityEngine;
     {
         Dictionary<string, object> form = new Dictionary<string, object>();
 
-        form.Add("token", tokenActive);
+        form.Add("token", TokenActive);
 
 
         idRequest = PREFIX_ID_REQUEST + requestManager.GenerateRequestID();
@@ -70,6 +70,10 @@ using UnityEngine;
             try
             {
                 userData = JsonConvert.DeserializeObject<UserData>(text);
+
+#if UNITY_EDITOR
+                Debug.Log("user auth is success");
+#endif
                 SendEventAuthFinish();
             }
             catch
