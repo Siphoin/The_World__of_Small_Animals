@@ -28,10 +28,11 @@ public class WebFormUI : MonoBehaviour, IRequestSender
 
 
     public event Action<string, RequestResult, long> onRequestFinish;
+    public event Action onRequestFalled;
 
     private Dictionary<string, WebFormFragment> requiredFragments = new Dictionary<string, WebFormFragment>();
         // Use this for initialization
-        void Start()
+        void Awake()
         {
         Ini();
         }
@@ -107,6 +108,30 @@ public class WebFormUI : MonoBehaviour, IRequestSender
         
     }
 
+    public object GetValueOfFragment (string key)
+    {
+        if (!requiredFragments.ContainsKey(key))
+        {
+            throw new WebFormException($"key {key} not contains in form {name}");
+        }
+
+        IWebFormFragment iInterfaceWebFragment = (IWebFormFragment)requiredFragments[key];
+        return iInterfaceWebFragment.GetValue();
+
+    }
+
+    public void SetValueOfFragment(string key, object value)
+    {
+        if (!requiredFragments.ContainsKey(key))
+        {
+            throw new WebFormException($"key {key} not contains in form {name}");
+        }
+
+        IWebFormFragment iInterfaceWebFragment = (IWebFormFragment)requiredFragments[key];
+        iInterfaceWebFragment.SetValue(value);
+
+    }
+
     public void SendRequest()
     {
         RequestManager requestManager = RequestManager.Manager;
@@ -121,7 +146,17 @@ public class WebFormUI : MonoBehaviour, IRequestSender
     {
         if (id == idRequest)
         {
+
+            if (requestResult == RequestResult.OK)
+            {
         onRequestFinish?.Invoke(text, requestResult, responseCode);
+            }
+
+            else
+            {
+                onRequestFalled?.Invoke();
+            }
+
         RequestManager.Manager.onRequestFinish -= ReceiveRequest;
         }
 

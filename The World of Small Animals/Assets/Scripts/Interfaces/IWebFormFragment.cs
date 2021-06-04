@@ -2,4 +2,5 @@
     {
 
         public object GetValue();
+     void SetValue(object value);
     }

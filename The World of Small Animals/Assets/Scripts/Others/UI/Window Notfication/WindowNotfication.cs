@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
+
 public class WindowNotfication : Window, ISeterText
     {
 
@@ -38,7 +40,11 @@ public class WindowNotfication : Window, ISeterText
     {
         if (LoadStartScene)
         {
+            if (SceneManager.GetActiveScene().name != START_SCENE_NAME)
+            {
             Loading.LoadScene(START_SCENE_NAME);
+            }
+
         }
 
 

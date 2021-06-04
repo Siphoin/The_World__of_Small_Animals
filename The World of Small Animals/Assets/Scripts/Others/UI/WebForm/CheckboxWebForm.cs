@@ -29,4 +29,14 @@ using UnityEngine.UI;
             throw new CheckboxWebFormException($"{name} not have component Toggle");
         }
     }
+
+    public void SetValue(object value)
+    {
+        if (value is bool == false)
+        {
+            throw new CheckboxWebFormException("value not be bool");
+        }
+
+        toggle.isOn = (bool)value;
+    }
 }

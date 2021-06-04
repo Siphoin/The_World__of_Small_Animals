@@ -2,12 +2,20 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
-    public class AuthForm : AuthFormBase, ICallerLoadingWaitWindow
+public class AuthForm : AuthFormBase, ICallerLoadingWaitWindow, IShowErrorNotfication
     {
     private const string TEXT_REQUEST_TOKEN_EXITS = "token already exits";
 
     private const string SCENE_NAME_SELECT_CHARACTER = "characters";
+
+    private const string NAME_KEY_FIELD_NAME = "name";
+
+    private const string NAME_KEY_FIELD_PASSWORD = "password";
+
+    [Header("Галочка запомнить меня")]
+    [SerializeField] private Toggle checkboxSaveMe;
 
 
     // Use this for initialization
@@ -18,6 +26,11 @@ using UnityEngine;
 
     public override void Ini()
     {
+        if (!checkboxSaveMe)
+        {
+            throw new AuthFormException("checkbox save me not seted");
+        }
+
 
         base.Ini();
 
@@ -26,10 +39,25 @@ using UnityEngine;
 
 
         webForm.onRequestFinish += ReceiveDataForm;
+        webForm.onRequestFalled += DestroyLoadingWaitWindow;
         webForm.onSubmit += WebForm_onSubmit;
         webForm.onInvalidData += WebForm_onInvalidData;
         authUser.onAuthFinish += AuthingUser;
         authUser.onAuthFalled += AuthingUserFalled;
+
+
+        checkboxSaveMe.isOn = cacheUserAuthManager.FileExits;
+        if (cacheUserAuthManager.FileExits)
+        {
+            AuthUserCache cache = cacheUserAuthManager.CacheData;
+
+            string password = StringCipher.Decrypt(cache.password);
+
+            string name = StringCipher.Decrypt(cache.name);
+
+            webForm.SetValueOfFragment(NAME_KEY_FIELD_PASSWORD, password);
+            webForm.SetValueOfFragment(NAME_KEY_FIELD_NAME, name);
+        }
     }
 
     private void AuthingUserFalled()
@@ -39,6 +67,21 @@ using UnityEngine;
 
     private void AuthingUser()
     {
+
+        if (checkboxSaveMe.isOn)
+        {
+            cacheUserAuthManager.SaveAuthData((string)webForm.GetValueOfFragment(NAME_KEY_FIELD_NAME), (string)webForm.GetValueOfFragment(NAME_KEY_FIELD_PASSWORD));
+        }
+
+        else
+        {
+            if (cacheUserAuthManager.FileExits)
+            {
+                cacheUserAuthManager.DeleteAuthData();
+            }
+        }
+
+
         UncribeAuthEvents();
         DestroyLoadingWaitWindow();
         Loading.LoadScene(SCENE_NAME_SELECT_CHARACTER);
@@ -98,7 +141,7 @@ using UnityEngine;
             catch (Exception e)
             {
                 Debug.LogError(e.Message);
-                ManagerWindowsNotfications.Manager.CreateNotfication("Произошла системная ошибка игры.", MessageNotficationType.Error);
+                ShowErrorNotfication("Произошла системная ошибка игры.");
                 DestroyLoadingWaitWindow();
             }
         }
@@ -127,5 +170,10 @@ using UnityEngine;
     {
         ManagerWindowsNotfications.Manager.CreateNotfication(text);
         DestroyLoadingWaitWindow();
+    }
+
+    public void ShowErrorNotfication(string text)
+    {
+        ManagerWindowsNotfications.Manager.CreateNotfication(text, MessageNotficationType.Error);
     }
 }

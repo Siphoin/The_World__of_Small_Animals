@@ -13,6 +13,9 @@ using UnityEngine;
     [Header("Менеджер аутификации пользователя")]
     [SerializeField] protected AuthUser authUser;
 
+    [Header("Менеджер сохранения данных входа локального пользователя")]
+    [SerializeField] protected CacheUserAuthManager cacheUserAuthManager;
+
     protected TokenString tokenString;
     // Use this for initialization
     void Start()
@@ -57,6 +60,11 @@ using UnityEngine;
         if (!authUser)
         {
             throw new AuthFormBaseException("auth character manager not seted");
+        }
+
+        if (!cacheUserAuthManager)
+        {
+            throw new AuthFormBaseException("cache user auth manager not seted");
         }
     }
 }

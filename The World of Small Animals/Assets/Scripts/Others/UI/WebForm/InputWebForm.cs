@@ -55,17 +55,32 @@ using System;
     {
         base.Ini();
 
-
+        if (inputField == null)
+        {
         if (!TryGetComponent(out inputField))
         {
             throw new InputWebFormException($"{name} not have component TMP_InputField");
         }
 
         inputField.onEndEdit.AddListener(TrimText);
+        }
+
     }
 
     private void TrimText(string arg0)
     {
         inputField.text = arg0.Trim();
+    }
+
+    public void SetValue(object value)
+    {
+
+        Ini();
+        if (!value.IsString())
+        {
+            throw new InputWebFormException("value argument not be string");
+        }
+
+        inputField.text = (string)value;
     }
 }

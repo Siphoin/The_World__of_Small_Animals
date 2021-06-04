@@ -343,7 +343,11 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
 
     public void Disable ()
     {
-        SetStateMoveCharacter(false);
+        if (!move)
+        {
+       SetStateMoveCharacter(false);
+        }
+ 
     }
 
     public void Enable ()

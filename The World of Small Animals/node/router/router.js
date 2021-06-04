@@ -6,6 +6,7 @@ const dateFormat = require('dateformat');
 
 
 const config = require('../config.js')
+const configBodyParser = require('../body-parser_config')
 const encrypter = require('../crypto/encypter')
 
 const bencrypter = require('../crypto/bencrypter')
@@ -20,6 +21,11 @@ const  validatorEmail = require("email-validator");
 const fs = require('fs');
 
 const pathPublicFolber = "/public/"
+
+const userAgentStringForBuildServer = [
+    'UnityPlayer',
+    'UnityWebRequest'
+]
 
 
 
@@ -59,7 +65,7 @@ const router = express.Router();
 router.use(cors());
 router.use(helmet())
 
-router.use(bodyParser.json());
+router.use(bodyParser.json(configBodyParser));
 router.use(bodyParser.urlencoded({ extended: true }));
 
 start()
@@ -121,8 +127,40 @@ function convertToInt(value) {
     return value
 }
 
+// check User agent for build server (no dev)
+router.use(function (req, res, next) {
+    if (!config.dev) {
 
 
+        const userAgent = req.get('User-Agent')
+
+
+        let count = 0
+        for (let i = 0; i < userAgentStringForBuildServer.length; i++) {
+            const element = userAgentStringForBuildServer[i];
+            
+            if (userAgent.includes(element)) {
+                count++
+            }
+
+            if (count == userAgentStringForBuildServer.length - 1) {
+                next()
+                break
+            }
+
+            else {
+                res.sendStatus(400)
+            }
+        }
+
+      //  console.log(count)
+    }
+
+    else {
+        next()
+    }
+
+  });
 
 // define the home page route
 router.get('/', function(req, res) {
@@ -1377,12 +1415,7 @@ router.get('/servers/:name',  async function (req, res) {
     } catch  {
         res.sendStatus(404)
     }
-
-
 });
-
-
-
 
 
 module.exports = router;
