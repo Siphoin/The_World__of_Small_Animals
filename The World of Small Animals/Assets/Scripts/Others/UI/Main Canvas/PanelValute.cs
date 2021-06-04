@@ -12,8 +12,8 @@ using TMPro;
     [Header("Текст значения самоцветов")]
     [SerializeField] private TextMeshProUGUI textGems;
 
-    private int oldValueAnicoins;
-    private int oldValueGems;
+    private int oldValueAnicoins = 0;
+    private int oldValueGems = 0;
     // Use this for initialization
     void Start()
         {
@@ -37,7 +37,7 @@ using TMPro;
         RefreshValuteData();
         }
 
-    private void RefreshValuteData ()
+    private void RefreshValuteDataUsingAnimation ()
     {
         StopAllCoroutines();
 
@@ -46,10 +46,21 @@ using TMPro;
             oldValueAnicoins = CharacterData.anicoins;
         }
 
-        if (CheckingValuteData(oldValueAnicoins, CharacterData.gems, textGems))
+        if (CheckingValuteData(oldValueGems, CharacterData.gems, textGems))
         {
             oldValueGems = CharacterData.gems;
         }
+
+    }
+
+    private void RefreshValuteData()
+    {
+
+        oldValueGems = CharacterData.gems;
+        oldValueAnicoins = CharacterData.anicoins;
+
+        textAnicoins.text = oldValueAnicoins.ToString();
+        textGems.text = oldValueGems.ToString();
 
     }
 
@@ -62,6 +73,11 @@ using TMPro;
         if (equalsValues)
         {
             StartCoroutine(AnimationSetingValueValute(text, oldValue, currentValue));
+        }
+
+        else
+        {
+            text.text = currentValue.ToString();
         }
 
         return equalsValues;
@@ -80,9 +96,8 @@ using TMPro;
             float time = speedAnimNewValute * Time.deltaTime;
 
             yield return new WaitForSeconds(time);
-
-            long value = (long)Mathf.Lerp(oldValue, newValue, lerpValue);
             lerpValue += time;
+            int value = (int)Mathf.Lerp(oldValue, newValue, lerpValue);
 
             text.text = value.ToString();
 
