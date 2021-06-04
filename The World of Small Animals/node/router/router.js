@@ -944,7 +944,10 @@ router.post('/character/info', async function (req, res) {
                                         return console.log(err);
                                     }
 
-                                    res.sendStatus(204)
+                                    res.json({
+                                        gems: req.body.gems,
+                                        anicoins: req.body.anicoins
+                                    })
                                 })
                             }
 
