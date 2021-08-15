@@ -6,17 +6,17 @@
 
         [Header("Спрайт при наведении на стрелку")]
         [SerializeField]
-        private Sprite activeMouseEnterSprite;
+        private Sprite _activeMouseEnterSprite;
 
         [Header("Спрайт при обычном состоянии")]
         [SerializeField]
-        private Sprite idleSprite;
+        private Sprite _idleSprite;
 
-    [Header("Задержка перед телепортом")]
-    [SerializeField]
-    private float timeOutTeleport = 3;
+        [Header("Задержка перед телепортом")]
+        [SerializeField]
+        private float _timeOutTeleport = 3;
 
-    public Sprite ActiveMouseEnterSprite { get => activeMouseEnterSprite; }
-        public Sprite IdleSprite { get => idleSprite; }
-    public float TimeOutTeleport { get => timeOutTeleport; }
+        public Sprite ActiveMouseEnterSprite =>  _activeMouseEnterSprite; 
+        public Sprite IdleSprite  => _idleSprite; 
+        public float TimeOutTeleport  => _timeOutTeleport; 
 }
