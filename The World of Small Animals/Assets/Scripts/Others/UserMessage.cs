@@ -2,20 +2,14 @@
 using TMPro;
 using Photon.Pun;
 using UnityEngine.UI;
+
 [RequireComponent(typeof(Image))]
 public class UserMessage : UserMessageBase, ISeterText, ISeterColor,  IPunObservable
     {
     [Header("Компонент текста")]
-  [SerializeField]  private TextMeshProUGUI textData;
+  [SerializeField]  private TextMeshProUGUI _textData;
 
-    private string textSync = "";
-
-        // Use this for initialization
-        void Start()
-    {
-
-        Ini();
-    }
+    private string _textSync = "";
 
 
     public void SetText (string text)
@@ -24,20 +18,21 @@ public class UserMessage : UserMessageBase, ISeterText, ISeterColor,  IPunObserv
 
         text = text.Trim();
 
-        textData.text = text;
+        _textData.text = text;
 
         if (View.IsMine)
         {
-            textSync = text;
+            _textSync = text;
         }
     }
 
     public override void Ini()
     {
-        if (textData == null)
+        if (_textData == null)
         {
             throw new UserMessageException("text object not seted for user text message");
         }
+
         base.Ini();
     }
 
@@ -45,15 +40,16 @@ public class UserMessage : UserMessageBase, ISeterText, ISeterColor,  IPunObserv
     {
         if (stream.IsWriting)
         {
-            stream.SendNext(textSync);
+            stream.SendNext(_textSync);
             stream.SendNext(isLast);
             stream.SendNext(indexMessage);
         }
 
         else
         {
-            textSync = (string)stream.ReceiveNext();
-            SetText(textSync);
+            _textSync = (string)stream.ReceiveNext();
+
+            SetText(_textSync);
 
             isLast = (bool)stream.ReceiveNext();
             CheckCloudMessageisLast();
@@ -64,14 +60,10 @@ public class UserMessage : UserMessageBase, ISeterText, ISeterColor,  IPunObserv
         }
     }
 
-    public void SetColor(Color color)
-    {
-        throw new System.NotImplementedException();
-    }
+    public void SetColor(Color color) => throw new System.NotImplementedException();
 
     private void Update()
     {
-
         if (!View.IsMine)
         {
             return;
@@ -84,11 +76,13 @@ public class UserMessage : UserMessageBase, ISeterText, ISeterColor,  IPunObserv
     {
         if (isLast)
         {
-            textData.color = GetAlphaColor(textData.color);
+            _textData.color = GetAlphaColor(_textData.color);
 
         }
 
         base.CheckCloudMessageisLast();
     }
+
+    void Start() => Ini();
 
 }
