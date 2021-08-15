@@ -1,57 +1,43 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
-    public class InitilizatorLocation : MonoBehaviour, IRemoveObject
+public class InitilizatorLocation : MonoBehaviour, IRemoveObject
     {
-
-
     private const string PATH_PREFAB_JOIN_LOCATION_OBJECT = "System/JoinLocation";
 
 
-    private JoinLocation joinLocationPrefab;
+    private JoinLocation _joinLocationPrefab;
 
     [Header("Данные о локации")]
     [SerializeField]
-    private LocationData locationData;
+    private LocationData _locationData;
 
-
-
-    // Use this for initialization
     void Start()
         {
-        if (locationData == null)
+        if (_locationData == null)
         {
             throw new InitilizatorLocationException("location data not seted");
         }
 
-        if (string.IsNullOrEmpty(locationData.NameLocation))
+        if (string.IsNullOrEmpty(_locationData.NameLocation))
         {
             throw new InitilizatorLocationException("name location is null");
         }
 
 
 
-        joinLocationPrefab = Resources.Load<JoinLocation>(PATH_PREFAB_JOIN_LOCATION_OBJECT);
+        _joinLocationPrefab = Resources.Load<JoinLocation>(PATH_PREFAB_JOIN_LOCATION_OBJECT);
 
-        if (joinLocationPrefab == null)
+        if (_joinLocationPrefab == null)
         {
             throw new InitilizatorLocationException("join location prefab not found");
         }
 
-
-
-        Instantiate(joinLocationPrefab).SetLocationData(locationData);
+        Instantiate(_joinLocationPrefab).SetLocationData(_locationData);
 
         Remove();
 
         }
-    public void Remove()
-    {
-        Destroy(gameObject);
-    }
+    public void Remove() => Destroy(gameObject);
 
-    public void Remove(float time)
-    {
-        Destroy(gameObject, time);
-    }
+    public void Remove(float time) => Destroy(gameObject, time);
 }
