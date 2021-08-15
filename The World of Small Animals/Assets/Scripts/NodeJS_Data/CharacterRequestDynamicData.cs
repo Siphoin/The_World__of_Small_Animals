@@ -1,10 +1,13 @@
 ﻿using System;
 [Serializable]
  public   class CharacterRequestDynamicData
-    {
-    public string[] friendsList;
-    public GiftRequestData[] gifts;
+    { 
     public string lastDate;
+  
+    public string[] friendsList;
+  
+    public GiftRequestData[] gifts;
+  
     public CharacterRequestDynamicData ()
     {
         
