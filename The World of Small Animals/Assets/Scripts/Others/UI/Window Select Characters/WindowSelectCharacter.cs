@@ -1,52 +1,49 @@
 ﻿using Photon.Pun;
-using System;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class WindowSelectCharacter : MonoBehaviour, ICallerLoadingWaitWindow
     {
     [Header("Контейнер персонажей")]
-    [SerializeField] private ContainerSelectCharacters container;
+    [SerializeField] private ContainerSelectCharacters _container;
 
     [Header("Кнопка ИГРАТЬ")]
-    [SerializeField] private Button buttonPlay;
+    [SerializeField] private Button _buttonPlay;
 
-    private LoadingWait loadingWait;
+    private LoadingWait _loadingWait;
 
-    private AuthCharacter authCharacter;
+    private AuthCharacter _authCharacter;
 
-    private CharacterRequestData characterTargetData = null;
+    private CharacterRequestData _characterTargetData = null;
 
     
 
 
-    // Use this for initialization
     void Start()
         {
-        if (container == null)
+        if (_container == null)
         {
             throw new WindowSelectCharacterException("container characters not seted");
         }
 
-        if (buttonPlay == null)
+        if (_buttonPlay == null)
         {
             throw new WindowSelectCharacterException("button play not seted");
         }
 
-        buttonPlay.onClick.AddListener(JoinOnGame);
+        _buttonPlay.onClick.AddListener(JoinOnGame);
 
-        authCharacter = AuthCharacter.Manager;
+        _authCharacter = AuthCharacter.Manager;
 
-        authCharacter.onAuthFinish += AuthingCharacter;
-        container.onCharacterSelected += Selecting;
+        _authCharacter.OnAuthFinish += AuthingCharacter;
+        _container.onCharacterSelected += Selecting;
 
 
     }
 
     private void AuthingCharacter()
     {
-        PhotonNetwork.NickName = authCharacter.CharacterData.name;
+        PhotonNetwork.NickName = _authCharacter.CharacterData.name;
 
         UncribeEvents();
 
@@ -55,33 +52,28 @@ public class WindowSelectCharacter : MonoBehaviour, ICallerLoadingWaitWindow
 
     private void JoinOnGame()
     {
-       if (characterTargetData == null)
+       if (_characterTargetData == null)
         {
             ManagerWindowsNotfications.Manager.CreateNotfication("Пожалуйста, выбери персонажа чтобы начать играть.");
         }
 
-        authCharacter.SetIdCharacter(characterTargetData.id);
+        _authCharacter.SetIdCharacter(_characterTargetData.id);
 
         TokenString token = new TokenString(AuthUser.Manager.TokenActive);
 
-        authCharacter.Auth(token);
+        _authCharacter.Auth(token);
     }
 
-    public void DestroyLoadingWaitWindow()
-    {
-        loadingWait.Remove();
-    }
+    public void DestroyLoadingWaitWindow() => _loadingWait.Remove();
 
     private void UncribeEvents ()
     {
-        authCharacter.onAuthFinish -= AuthingCharacter;
-        container.onCharacterSelected -= Selecting;
+        _authCharacter.OnAuthFinish -= AuthingCharacter;
+
+        _container.onCharacterSelected -= Selecting;
     }
 
-    private void Selecting(CharacterRequestData obj)
-    {
-        characterTargetData = obj;
-    }
+    private void Selecting(CharacterRequestData data) => _characterTargetData = data;
 
     private void OnDestroy()
     {

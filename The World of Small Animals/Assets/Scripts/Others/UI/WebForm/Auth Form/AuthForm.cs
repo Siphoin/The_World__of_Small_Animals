@@ -40,10 +40,12 @@ public class AuthForm : AuthFormBase, ICallerLoadingWaitWindow, IShowErrorNotfic
 
         webForm.onRequestFinish += ReceiveDataForm;
         webForm.onRequestFalled += DestroyLoadingWaitWindow;
+
         webForm.onSubmit += WebForm_onSubmit;
         webForm.onInvalidData += WebForm_onInvalidData;
-        authUser.onAuthFinish += AuthingUser;
-        authUser.onAuthFalled += AuthingUserFalled;
+
+        authUser.OnAuthFinish += AuthingUser;
+        authUser.OnAuthFalled += AuthingUserFalled;
 
 
         checkboxSaveMe.isOn = cacheUserAuthManager.FileExits;
@@ -90,8 +92,8 @@ public class AuthForm : AuthFormBase, ICallerLoadingWaitWindow, IShowErrorNotfic
 
     private void UncribeAuthEvents()
     {
-        authUser.onAuthFinish -= AuthingUser;
-        authUser.onAuthFalled -= AuthingUserFalled;
+        authUser.OnAuthFinish -= AuthingUser;
+        authUser.OnAuthFalled -= AuthingUserFalled;
     }
 
     private void WebForm_onInvalidData(WebFormTypeInvalidData type)
