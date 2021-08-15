@@ -1,26 +1,36 @@
+using Newtonsoft.Json;
 using System;
-using UnityEngine;
 
 [Serializable]
  public   class CharacterRequestData : MongoSchema
     {
-    private string dateReg;
+    private string _dateRegister;
     
-    private string name;
+    private string _name;
     
     
-    private bool online;
+    private bool _online;
     
-    private int prefabIndex;
+    private int _prefabIndex;
 
-    private int gems;
+    private int _gems;
     
-    private int anicoins;
+    private int _anicoins;
     
-    private CharacterRequestDynamicData data;
-    
+    private CharacterRequestDynamicData _data;
+
+
+    [JsonProperty("dateReg")] public string DateRegister => _dateRegister;
+    public string Name  => _name;
+    public bool Online => _online;
+    public int PrefabIndex =>  _prefabIndex; 
+    public int Gems => _gems;
+    public int Anicoins => _anicoins;
+    public CharacterRequestDynamicData Data => _data;
+
     public CharacterRequestData ()
     {
 
     }
-    }
+
+}
