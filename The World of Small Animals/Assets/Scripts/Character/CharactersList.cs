@@ -5,7 +5,7 @@
 public class CharactersList : ScriptableObject
     {
     [Header("Список персонажей")]
-    [SerializeField] private CharacterController[] characterList = new CharacterController[1];
+    [SerializeField] private CharacterController[] _characterList = new CharacterController[1];
 
     public CharacterController GetCharacter (int index)
     {
@@ -14,17 +14,17 @@ public class CharactersList : ScriptableObject
             throw new CharacterListException("index nwer that 0");
         }
 
-        if (index > characterList.Length)
+        if (index > _characterList.Length)
         {
             throw new CharacterListException("index > character list length");
         }
 
-        if (characterList[index] == null)
+        if (_characterList[index] == null)
         {
             throw new CharacterListException($"character on index {index} is null");
         }
 
-        return characterList[index];
+        return _characterList[index];
 
     }
     }
