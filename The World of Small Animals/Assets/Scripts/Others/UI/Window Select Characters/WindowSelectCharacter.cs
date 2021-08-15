@@ -43,7 +43,7 @@ public class WindowSelectCharacter : MonoBehaviour, ICallerLoadingWaitWindow
 
     private void AuthingCharacter()
     {
-        PhotonNetwork.NickName = _authCharacter.CharacterData.name;
+        PhotonNetwork.NickName = _authCharacter.CharacterData.Name;
 
         UncribeEvents();
 
@@ -57,7 +57,7 @@ public class WindowSelectCharacter : MonoBehaviour, ICallerLoadingWaitWindow
             ManagerWindowsNotfications.Manager.CreateNotfication("Пожалуйста, выбери персонажа чтобы начать играть.");
         }
 
-        _authCharacter.SetIdCharacter(_characterTargetData.id);
+        _authCharacter.SetIdCharacter(_characterTargetData.Id);
 
         TokenString token = new TokenString(AuthUser.Manager.TokenActive);
 

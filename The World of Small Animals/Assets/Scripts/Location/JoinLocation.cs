@@ -110,7 +110,7 @@ public class JoinLocation : MonoBehaviourPunCallbacks, ICallerLoadingWaitWindow,
 
         DestroyLoadingWaitWindow();
         
-        InstantiatePlayerObject(_characterList.GetCharacter(AuthCharacter.Manager.CharacterData.prefabIndex).gameObject, _pointSpawns[Random.Range(0, _pointSpawns.Length)].Position);
+        InstantiatePlayerObject(_characterList.GetCharacter(AuthCharacter.Manager.CharacterData.PrefabIndex).gameObject, _pointSpawns[Random.Range(0, _pointSpawns.Length)].Position);
 
         GameObject containerCallbackObjects = new GameObject(NAME_OBJECT_CONTAINER_CALLBACK_OBJECTS);
 

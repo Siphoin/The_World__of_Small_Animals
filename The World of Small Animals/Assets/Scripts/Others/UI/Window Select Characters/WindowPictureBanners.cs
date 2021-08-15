@@ -138,7 +138,8 @@ using UnityEngine.UI;
                     try
                     {
                         CountObject countObject = JsonConvert.DeserializeObject<CountObject>(text);
-                        int countPictures = (int)countObject.count;
+
+                        int countPictures = (int)countObject.Count;
 
 
                         LoadButtonsPageBanners(countPictures);

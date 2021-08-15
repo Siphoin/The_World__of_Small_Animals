@@ -22,12 +22,7 @@ public class AuthUser : AuthComponent, IRequestSender, IAuthComponent
 
     public void Auth(TokenString data)
     {
-      if (data == null)
-        {
-            throw new AuthUserException("token data is null");
-        }
-
-      if (string.IsNullOrEmpty(data.token))
+      if (string.IsNullOrEmpty(data.Token))
         {
             throw new AuthUserException("token string is null");
         }
@@ -40,7 +35,7 @@ public class AuthUser : AuthComponent, IRequestSender, IAuthComponent
             return;
         }
 
-        TokenActive = data.token;
+        TokenActive = data.Token;
         SendRequest();
         
     }

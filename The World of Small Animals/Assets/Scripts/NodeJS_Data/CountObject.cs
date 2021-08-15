@@ -1,10 +1,13 @@
 ﻿[System.Serializable]
- public   class CountObject
+ public   struct CountObject
     {
-    public long count = 0;
+    private long _count;
+
+    public long Count => _count;
 
     public CountObject (long count)
     {
-        this.count = count;
+        _count = count;
     }
-    }
+
+}

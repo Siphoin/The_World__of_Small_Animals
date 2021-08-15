@@ -136,7 +136,7 @@ public class ContainerSelectCharacters : MonoBehaviour, IActivatorGameObject, IR
         Dictionary<string, object> form = new Dictionary<string, object>();
 
 
-        form.Add("id", AuthUser.Manager.UserData.id);
+        form.Add("id", AuthUser.Manager.UserData.Id);
         form.Add("token", AuthUser.Manager.TokenActive);
 
 
@@ -173,7 +173,7 @@ public class ContainerSelectCharacters : MonoBehaviour, IActivatorGameObject, IR
         CardCharacterButton newCard = Instantiate(cardCharacterButtonPrefab, containerCharacters);
             newCard.SetTextNameCardIsDefault = false;
             newCard.SetData(dataCharacters[i]);
-            newCard.SetText(dataCharacters[i].name);
+            newCard.SetText(dataCharacters[i].Name);
             newCard.onSelect += Select;
             cards.Add(newCard);
         }

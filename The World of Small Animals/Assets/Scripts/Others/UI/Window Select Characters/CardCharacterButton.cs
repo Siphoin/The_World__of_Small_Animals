@@ -96,7 +96,7 @@ using UnityEngine.UI;
 
         currentData = data;
 
-        avatar.SetIndexCharacter(currentData.prefabIndex);
+        avatar.SetIndexCharacter(currentData.PrefabIndex);
 
        if (transform.GetSiblingIndex() == 0)
         {

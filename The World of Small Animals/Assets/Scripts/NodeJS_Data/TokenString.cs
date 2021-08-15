@@ -1,10 +1,13 @@
 ﻿[System.Serializable]
-public   class TokenString
+public   struct TokenString
     {
-    public string token;
+    private string _token;
+
+    public string Token => _token;
 
     public TokenString (string token)
     {
-        this.token = token;
+        _token = token;
     }
-    }
+
+}

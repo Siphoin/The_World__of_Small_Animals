@@ -94,7 +94,7 @@ using Newtonsoft.Json;
 
                 try
                 {
-                    float countPlayers = _serversRequestData.First(x => x.name == slots[i].NameServer).countPlayers;
+                    float countPlayers = _serversRequestData.First(x => x.Name == slots[i].NameServer).CountPlayers;
 
                     slot.SetOccupancyRate(countPlayers);
                 }

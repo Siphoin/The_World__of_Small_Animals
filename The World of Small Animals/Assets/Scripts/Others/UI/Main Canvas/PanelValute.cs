@@ -1,35 +1,37 @@
 ﻿using System.Collections;
 using UnityEngine;
 using TMPro;
+
     public class PanelValute : GeterDataCharacter
     {
-     [Header("Скорость анимации набирания счета у текста валюты")]
-     [SerializeField] private float speedAnimNewValute = 0.5f;
+
+    private int _oldValueAnicoins = 0;
+    private int _oldValueGems = 0;
+
+
+    [Header("Скорость анимации набирания счета у текста валюты")]
+     [SerializeField] private float _speedAnimNewValute = 0.5f;
 
     [Header("Текст значения аникоинов")]
-    [SerializeField] private TextMeshProUGUI textAnicoins;
+    [SerializeField] private TextMeshProUGUI _textAnicoins;
 
     [Header("Текст значения самоцветов")]
-    [SerializeField] private TextMeshProUGUI textGems;
+    [SerializeField] private TextMeshProUGUI _textGems;
 
-    private int oldValueAnicoins = 0;
-    private int oldValueGems = 0;
-    // Use this for initialization
-    void Start()
+   private void Start()
         {
         Ini();
 
-
-        if (speedAnimNewValute <= 0f)
+        if (_speedAnimNewValute <= 0f)
         {
             throw new PanelValuteException("speed anim new value invalid");
         }
-        if (textGems == null)
+        if (_textGems == null)
         {
             throw new PanelValuteException("text gems not seted");
         }
 
-        if (textAnicoins == null)
+        if (_textAnicoins == null)
         {
             throw new PanelValuteException("text anicoins not seted");
         }
@@ -41,34 +43,31 @@ using TMPro;
     {
         StopAllCoroutines();
 
-        if (CheckingValuteData(oldValueAnicoins, CharacterData.anicoins, textAnicoins))
+        if (CheckingValuteData(_oldValueAnicoins, CharacterData.Anicoins, _textAnicoins))
         {
-            oldValueAnicoins = CharacterData.anicoins;
+            _oldValueAnicoins = CharacterData.Anicoins;
         }
 
-        if (CheckingValuteData(oldValueGems, CharacterData.gems, textGems))
+        if (CheckingValuteData(_oldValueGems, CharacterData.Gems, _textGems))
         {
-            oldValueGems = CharacterData.gems;
+            _oldValueGems = CharacterData.Gems;
         }
 
     }
 
     private void RefreshValuteData()
     {
+        _oldValueGems = CharacterData.Gems;
+        _oldValueAnicoins = CharacterData.Anicoins;
 
-        oldValueGems = CharacterData.gems;
-        oldValueAnicoins = CharacterData.anicoins;
-
-        textAnicoins.text = oldValueAnicoins.ToString();
-        textGems.text = oldValueGems.ToString();
+        _textAnicoins.text = _oldValueAnicoins.ToString();
+        _textGems.text = _oldValueGems.ToString();
 
     }
 
     private bool CheckingValuteData (int oldValue, int currentValue, TextMeshProUGUI text)
     {
-
         bool equalsValues = oldValue != currentValue;
-
 
         if (equalsValues)
         {
@@ -87,13 +86,12 @@ using TMPro;
 
     private IEnumerator AnimationSetingValueValute (TextMeshProUGUI text, int oldValue, int newValue)
     {
-
         float lerpValue = 0;
 
 
         while (true)
         {
-            float time = speedAnimNewValute * Time.deltaTime;
+            float time = _speedAnimNewValute * Time.deltaTime;
 
             yield return new WaitForSeconds(time);
             lerpValue += time;

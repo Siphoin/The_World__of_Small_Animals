@@ -121,17 +121,13 @@ public class AuthCharacter : AuthComponent, IRequestSender, IAuthComponent
 
     public void Auth (TokenString data)
     {
-        if (data == null)
-        {
-            throw new AuthCharacterException("data token is null");
-        }
 
-        if (string.IsNullOrEmpty(data.token))
+        if (string.IsNullOrEmpty(data.Token))
         {
             throw new AuthCharacterException("string token is null");
         }
 
-        TokenActive = data.token;
+        TokenActive = data.Token;
 
         _authType = AuthCharacterType.Info;
 

@@ -1,12 +1,17 @@
 ﻿using System;
+
 [Serializable]
  public   class ServerRequestData : MongoSchema
     {
-    public string name;
-    
-    public int countPlayers;
-    
-    public string[] players;
+    private string name;
+
+    private string[] players;
+
+    private int _countPlayers;
+
+    public string Name => name;
+    public string[] Players => players;
+    public int CountPlayers => _countPlayers;
 
     public ServerRequestData ()
     {
