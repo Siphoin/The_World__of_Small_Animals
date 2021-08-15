@@ -14,36 +14,36 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
 
     private bool _isInitialized = false;
 
-    [Header("Текущая скорость персонажа")]
+    [Header("РўРµРєСѓС‰Р°СЏ СЃРєРѕСЂРѕСЃС‚СЊ РїРµСЂСЃРѕРЅР°Р¶Р°")]
     [ReadOnlyField]
     [SerializeField]
     private float _currentSpeed = 0f;
-    [Header("Скорость персонажа при старте")]
+    [Header("РЎРєРѕСЂРѕСЃС‚СЊ РїРµСЂСЃРѕРЅР°Р¶Р° РїСЂРё СЃС‚Р°СЂС‚Рµ")]
     [ReadOnlyField]
     [SerializeField]
     private float _startedSpeed = 0f;
 
     private Vector2 _positionMove;
 
-    [Header("Настройки ракурсов")]
+    [Header("РќР°СЃС‚СЂРѕР№РєРё СЂР°РєСѓСЂСЃРѕРІ")]
     [SerializeField]
     private CharacterCameraAngles _characterCameraAnglesSettings;
 
     private Rigidbody2D _body2d;
 
 
-    [Header("Движется")]
+    [Header("Р”РІРёР¶РµС‚СЃСЏ")]
     [ReadOnlyField]
     [SerializeField]
     private bool _move = false;
 
-    [Header("Номер активного ракурса")]
+    [Header("РќРѕРјРµСЂ Р°РєС‚РёРІРЅРѕРіРѕ СЂР°РєСѓСЂСЃР°")]
     [ReadOnlyField]
     [SerializeField]
     private int _numberCameraAngle = 0;
 
 
-    [Header("Активен")]
+    [Header("РђРєС‚РёРІРµРЅ")]
     [ReadOnlyField]
     [SerializeField]
     private bool _isActiveMove = true;
