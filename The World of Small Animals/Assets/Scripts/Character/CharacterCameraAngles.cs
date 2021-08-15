@@ -4,7 +4,7 @@ public class CharacterCameraAngles : ScriptableObject
     {
     [Header("Список ракурсов")]
     [SerializeField]
-    private Sprite[] cameraAngles = new Sprite[8];
+    private Sprite[] _cameraAngles = new Sprite[8];
 
-    public Sprite[] CameraAngles { get => cameraAngles; }
+    public Sprite[] CameraAngles => _cameraAngles;
 }
