@@ -1,50 +1,31 @@
 ﻿using System;
-using System.Collections;
 using UnityEngine;
 
-    public class AuthComponent : MonoBehaviour, IRemoveObject
+public abstract class AuthComponent : MonoBehaviour, IRemoveObject
     {
-
-    public event Action onAuth;
-    public event Action onAuthFinish;
-    public event Action onAuthFalled;
-
-    protected RequestManager requestManager;
-
-    public string TokenActive { get; protected set; }
 
     protected bool isAuthing = false;
 
     protected string idRequest;
 
-    public virtual void Ini ()
-    {
-        DontDestroyOnLoad(gameObject);
-    }
+    public event Action OnAuth;
+    public event Action OnAuthFinish;
+    public event Action OnAuthFalled;
 
-    protected void SendEventAuthFalled()
-    {
-        onAuthFalled?.Invoke();
-    }
+    protected RequestManager requestManager;
 
-    protected void SendEventAuthFinish()
-    {
-        onAuthFinish?.Invoke();
-    }
+    public string TokenActive { get; protected set; }
 
-    protected void SendEventAuth()
-    {
-        onAuth?.Invoke();
-    }
+    public virtual void Ini () => DontDestroyOnLoad(gameObject);
 
-    public void Remove()
-    {
-        Destroy(gameObject);
-    }
+    protected void SendEventAuthFalled() => OnAuthFalled?.Invoke();
 
-    public void Remove(float time)
-    {
-        Destroy(gameObject, time);
-    }
+    protected void SendEventAuthFinish() => OnAuthFinish?.Invoke();
+
+    protected void SendEventAuth() => OnAuth?.Invoke();
+
+    public void Remove() => Destroy(gameObject);
+
+    public void Remove(float time) => Destroy(gameObject, time);
 
 }

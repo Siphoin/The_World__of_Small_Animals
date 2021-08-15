@@ -1,28 +1,23 @@
 ﻿using Newtonsoft.Json;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-    public class AuthUser : AuthComponent, IRequestSender, IAuthComponent
+public class AuthUser : AuthComponent, IRequestSender, IAuthComponent
     {
-    [Header("Страница получения информации о пользоваителе")]
-    [SerializeField] private string urlGetInfoUser = "users/auth/info";
 
     private const string PREFIX_ID_REQUEST = "auth_user_";
 
-    private static AuthUser manager;
+    [Header("Страница получения информации о пользоваителе")]
+    [SerializeField] private string _urlGetInfoUser = "users/auth/info";
 
-    private UserData userData;
+    private static AuthUser _manager;
+
+    private UserData _userData;
 
 
-    public static AuthUser Manager { get => manager; }
-    public UserData UserData { get => userData; }
+    public static AuthUser Manager => _manager;
+    public UserData UserData  => _userData;
 
-    // Use this for initialization
-    void Start()
-        {
-        Ini();
-        }
 
 
     public void Auth(TokenString data)
@@ -59,7 +54,7 @@ using UnityEngine;
 
         idRequest = PREFIX_ID_REQUEST + requestManager.GenerateRequestID();
 
-        requestManager.SendRequestToServer(idRequest, urlGetInfoUser, RequestType.POST, form);
+        requestManager.SendRequestToServer(idRequest, _urlGetInfoUser, RequestType.POST, form);
         SendEventAuth();
     }
 
@@ -69,7 +64,7 @@ using UnityEngine;
         {
             try
             {
-                userData = JsonConvert.DeserializeObject<UserData>(text);
+                _userData = JsonConvert.DeserializeObject<UserData>(text);
 
 #if UNITY_EDITOR
                 Debug.Log("user auth is success");
@@ -86,16 +81,16 @@ using UnityEngine;
 
     public override void Ini()
     {
-        if (string.IsNullOrEmpty(urlGetInfoUser))
+        if (string.IsNullOrEmpty(_urlGetInfoUser))
         {
             throw new AuthUserException("url get user info is emtry");
         }
 
-        if (!manager)
+        if (!_manager)
         {
-            manager = this;
-            requestManager = RequestManager.Manager;
+            _manager = this;
 
+            requestManager = RequestManager.Manager;
             requestManager.OnRequestFinish += ReceiveRequest;
 
             base.Ini();
@@ -106,4 +101,6 @@ using UnityEngine;
             Remove();
         }
     }
+
+    void Start() => Ini();
 }

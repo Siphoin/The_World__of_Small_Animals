@@ -1,41 +1,28 @@
 ﻿using Newtonsoft.Json;
-using Photon.Pun;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-    public class AuthCharacter : AuthComponent, IRequestSender, IAuthComponent
+public class AuthCharacter : AuthComponent, IRequestSender, IAuthComponent
     {
     private const string PREFIX_ID_REQUEST = "auth_character_";
 
-    private string idCharacter;
-
-
-    private static AuthCharacter manager;
-
-
-
-
-    private AuthCharacterType authType;
+    private string _idCharacter;
 
     [Header("Страница получения информации о персонаже")]
-    [SerializeField] private string urlGetInfoCharacter = "character/info";
+    [SerializeField] private string _urlGetInfoCharacter = "character/info";
 
     [Header("Страница получения информации о персонаже")]
-    [SerializeField] private string urlGetValuteCharacter = "character/valute";
+    [SerializeField] private string _urlGetValuteCharacter = "character/valute";
 
-    private CharacterRequestData characterData;
+    private AuthCharacterType _authType;
 
+    private static AuthCharacter _manager;
 
-    public static AuthCharacter Manager { get => manager; }
-    public CharacterRequestData CharacterData { get => characterData; }
+    private CharacterRequestData _characterData;
 
-    // Use this for initialization
-    void Start()
-        {
-        Ini();
-        }
+    public static AuthCharacter Manager => _manager;
+    public CharacterRequestData CharacterData => _characterData;
+
 
     public void ReceiveRequest(string id, string text, RequestResult requestResult, long responseCode)
     {
@@ -51,7 +38,7 @@ using UnityEngine;
 
             try
             {
-                characterData = JsonConvert.DeserializeObject<CharacterRequestData>(text);
+                _characterData = JsonConvert.DeserializeObject<CharacterRequestData>(text);
                 SendEventAuthFinish();
 
             }
@@ -66,33 +53,33 @@ using UnityEngine;
     public void SendRequest()
     {
         idRequest = PREFIX_ID_REQUEST + requestManager.GenerateRequestID();
-        string page = authType == AuthCharacterType.Info ? urlGetInfoCharacter : urlGetValuteCharacter;
+
+        string page = _authType == AuthCharacterType.Info ? _urlGetInfoCharacter : _urlGetValuteCharacter;
+
         Dictionary<string, object> form = new Dictionary<string, object>();
 
-        switch (authType)
+        switch (_authType)
         {
             case AuthCharacterType.Info:
 
-                if (string.IsNullOrEmpty(idCharacter))
+                if (string.IsNullOrEmpty(_idCharacter))
                 {
                     throw new AuthCharacterException("id character must be seted");
                 }
 
-                form.Add("id", idCharacter);
+                form.Add("id", _idCharacter);
                 form.Add("token", TokenActive);
 
 
                 break;
-            case AuthCharacterType.Valute:
 
-
-                break;
             default:
-                throw new AuthCharacterException($"invalid auth type: {authType}");
+                throw new AuthCharacterException($"invalid auth type: {_authType}");
         }
 
 
         requestManager.SendRequestToServer(idRequest, page, RequestType.POST, form);
+
         SendEventAuth();
         SetAuthingStatus(true);
 
@@ -100,25 +87,25 @@ using UnityEngine;
 
     public override void Ini()
     {
-        urlGetInfoCharacter = TrimText(urlGetInfoCharacter);
-        urlGetValuteCharacter = TrimText(urlGetValuteCharacter);
+        _urlGetInfoCharacter = TrimText(_urlGetInfoCharacter);
+        _urlGetValuteCharacter = TrimText(_urlGetValuteCharacter);
 
 
-        if (string.IsNullOrEmpty(urlGetInfoCharacter))
+        if (string.IsNullOrEmpty(_urlGetInfoCharacter))
         {
             throw new AuthCharacterException("url get info character is emtry");
         }
 
-        if (string.IsNullOrEmpty(urlGetValuteCharacter))
+        if (string.IsNullOrEmpty(_urlGetValuteCharacter))
         {
             throw new AuthCharacterException("url get info valute character is emtry");
         }
 
 
 
-        if (manager == null)
+        if (_manager == null)
         {
-            manager = this;
+            _manager = this;
 
             requestManager = RequestManager.Manager;
             requestManager.OnRequestFinish += ReceiveRequest;
@@ -146,7 +133,7 @@ using UnityEngine;
 
         TokenActive = data.token;
 
-        authType = AuthCharacterType.Info;
+        _authType = AuthCharacterType.Info;
 
         if (isAuthing)
         {
@@ -166,7 +153,7 @@ using UnityEngine;
             throw new AuthCharacterException("id character is null");
         }
 
-        idCharacter = id;
+        _idCharacter = id;
     }
 
     private string TrimText (string value)
@@ -174,10 +161,11 @@ using UnityEngine;
       return  value.Trim();
     }
 
-    private void SetAuthingStatus (bool status)
-    {
-        isAuthing = status;
-    }
+
+    void Start() => Ini();
+    private void SetAuthingStatus (bool status) => isAuthing = status;
+
+
 
 
 }
