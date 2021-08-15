@@ -6,61 +6,46 @@ using UnityEngine;
     public class ArrowTeleport : MonoBehaviour, ISeterSprite, IInvokerMono
     {
     private const string TAG_MY_PLAYER = "MyPlayer";
-    private ArrowTeleportSettings arrowTeleportSettings;
 
-    private SpriteRenderer spriteRenderer;
+    private const string PATH_DATA_ARROW_SETTINGS = "Data/Arrow Teleport Button/ArrowTeleportSettings";
 
-    private bool clicked = false;
+    private bool _isClicked = false;
 
     [Header("Имя локации")]
-    [SerializeField] string locationName;
+    [SerializeField] private string _locationName;
+
+    private ArrowTeleportSettings _arrowTeleportSettings;
+
+    private SpriteRenderer _spriteRenderer;
+
         // Use this for initialization
         void Start()
         {
-        arrowTeleportSettings = Resources.Load<ArrowTeleportSettings>("Data/Arrow Teleport Button/ArrowTeleportSettings");
+        _arrowTeleportSettings = Resources.Load<ArrowTeleportSettings>(PATH_DATA_ARROW_SETTINGS);
 
-        if (arrowTeleportSettings == null)
+        if (_arrowTeleportSettings == null)
         {
             throw new ArrowTeleportException("arrow teleport settings not found");
         }
 
-        if (!TryGetComponent(out spriteRenderer))
+        if (!TryGetComponent(out _spriteRenderer))
         {
             throw new ArrowTeleportException($"{name} not have component Sprite Renderer");
         }
 
-        SetSprite(arrowTeleportSettings.IdleSprite);
+        SetSprite(_arrowTeleportSettings.IdleSprite);
     }
 
 
 
-    private void OnMouseDown()
-    {
-        clicked = true;
-    }
-
-    private void OnMouseEnter()
-    {
-        SetSprite(arrowTeleportSettings.ActiveMouseEnterSprite);
-    }
-
-    private void OnMouseExit()
-    {
-        SetSprite(arrowTeleportSettings.IdleSprite);
-    }
-
-    public void SetSprite (Sprite sprite)
-    {
-        spriteRenderer.sprite = sprite;
-    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag(TAG_MY_PLAYER))
         {
-            if (clicked)
+            if (_isClicked)
             {
-                CallInvokingMethod(LoadLocation, arrowTeleportSettings.TimeOutTeleport);
+                CallInvokingMethod(LoadLocation, _arrowTeleportSettings.TimeOutTeleport);
             }
         }
     }
@@ -69,7 +54,7 @@ using UnityEngine;
     {
         if (collision.CompareTag(TAG_MY_PLAYER))
         {
-            if (clicked)
+            if (_isClicked)
             {
                 CancelInvoke();
             }
@@ -83,7 +68,7 @@ using UnityEngine;
             PhotonNetwork.LeaveRoom();
         }
 
-        Loading.LoadScene(locationName);
+        Loading.LoadScene(_locationName);
     }
 
     public void CallInvokingEveryMethod(Action method, float time)
@@ -95,6 +80,14 @@ using UnityEngine;
     {
         Invoke(method.Method.Name, time);
     }
+
+    private void OnMouseDown() => _isClicked = true;
+
+    private void OnMouseEnter() => SetSprite(_arrowTeleportSettings.ActiveMouseEnterSprite);
+
+    private void OnMouseExit() => SetSprite(_arrowTeleportSettings.IdleSprite);
+
+    public void SetSprite(Sprite sprite) => _spriteRenderer.sprite = sprite;
 
 
 }
