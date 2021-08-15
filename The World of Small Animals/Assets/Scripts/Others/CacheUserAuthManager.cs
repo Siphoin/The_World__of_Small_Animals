@@ -48,7 +48,9 @@ public class CacheUserAuthManager : MonoBehaviour, IShowErrorNotfication
         name = StringCipher.Encrypt(name);
 
         AuthUserCache cache = new AuthUserCache(name, password);
+
         string json = JsonConvert.SerializeObject(cache);
+
         CacheSystem.WriteFile(NAME_FILE_AUTH_FILE, json);
 
 #if UNITY_EDITOR
@@ -61,6 +63,7 @@ public class CacheUserAuthManager : MonoBehaviour, IShowErrorNotfication
         if (FileExits)
         {
             CacheSystem.DeleteFile(NAME_FILE_AUTH_FILE);
+
             FileExits = false;
         }
 
@@ -72,10 +75,7 @@ public class CacheUserAuthManager : MonoBehaviour, IShowErrorNotfication
         }
     }
 
-    public void ShowErrorNotfication(string text)
-    {
-        ManagerWindowsNotfications.Manager.CreateNotfication(text, MessageNotficationType.Error);
-    }
+    public void ShowErrorNotfication(string text) => ManagerWindowsNotfications.Manager.CreateNotfication(text, MessageNotficationType.Error);
 
 
 
