@@ -172,7 +172,7 @@ public class JoinLocation : MonoBehaviourPunCallbacks, ICallerLoadingWaitWindow,
 
         _idRequest = RequestManager.Manager.GenerateRequestID();
 
-        RequestManager.Manager.onRequestFinish += ReceiveRequest;
+        RequestManager.Manager.OnRequestFinish += ReceiveRequest;
 
         Dictionary<string, object> data = new Dictionary<string, object>();
         data.Add("name", "max");
@@ -193,7 +193,7 @@ public class JoinLocation : MonoBehaviourPunCallbacks, ICallerLoadingWaitWindow,
         }
 #endif
 
-        RequestManager.Manager.onRequestFinish -= ReceiveRequest;
+        RequestManager.Manager.OnRequestFinish -= ReceiveRequest;
     }
 
     public void DestroyLoadingWaitWindow() => loadingWait.Remove();

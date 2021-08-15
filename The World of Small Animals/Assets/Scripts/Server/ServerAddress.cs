@@ -4,7 +4,7 @@ public class ServerAddress : ScriptableObject
     {
     [Header("Адрес сервера БД")]
     [TextArea]
-    [SerializeField] private string address = "";
+    [SerializeField] private string _address = "";
 
-    public string Address { get => address; }
+    public string Address => _address;
 }

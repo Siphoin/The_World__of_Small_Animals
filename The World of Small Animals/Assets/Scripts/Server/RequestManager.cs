@@ -9,36 +9,36 @@ public class RequestManager : MonoBehaviour, IRemoveObject
     {
     private const string PATH_STRING_SERVER_ADDRESS = "Data/ServerAddress/ServerAddress";
 
-    private HashSet<string> requestList = new HashSet<string>();
+    private HashSet<string> _requestList = new HashSet<string>();
 
-    private static RequestManager manager;
+    private static RequestManager _manager;
 
-    private ServerAddress serverAddress;
+    private ServerAddress _serverAddress;
 
-    public event Action<string, string, RequestResult, long> onRequestFinish;
+    public event Action<string, string, RequestResult, long> OnRequestFinish;
 
-    public event Action<string, Texture2D, RequestResult, long> onRequestGetTextureFinish;
+    public event Action<string, Texture2D, RequestResult, long> OnRequestGetTextureFinish;
 
-    public static RequestManager Manager { get => manager; }
+    public static RequestManager Manager => _manager;
 
     // Use this for initialization
     void Awake()
         {
-        if (manager == null)
+        if (_manager == null)
         {
-            serverAddress = Resources.Load<ServerAddress>(PATH_STRING_SERVER_ADDRESS);
+            _serverAddress = Resources.Load<ServerAddress>(PATH_STRING_SERVER_ADDRESS);
 
-            if (serverAddress == null)
+            if (_serverAddress == null)
             {
                 throw new RequestManagerException("server addrees Object not found");
             }
 
-            if (string.IsNullOrEmpty(serverAddress.Address))
+            if (string.IsNullOrEmpty(_serverAddress.Address))
             {
                 throw new RequestManagerException("server addrees string is emtry");
             }
 
-            manager = this;
+            _manager = this;
             DontDestroyOnLoad(gameObject);
         }
 
@@ -80,14 +80,14 @@ public class RequestManager : MonoBehaviour, IRemoveObject
 
     private void AddRequest (string key)
     {
-        if (requestList.Contains(key))
+        if (_requestList.Contains(key))
         {
             throw new RequestManagerException($"request id {key} contains on Request List");
         }
 
         else
         {
-            requestList.Add(key);
+            _requestList.Add(key);
 
 #if UNITY_EDITOR
             Debug.Log($"request (id {key}) added on request list");
@@ -97,14 +97,14 @@ public class RequestManager : MonoBehaviour, IRemoveObject
 
     private void RemoveRequest (string key)
     {
-        if (!requestList.Contains(key))
+        if (!_requestList.Contains(key))
         {
             throw new RequestManagerException($"request id {key} not contains on Request List");
         }
 
         else
         {
-            requestList.Remove(key);
+            _requestList.Remove(key);
 #if UNITY_EDITOR
             Debug.Log($"request (id {key}) removed on request list");
 #endif
@@ -133,12 +133,12 @@ public class RequestManager : MonoBehaviour, IRemoveObject
 
     private void SendObserversEventRequest (string id, string dataText, RequestResult result, long requestCode)
     {
-        onRequestFinish?.Invoke(id, dataText, result, requestCode);
+        OnRequestFinish?.Invoke(id, dataText, result, requestCode);
     }
 
     private void SendObserversEventRequestTexture(string id, Texture2D texture, RequestResult result, long requestCode)
     {
-        onRequestGetTextureFinish?.Invoke(id, texture, result, requestCode);
+        OnRequestGetTextureFinish?.Invoke(id, texture, result, requestCode);
     }
 
 
@@ -146,7 +146,7 @@ public class RequestManager : MonoBehaviour, IRemoveObject
     #region Unity Web Request Types
     private IEnumerator SendRequest (string idRequest, string path, RequestType requestType = RequestType.GET, Dictionary<string, object> form = null, bool catchError = true)
     {
-        string url = serverAddress.Address + path;
+        string url = _serverAddress.Address + path;
 
 
         #region Initializing a web form
@@ -574,7 +574,7 @@ public class RequestManager : MonoBehaviour, IRemoveObject
 
     private IEnumerator SendRequestGetImage (string idRequest, string path, bool catchError = true)
     {
-        string url = serverAddress.Address + path;
+        string url = _serverAddress.Address + path;
 
         WWW www = new WWW(url);
         yield return www;

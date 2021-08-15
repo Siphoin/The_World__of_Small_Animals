@@ -169,7 +169,7 @@ namespace Assets.Scripts.Server
         {
             idRequest = requestManager.GenerateRequestID();
 
-            requestManager.onRequestFinish += ReceiveRequest;
+            requestManager.OnRequestFinish += ReceiveRequest;
 
             requestManager.SendRequestToServer(idRequest, PATH_REQUEST_DATA_SERVERS);
 
@@ -186,7 +186,8 @@ namespace Assets.Scripts.Server
             }
             if (requestResult == RequestResult.OK && responseCode == 200)
             {
-                requestManager.onRequestFinish -= ReceiveRequest;
+                requestManager.OnRequestFinish -= ReceiveRequest;
+
                 try
                 {
                 serversRequestData = JsonConvert.DeserializeObject<ServerRequestData[]>(text);
