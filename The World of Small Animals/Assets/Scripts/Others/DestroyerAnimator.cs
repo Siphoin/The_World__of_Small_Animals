@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
+
 public class DestroyerAnimator : MonoBehaviour
 {
+    private const float TIME_OUT_DESTROY_COMPONENT_ANIMATOR = 0.02f;
+
     private Animator _animator;
     private void Awake()
     {
@@ -12,12 +15,14 @@ public class DestroyerAnimator : MonoBehaviour
     public void RemoveAnimator()
     {
         Destroy(_animator);
+
         Destroy(this);
     }
 
     public void RemoveAnimator(float time)
     {
         Destroy(_animator, time);
-        Destroy(this, time + 0.02f);
+
+        Destroy(this, time + TIME_OUT_DESTROY_COMPONENT_ANIMATOR);
     }
 }
