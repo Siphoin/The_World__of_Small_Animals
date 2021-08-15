@@ -2,15 +2,18 @@
 
 public class PointSpawn : MonoBehaviour
     {
-    private Color defaultColor = Color.green;
+    private const int RADUIS_GIZMOZ_SPHERE = 1;
 
-    public Vector3 Position { get => transform.position; }
+    private Color _defaultColor = Color.green;
+
+    public Vector3 Position => transform.position;
 
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = defaultColor;
-        Gizmos.DrawSphere(transform.position, 1);
+        Gizmos.color = _defaultColor;
+
+        Gizmos.DrawSphere(transform.position, RADUIS_GIZMOZ_SPHERE);
     }
 
 }
