@@ -10,7 +10,7 @@ public class ListenerLocalCharacter : MonoBehaviour, IFinderLocalPlayer, IInvoke
 
        private bool _invokeStarted = false;
 
-       private CharacterController _isMyPlayer;
+       private CharacterController _myPlayer;
 
        private CharacterSettings _characterSettings;
 
@@ -25,9 +25,9 @@ public class ListenerLocalCharacter : MonoBehaviour, IFinderLocalPlayer, IInvoke
             throw new ListenerLocalCharacterException("character settings not found");
         }
 
-        _isMyPlayer = FindLocalPlayerWithTag(TAG_MY_PLAYER);
+        _myPlayer = FindLocalPlayerWithTag(TAG_MY_PLAYER);
 
-        _isMyPlayer.OnMoveStatusChanged += StartInvokingAFK;
+        _myPlayer.OnMoveStatusChanged += StartInvokingAFK;
 
         StartInvokingAFK(false);
         }
@@ -52,7 +52,7 @@ public class ListenerLocalCharacter : MonoBehaviour, IFinderLocalPlayer, IInvoke
 
     private void DisconnectOnServer()
     {
-        if (_isMyPlayer.Moved)
+        if (_myPlayer.Moved)
         {
             return;
         }

@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,19 +6,16 @@ public class Loading : MonoBehaviour
     {
     private static string sceneName = "servers";
 
-    private const string DEFAULT_SCENE_NAME = "servers";
 
     private const string SCENE_NAME_LOADING = "loading";
 
 
     private const string PATH_PREFAB_BACKGROUND_LOADING_FINISH = "Prefabs/UI/LoadingFinishAnimation";
 
+    private static GameObject _backgroundFinishLoad;
+
     public static string LastSceneName { get; private set; }
 
-
-
-    private static GameObject backgroundFinishLoad = null;
-        // Use this for initialization
         void Start()
         {
         Ini();
@@ -41,7 +37,7 @@ public class Loading : MonoBehaviour
 
             if (progress >= 0.9f)
             {
-                GameObject backgroundFinish = Instantiate(backgroundFinishLoad);
+                GameObject backgroundFinish = Instantiate(_backgroundFinishLoad);
                 DontDestroyOnLoad(backgroundFinish);
 
 
@@ -57,14 +53,13 @@ public class Loading : MonoBehaviour
 
     public static void LoadScene (string nameScene)
     {
-
-
         sceneName = nameScene;
 
 
         try
         {
             LastSceneName = SceneManager.GetActiveScene().name;
+
             SceneManager.LoadScene(SCENE_NAME_LOADING);
         }
         catch 
@@ -77,15 +72,15 @@ public class Loading : MonoBehaviour
 
     private static void Ini ()
     {
-        if (backgroundFinishLoad != null)
+        if (_backgroundFinishLoad != null)
         {
             return;
         }
 
 
-        backgroundFinishLoad = Resources.Load<GameObject>(PATH_PREFAB_BACKGROUND_LOADING_FINISH);
+        _backgroundFinishLoad = Resources.Load<GameObject>(PATH_PREFAB_BACKGROUND_LOADING_FINISH);
 
-        if (backgroundFinishLoad == null)
+        if (_backgroundFinishLoad == null)
         {
             throw new LoadingException("prefab background loading finish not found");
         }
