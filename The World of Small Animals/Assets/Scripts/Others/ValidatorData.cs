@@ -9,6 +9,7 @@ public static class ValidatorData
         if (valueProp.IsNumber())
         {
             int value = Convert.ToInt32(valueProp);
+
             if (value <= 0)
             {
                 throw new ValidatorDataException($"invalid field: (Property: {prop.Name}) not be <= 0");
@@ -18,6 +19,7 @@ public static class ValidatorData
         else if (valueProp.IsString())
         {
             string value = Convert.ToString(valueProp);
+
             if (string.IsNullOrEmpty(value))
             {
                 throw new ValidatorDataException($"invalid field: (Property: {prop.Name}) not be is null or emtry");
@@ -28,9 +30,11 @@ public static class ValidatorData
     public static void CheckValidPropertyStats(System.Reflection.PropertyInfo prop, object type)
     {
         object valueProp = prop.GetValue(type);
+
         if (valueProp.IsNumber())
         {
             int value = Convert.ToInt32(valueProp);
+
             if (value <= 0)
             {
                 throw new ValidatorDataException($"invalid field: (Property: {prop.Name}) not be <= 0");
@@ -40,6 +44,7 @@ public static class ValidatorData
         else if (valueProp.IsString())
         {
             string value = Convert.ToString(valueProp);
+
             if (string.IsNullOrEmpty(value))
             {
                 throw new ValidatorDataException($"invalid field: (Property: {prop.Name}) not be is null or emtry");
