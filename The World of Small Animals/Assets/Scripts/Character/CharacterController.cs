@@ -1,9 +1,7 @@
 using Photon.Pun;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(BoxCollider2D))]
@@ -13,65 +11,56 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
     private const string PATH_SETTINGS_CHARACTER = "Data/Character/CharacterSettings";
     private const string TAG_WALL_BLOCK = "WallBlock";
     private const string TAG_PLAYER = "Player";
-    [Header("Настройки ракурсов")]
-    [SerializeField]
-    private CharacterCameraAngles characterCameraAnglesSettings;
 
-    private Rigidbody2D body2d;
+    private bool _isInitialized = false;
 
     [Header("Текущая скорость персонажа")]
     [ReadOnlyField]
     [SerializeField]
-    private float currentSpeed = 0f;
+    private float _currentSpeed = 0f;
     [Header("Скорость персонажа при старте")]
     [ReadOnlyField]
     [SerializeField]
-    private float startedSpeed = 0f;
+    private float _startedSpeed = 0f;
 
-    Vector2 posMove;
+    private Vector2 _positionMove;
+
+    [Header("Настройки ракурсов")]
+    [SerializeField]
+    private CharacterCameraAngles _characterCameraAnglesSettings;
+
+    private Rigidbody2D _body2d;
 
 
     [Header("Движется")]
     [ReadOnlyField]
     [SerializeField]
-    private bool move = false;
-
-
-    [Header("Вращается")]
-    [ReadOnlyField]
-    [SerializeField]
-    private bool rotating = true;
+    private bool _move = false;
 
     [Header("Номер активного ракурса")]
     [ReadOnlyField]
     [SerializeField]
-    private int numberCameraAngle = 0;
-
-    private bool initialized = false;
-
-
+    private int _numberCameraAngle = 0;
 
 
     [Header("Активен")]
     [ReadOnlyField]
     [SerializeField]
-    private bool activeMove = true;
+    private bool _isActiveMove = true;
 
-    private CharacterSettings characterSettings;
+    private CharacterSettings _characterSettings;
 
-    private Camera cameraMain;
+    private PhotonView _photonView;
 
-    private PhotonView photonView;
+    private SpriteRenderer _spriteRenderer;
 
-    private SpriteRenderer spriteRenderer;
+    public event Action<Vector3> OnMove;
 
-    public event Action<Vector3> onMove;
-
-    public event Action<bool> onMoveStatusChanged;
+    public event Action<bool> OnMoveStatusChanged;
 
     // rotation
 
-    private List<TupleAngle> cameraAngles =
+    private List<TupleAngle> _cameraAngles =
 
 
         new List<TupleAngle> {
@@ -89,82 +78,76 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
     };
 
 
-    public bool ActiveMove { get => activeMove; }
-    public float CurrentSpeed { get => currentSpeed; }
-    public bool Moved { get => move; }
-    public CharacterCameraAngles CharacterCameraAnglesSettings { get => characterCameraAnglesSettings; }
+    public bool ActiveMove => _isActiveMove;
+    public float CurrentSpeed  => _currentSpeed;
+    public bool Moved => _move; 
+    public CharacterCameraAngles CharacterCameraAnglesSettings => _characterCameraAnglesSettings;
 
 
-
-
-    // Start is called before the first frame update
     private void Start()
     {
         Ini();
 
-        startedSpeed = characterSettings.Speed;
+        _startedSpeed = _characterSettings.Speed;
 
-        currentSpeed = startedSpeed;
-
-        cameraMain = Camera.main;
+        _currentSpeed = _startedSpeed;
 
     }
 
     private void Awake()
     {
-        if (!TryGetComponent(out spriteRenderer))
+        if (!TryGetComponent(out _spriteRenderer))
         {
             throw new CharacterException($"{name} not have component Sprite Renderer");
         }
 
-        if (!TryGetComponent(out photonView))
+        if (!TryGetComponent(out _photonView))
         {
             throw new CharacterException($"{name} not have component Photon View");
         }
 
-        name = photonView.Owner.NickName;
+        name = _photonView.Owner.NickName;
 
-        tag = photonView.IsMine ? $"My{TAG_PLAYER}" : TAG_PLAYER;
+        tag = _photonView.IsMine ? $"My{TAG_PLAYER}" : TAG_PLAYER;
 
        
     }
 
     private void Ini()
     {
-
-        if (initialized)
+        if (_isInitialized)
         {
             return;
         }
 
 
-        if (characterCameraAnglesSettings == null)
+        if (_characterCameraAnglesSettings == null)
         {
             throw new CharacterException("character camera angles not seted");
         }
 
 
-        if (!TryGetComponent(out body2d))
+        if (!TryGetComponent(out _body2d))
         {
             throw new CharacterException($"{name} not have component Rightbody2D");
         }
 
-        characterSettings = Resources.Load<CharacterSettings>(PATH_SETTINGS_CHARACTER);
+        _characterSettings = Resources.Load<CharacterSettings>(PATH_SETTINGS_CHARACTER);
 
-        if (characterSettings == null)
+        if (_characterSettings == null)
         {
             throw new CharacterException("character settings not found");
         }
 
-        initialized = true;
+        _isInitialized = true;
     }
 
     private void Control ()
     {
 #if UNITY_EDITOR
-        if (Input.GetMouseButtonUp(0) == true && activeMove)
+        if (Input.GetMouseButtonUp(0) == true && _isActiveMove)
         {
-            if (!move)
+            if (!_move)
             {
                 Vector2 mousePos = Input.mousePosition;
                 SetWorldPositionMove(mousePos);
@@ -200,18 +183,19 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
 
     void Update()
     {
-        if (photonView.IsMine)
+        if (_photonView.IsMine)
         {
-        	body2d.velocity = Vector2.zero;
+        	_body2d.velocity = Vector2.zero;
             Control();
         }
 
     }
 
     void FixedUpdate () {
-    	        if (photonView.IsMine)
+
+        if (_photonView.IsMine)
         {
-        	body2d.velocity = Vector2.zero;
+        	_body2d.velocity = Vector2.zero;
         }
     }
 
@@ -223,21 +207,19 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
     private void CheckMove()
     {
 
-        if (!activeMove)
+        if (!_isActiveMove)
         {
             return;
         }
 
-       
-
-        if (move)
+        if (_move)
         {
-            Vector3 targetPosMove = Vector2.MoveTowards(transform.position, posMove, currentSpeed * Time.deltaTime);
+            Vector3 targetPosMove = Vector2.MoveTowards(transform.position, _positionMove, _currentSpeed * Time.deltaTime);
 
-            body2d.MovePosition(targetPosMove);
+            _body2d.MovePosition(targetPosMove);
             
 
-            if (Vector2.Distance(transform.position, posMove) <= 0.01f)
+            if (Vector2.Distance(transform.position, _positionMove) <= 0.01f)
             {
                 SetActiveCharacter(false);
                
@@ -247,7 +229,7 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
 
     private void CheckRotation ()
     {
-        if (!activeMove)
+        if (!_isActiveMove)
         {
             return;
         }
@@ -288,7 +270,7 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
 
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
-            numberCameraAngle = cameraAngles.FindIndex(x => angle >= x.MinAngle && angle <= x.MaxAngle);
+            _numberCameraAngle = _cameraAngles.FindIndex(x => angle >= x.MinAngle && angle <= x.MaxAngle);
 
             SetCameraAngleSprite();
         }
@@ -297,25 +279,20 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
 
     private void SetActiveCharacter(bool status)
     {
-        move = status;
-        rotating = !status;
+        _move = status;
 
-        onMoveStatusChanged?.Invoke(move);
-
+        OnMoveStatusChanged?.Invoke(_move);
     }
 
 
-    private void SetWorldPositionMove (Vector2 pos)
+    private void SetWorldPositionMove (Vector2 position)
     {     
-        posMove = Camera.main.ScreenToWorldPoint(pos);
+        _positionMove = Camera.main.ScreenToWorldPoint(position);
 
-        onMove?.Invoke(posMove);
+        OnMove?.Invoke(_positionMove);
     }
 
-    private void SetPositionMove (Vector2 pos)
-    {
-        posMove = pos;
-    }
+    private void SetPositionMove (Vector2 pos) => _positionMove = pos;
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -325,79 +302,54 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
         }
     }
 
-    public void SetSprite(Sprite sprite)
-    {
-        spriteRenderer.sprite = sprite;
-    }
 
     private void SetStateMoveCharacter (bool status)
     {
-        activeMove = status;
+        _isActiveMove = status;
 
-        if (move && !status)
+        if (_move && !status)
         {
-            move = status;
+            _move = status;
+
             SetPositionMove(transform.position);
         }
     }
 
     public void Disable ()
     {
-        if (!move)
+        if (!_move)
         {
        SetStateMoveCharacter(false);
         }
  
     }
 
-    public void Enable ()
-    {
-        SetStateMoveCharacter(true);
-    }
-
-    public void Disable(float timeOut)
-    {
-        CallInvokingMethod(Disable, timeOut);
-    }
-
-    public void Enable(float timeOut)
-    {
-        CallInvokingMethod(Enable, timeOut);
-    }
-
-    private void SetCameraAngleSprite()
-    {
-        SetSprite(characterCameraAnglesSettings.CameraAngles[numberCameraAngle]);
-    }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        
+    {   
         if (stream.IsWriting)
         {
-            stream.SendNext(numberCameraAngle);
+            stream.SendNext(_numberCameraAngle);
         }
 
         else
         {
             Ini();
 
-
-            numberCameraAngle = (int)stream.ReceiveNext();
+           _numberCameraAngle = (int)stream.ReceiveNext();
           SetCameraAngleSprite();
-
 
         }
     }
 
     public void SendRPC(Action action, RpcTarget target = RpcTarget.All, params object[] parameters)
     {
-        photonView.RPC(action.Method.Name, target, parameters);
+        _photonView.RPC(action.Method.Name, target, parameters);
     }
 
     public void SendSecureRPC(Action action, RpcTarget target = RpcTarget.All, bool encrypt = true, params object[] parameters)
     {
-        photonView.RpcSecure(action.Method.Name, target, encrypt,  parameters);
+        _photonView.RpcSecure(action.Method.Name, target, encrypt,  parameters);
     }
 
     public void CallInvokingEveryMethod(Action method, float time)
@@ -414,7 +366,17 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
     {
         if (collision.gameObject.tag.Contains(TAG_PLAYER))
         {
-            body2d.velocity = Vector2.zero;
+            _body2d.velocity = Vector2.zero;
         }
     }
+
+    public void Enable() => SetStateMoveCharacter(true);
+
+    public void Disable(float timeOut) => CallInvokingMethod(Disable, timeOut);
+
+    public void Enable(float timeOut) => CallInvokingMethod(Enable, timeOut);
+
+    private void SetCameraAngleSprite() => SetSprite(_characterCameraAnglesSettings.CameraAngles[_numberCameraAngle]);
+
+    public void SetSprite(Sprite sprite) => _spriteRenderer.sprite = sprite;
 }
