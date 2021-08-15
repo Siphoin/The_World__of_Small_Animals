@@ -3,10 +3,14 @@
   public  class UserData : MongoSchema
     {
     public string name;
-    public int age;
+    
     public string dateReg;
-    public string[] characters;
+    
     public string role;
+    
+    public string[] characters;
+    
+    public int age;
 
     public UserData ()
     {
