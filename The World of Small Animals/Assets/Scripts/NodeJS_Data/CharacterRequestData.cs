@@ -1,21 +1,23 @@
-﻿using System;
+using System;
+using UnityEngine;
+
 [Serializable]
  public   class CharacterRequestData : MongoSchema
     {
-    public string dateReg;
+    private string dateReg;
     
-    public string name;
+    private string name;
     
     
-    public bool online;
+    private bool online;
     
-    public int prefabIndex;
+    private int prefabIndex;
 
-    public int gems;
+    private int gems;
     
-    public int anicoins;
+    private int anicoins;
     
-    public CharacterRequestDynamicData data;
+    private CharacterRequestDynamicData data;
     
     public CharacterRequestData ()
     {
