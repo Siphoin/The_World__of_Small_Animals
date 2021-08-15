@@ -1,6 +1,5 @@
 ﻿using Photon.Pun;
 using Photon.Realtime;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -21,31 +20,26 @@ public class JoinLocation : MonoBehaviourPunCallbacks, ICallerLoadingWaitWindow,
 
     private const string PREFIX_CLONE_PREFAB = "(Clone)";
 
-    private const string TAG_POINT_SPAWN = "PointSpawn";
+    private string _idRequest;
 
-    
     private LoadingWait loadingWait;
 
-    private CharactersList characterList;
+    private CharactersList _characterList;
 
-    private GameObject[] callbacksObjects;
+    private GameObject[] _callbacksObjects;
 
-    private PointSpawn[] pointSpawns;
+    private PointSpawn[] _pointSpawns;
 
+    private GameObject _mainCanvasPrefab;
 
-
-
-    private GameObject mainCanvasPrefab;
-
-    private string idRequest;
 
     [Header("Данные о локации")]
     [SerializeField]
     [ReadOnlyField]
-    private LocationData locationData;
-    private PanelNameLocation panelNameLocationPrefab;
+    private LocationData _locationData;
 
-    // Use this for initialization
+    private PanelNameLocation _panelNameLocationPrefab;
+
     void Start()
         {
         if (LoadingWaitManager.Manager == null)
@@ -53,31 +47,31 @@ public class JoinLocation : MonoBehaviourPunCallbacks, ICallerLoadingWaitWindow,
             throw new JoinLocationException("loading wait manager not found");
         }
 
-        pointSpawns = FindObjectsOfType<PointSpawn>();
+        _pointSpawns = FindObjectsOfType<PointSpawn>();
 
-        if (pointSpawns.Length == 0)
+        if (_pointSpawns.Length == 0)
         {
             throw new JoinLocationException("points spawns not found");
         }
 
 
-        callbacksObjects = Resources.LoadAll<GameObject>(PATH_PREFABS_CALLBACKS_OBJECTS);
+        _callbacksObjects = Resources.LoadAll<GameObject>(PATH_PREFABS_CALLBACKS_OBJECTS);
 
-        if (callbacksObjects == null || callbacksObjects.Length == 0)
+        if (_callbacksObjects == null || _callbacksObjects.Length == 0)
         {
             throw new JoinLocationException("callbacksObjects not found");
         }
 
-        characterList = Resources.Load<CharactersList>(PATH_CHARACTER_LIST_DATA);
+        _characterList = Resources.Load<CharactersList>(PATH_CHARACTER_LIST_DATA);
 
-        if (characterList == null)
+        if (_characterList == null)
         {
             throw new JoinLocationException("character list not found");
         }
 
-        panelNameLocationPrefab = Resources.Load<PanelNameLocation>(PATH_PREFAB_PANEL_NAME_LOCATION);
+        _panelNameLocationPrefab = Resources.Load<PanelNameLocation>(PATH_PREFAB_PANEL_NAME_LOCATION);
 
-        if (panelNameLocationPrefab == null)
+        if (_panelNameLocationPrefab == null)
         {
             throw new InitilizatorLocationException("panel location name prefab not found");
         }
@@ -90,10 +84,6 @@ public class JoinLocation : MonoBehaviourPunCallbacks, ICallerLoadingWaitWindow,
         PhotonNetwork.JoinOrCreateRoom(SceneManager.GetActiveScene().name, new RoomOptions(), TypedLobby.Default);
         }
 
-    public void DestroyLoadingWaitWindow()
-    {
-        loadingWait.Remove();
-    }
 
 
     public void SetLocationData(LocationData data)
@@ -103,16 +93,16 @@ public class JoinLocation : MonoBehaviourPunCallbacks, ICallerLoadingWaitWindow,
             throw new JoinLocationException("data location is null");
         }
 
-        locationData = data;
+        _locationData = data;
     }
 
 
     #region Server Callbacks
     public override void OnJoinedRoom()
     {
-        mainCanvasPrefab = Resources.Load<GameObject>(PATH_PREFAB_MAIN_CANVAS);
+        _mainCanvasPrefab = Resources.Load<GameObject>(PATH_PREFAB_MAIN_CANVAS);
 
-        if (mainCanvasPrefab == null)
+        if (_mainCanvasPrefab == null)
         {
             throw new InitilizatorLocationException("main canvas prefab not found");
         }
@@ -120,23 +110,23 @@ public class JoinLocation : MonoBehaviourPunCallbacks, ICallerLoadingWaitWindow,
 
         DestroyLoadingWaitWindow();
         
-        InstantiatePlayerObject(characterList.GetCharacter(AuthCharacter.Manager.CharacterData.prefabIndex).gameObject, pointSpawns[Random.Range(0, pointSpawns.Length)].Position);
+        InstantiatePlayerObject(_characterList.GetCharacter(AuthCharacter.Manager.CharacterData.prefabIndex).gameObject, _pointSpawns[Random.Range(0, _pointSpawns.Length)].Position);
 
         GameObject containerCallbackObjects = new GameObject(NAME_OBJECT_CONTAINER_CALLBACK_OBJECTS);
 
 
-        for (int i = 0; i < callbacksObjects.Length; i++)
+        for (int i = 0; i < _callbacksObjects.Length; i++)
         {
-            Instantiate(callbacksObjects[i], containerCallbackObjects.transform);
+            Instantiate(_callbacksObjects[i], containerCallbackObjects.transform);
         }
 
 
 
-        GameObject mainCanvas = Instantiate(mainCanvasPrefab);
+        GameObject mainCanvas = Instantiate(_mainCanvasPrefab);
 
         mainCanvas.name = mainCanvas.name.Replace(PREFIX_CLONE_PREFAB, string.Empty);
 
-        Instantiate(panelNameLocationPrefab, mainCanvas.transform).SetText(locationData.NameLocation);
+        Instantiate(_panelNameLocationPrefab, mainCanvas.transform).SetText(_locationData.NameLocation);
 
      //   SendRequest();
 
@@ -180,25 +170,31 @@ public class JoinLocation : MonoBehaviourPunCallbacks, ICallerLoadingWaitWindow,
     {
         loadingWait = LoadingWaitManager.Manager.CreateLoadingWait();
 
-        idRequest = RequestManager.Manager.GenerateRequestID();
+        _idRequest = RequestManager.Manager.GenerateRequestID();
 
         RequestManager.Manager.onRequestFinish += ReceiveRequest;
 
         Dictionary<string, object> data = new Dictionary<string, object>();
         data.Add("name", "max");
-       data.Add("job", "unity developer");
-        RequestManager.Manager.SendRequestToServer(idRequest, "api/users2", RequestType.PUT, data);
+        data.Add("job", "unity developer");
+
+        RequestManager.Manager.SendRequestToServer(_idRequest, "api/users2", RequestType.PUT, data);
 
 
     }
 
     public void ReceiveRequest(string id, string text, RequestResult requestResult, long responseCode)
     {
-        if (id == idRequest)
+#if UNITY_EDITOR
+
+        if (id == _idRequest)
         {
             Debug.Log(text);
         }
+#endif
 
         RequestManager.Manager.onRequestFinish -= ReceiveRequest;
     }
+
+    public void DestroyLoadingWaitWindow() => loadingWait.Remove();
 }
