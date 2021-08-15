@@ -10,61 +10,54 @@ using UnityEngine.UI;
     private const string PATH_DATA_COLOR_SLOT = "Data/UI/ServerSlot/ServerSlotColorData";
 
 
-    private ServerSlotData serverSlotData;
+    private ServerSlotData _serverSlotData;
 
-    private Button button;
+    private Button _button;
 
-    private Image image;
+    private Image _image;
 
-    private ServerSlotColorData colorDataSlot;
+    private ServerSlotColorData _colorDataSlot;
 
-    public event Action<ServerSlotData> onClick;
+    public event Action<ServerSlotData> OnClick;
 
     [Header("Текст названия сервера")]
-    [SerializeField] TextMeshProUGUI textNameServer;
+    [SerializeField] private TextMeshProUGUI _textNameServer;
 
     [Header("Прогресс заполняемости сервера")]
-    [SerializeField] RadialProgress radialProgress;
+    [SerializeField] private RadialProgress _radialProgress;
 
-
-    // Use this for initialization
-    void Start()
-        {
-        Ini();
-        }
 
     private void Ini ()
     {
-
-        if (radialProgress == null)
+        if (_radialProgress == null)
         {
             throw new SlotServerException("radial progress not seted");
         }
 
-        colorDataSlot = Resources.Load<ServerSlotColorData>(PATH_DATA_COLOR_SLOT);
+        _colorDataSlot = Resources.Load<ServerSlotColorData>(PATH_DATA_COLOR_SLOT);
 
-        if (colorDataSlot == null)
+        if (_colorDataSlot == null)
         {
             throw new SlotServerException("color data slot not found");
         }
 
-        if (image == null)
+        if (_image == null)
         {
-            if (!TryGetComponent(out image))
+            if (!TryGetComponent(out _image))
             {
                 throw new SlotServerException($"{name} not have component UnityEngine.UI.Image");
             }
         }
 
 
-        if (button == null)
+        if (_button == null)
         {
-            if (!TryGetComponent(out button))
+            if (!TryGetComponent(out _button))
             {
                 throw new SlotServerException($"{name} not have component UnityEngine.UI.Button");
             }
 
-            button.onClick.AddListener(Select);
+            _button.onClick.AddListener(Select);
         }
 
 
@@ -72,24 +65,24 @@ using UnityEngine.UI;
 
     private void Select()
     {
-        if (serverSlotData == null)
+        if (_serverSlotData == null)
         {
             throw new SlotServerException($"{name} not have data server slot");
         }
 
-        onClick?.Invoke(serverSlotData);
+        OnClick?.Invoke(_serverSlotData);
     }
 
     public void SetText(string text)
     {
         Ini();
 
-        if (serverSlotData == null)
+        if (_serverSlotData == null)
         {
             throw new SlotServerException($"{name} not have data server slot");
         }
 
-        textNameServer.text = text;
+        _textNameServer.text = text;
     }
 
 
@@ -114,12 +107,11 @@ using UnityEngine.UI;
             throw;
         }
 
-        serverSlotData = data;
+        _serverSlotData = data;
 
         CheckValidStats();
 
-
-        SetText($"{transform.GetSiblingIndex() + 1}. {serverSlotData.NameServer}");
+        SetText($"{transform.GetSiblingIndex() + 1}. {_serverSlotData.NameServer}");
 
 
        
@@ -127,22 +119,22 @@ using UnityEngine.UI;
 
     public void SetOccupancyRate (float value)
     {
-        radialProgress.UpdateProgress(value / (float)serverSlotData.MaxCountPlayers);
+        _radialProgress.UpdateProgress(value / (float)_serverSlotData.MaxCountPlayers);
 
-        if (value == serverSlotData.MaxCountPlayers)
+        if (value == _serverSlotData.MaxCountPlayers)
         {
-            button.interactable = false;
-            SetColor(colorDataSlot.BlockedButtonColor);
+            _button.interactable = false;
+            SetColor(_colorDataSlot.BlockedButtonColor);
         }
     }
 
     public void CheckValidStats()
     {
-        foreach (var prop in serverSlotData.GetType().GetFields())
+        foreach (var prop in _serverSlotData.GetType().GetFields())
         {
             try
             {
-                ValidatorData.CheckValidFieldStats(prop, serverSlotData);
+                ValidatorData.CheckValidFieldStats(prop, _serverSlotData);
             }
             catch (ValidatorDataException)
             {
@@ -151,11 +143,11 @@ using UnityEngine.UI;
             }
         }
 
-        foreach (var prop in serverSlotData.GetType().GetProperties())
+        foreach (var prop in _serverSlotData.GetType().GetProperties())
         {
             try
             {
-                ValidatorData.CheckValidPropertyStats(prop, serverSlotData);
+                ValidatorData.CheckValidPropertyStats(prop, _serverSlotData);
             }
             catch (ValidatorDataException)
             {
@@ -165,8 +157,7 @@ using UnityEngine.UI;
         }
     }
 
-    public void SetColor(Color color)
-    {
-        image.color = color;
-    }
+    void Start() => Ini();
+
+    public void SetColor(Color color) => _image.color = color;
 }

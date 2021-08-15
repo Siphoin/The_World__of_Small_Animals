@@ -3,7 +3,7 @@
 public class ServerSlotColorData : ScriptableObject
     {
     [Header("Цвет при переполненном сервере")]
-    [SerializeField] Color blockedButtonColor;
+    [SerializeField] Color _blockedButtonColor;
 
-    public Color BlockedButtonColor { get => blockedButtonColor; }
+    public Color BlockedButtonColor => _blockedButtonColor;
 }

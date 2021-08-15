@@ -135,7 +135,8 @@ public class WebFormUI : MonoBehaviour, IRequestSender
     public void SendRequest()
     {
         RequestManager requestManager = RequestManager.Manager;
-        requestManager.onRequestFinish += ReceiveRequest;
+
+        requestManager.OnRequestFinish += ReceiveRequest;
 
         idRequest = requestManager.GenerateRequestID();
 
@@ -157,7 +158,7 @@ public class WebFormUI : MonoBehaviour, IRequestSender
                 onRequestFalled?.Invoke();
             }
 
-        RequestManager.Manager.onRequestFinish -= ReceiveRequest;
+        RequestManager.Manager.OnRequestFinish -= ReceiveRequest;
         }
 
     }

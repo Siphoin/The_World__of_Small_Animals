@@ -106,7 +106,7 @@ using UnityEngine.UI;
         {
             case WindowPictureBannersTypeRequest.GetCount:
 
-                requestManager.onRequestFinish += ReceiveRequest;
+                requestManager.OnRequestFinish += ReceiveRequest;
 
                 requestManager.SendRequestToServer(idRequest, url, RequestType.GET, null, false);
 
@@ -160,7 +160,7 @@ using UnityEngine.UI;
                 }
             }
 
-            requestManager.onRequestFinish -= ReceiveRequest;
+            requestManager.OnRequestFinish -= ReceiveRequest;
         }
     }
 
@@ -218,7 +218,7 @@ using UnityEngine.UI;
     private IEnumerator AsyncLoadBannersPictures (int count)
     {
 
-        requestManager.onRequestGetTextureFinish += ReceiveTexture;
+        requestManager.OnRequestGetTextureFinish += ReceiveTexture;
 
 
         List<Sprite> sprites = new List<Sprite>();
@@ -257,7 +257,8 @@ using UnityEngine.UI;
 #if UNITY_EDITOR
                 Debug.Log("pictures banners is loaded");
 #endif
-                requestManager.onRequestGetTextureFinish -= ReceiveTexture;
+                requestManager.OnRequestGetTextureFinish -= ReceiveTexture;
+
                 pictures = sprites.ToArray();
 
 

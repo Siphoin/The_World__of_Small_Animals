@@ -131,7 +131,7 @@ public class ContainerSelectCharacters : MonoBehaviour, IActivatorGameObject, IR
     {
         idRequest = requestManager.GenerateRequestID();
 
-        requestManager.onRequestFinish += ReceiveRequest;
+        requestManager.OnRequestFinish += ReceiveRequest;
 
         Dictionary<string, object> form = new Dictionary<string, object>();
 
@@ -154,21 +154,16 @@ public class ContainerSelectCharacters : MonoBehaviour, IActivatorGameObject, IR
         SetActiveSelfGameObject(loadingImage, false);
     }
 
-    private void SetStateVisibleRefreshButton (bool state)
-    {
-        SetActiveSelfGameObject(buttonRefresh.gameObject, state);
-    }
+    private void SetStateVisibleRefreshButton (bool state) => SetActiveSelfGameObject(buttonRefresh.gameObject, state);
 
-    private void UncribeEventsRequestManager ()
-    {
-        requestManager.onRequestFinish -= ReceiveRequest;
-    }
+    private void UncribeEventsRequestManager () => requestManager.OnRequestFinish -= ReceiveRequest;
 
     private void LoadCardsCharacters ()
     {
         if (dataCharacters.Length == 0)
         {
             SetActiveSelfGameObject(charactersNotFoundImage, true);
+
             return;
         }
 

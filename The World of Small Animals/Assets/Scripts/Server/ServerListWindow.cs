@@ -7,8 +7,6 @@ using UnityEngine;
 using shortid;
 using Newtonsoft.Json;
 
-namespace Assets.Scripts.Server
-{
     public class ServerListWindow : MonoBehaviourPunCallbacks, ICallerLoadingWaitWindow, IRequestSender
     {
         private const string PATH_PREFAB_BUTTON_SELECT_SERVER = "Prefabs/UI/buttonServerSlot";
@@ -19,83 +17,85 @@ namespace Assets.Scripts.Server
 
         private const string PATH_REQUEST_DATA_SERVERS = "servers/";
 
-        private string idRequest;
+        private string _idRequest;
 
         [Header("Задержка перед появлением списка кнопок выбора сервера")]
-        [SerializeField] float timeoutSpawnButtons = 2.1f;
+        [SerializeField] float _timeoutSpawnButtons = 2.1f;
 
         [Header("Задержка перед появлением кнопки выбора сервера")]
-        [SerializeField] float timeoutSpawnButton = 0.5f;
+        [SerializeField] float _timeoutSpawnButton = 0.5f;
 
         [Header("Контент для кнопок")]
-        [SerializeField] Transform contentButtons;
+        [SerializeField] private Transform _contentButtons;
 
-        private ServerSlotData[] slotsData;
+        private ServerSlotData[] _slotsData;
 
-        private ServerRequestData[] serversRequestData;
+        private ServerRequestData[] _serversRequestData;
 
-        private ServerSlot slotServerPrefab;
+        private ServerSlot _slotServerPrefab;
 
+        private LoadingWait _loadingWait;
 
-        LoadingWait loadingWait;
-
-        RequestManager requestManager;
+        private RequestManager _requestManager;
         // Use this for initialization
         void Start()
         {
-            if (timeoutSpawnButton <= 0)
+            if (_timeoutSpawnButton <= 0)
             {
                 throw new ServerListWindowException("time out spawn button not valid");
             }
 
-            if (timeoutSpawnButtons <= 0)
+            if (_timeoutSpawnButtons <= 0)
             {
                 throw new ServerListWindowException("time out spawn buttons not valid");
             }
 
-            slotServerPrefab = Resources.Load<ServerSlot>(PATH_PREFAB_BUTTON_SELECT_SERVER);
+            _slotServerPrefab = Resources.Load<ServerSlot>(PATH_PREFAB_BUTTON_SELECT_SERVER);
 
-            if (slotServerPrefab == null)
+            if (_slotServerPrefab == null)
             {
                 throw new ServerListWindowException("slot server prefab not found");
             }
 
-            slotsData = Resources.LoadAll<ServerSlotData>(PATH_DATA_SLOTS_SERVERS);
+            _slotsData = Resources.LoadAll<ServerSlotData>(PATH_DATA_SLOTS_SERVERS);
 
-            if (slotsData.Length == 0)
+            if (_slotsData.Length == 0)
             {
                 throw new ServerListWindowException("slots not found");
             }
-            requestManager = RequestManager.Manager;
+            _requestManager = RequestManager.Manager;
+
             SendRequest();
         }
 
         private void ShoeServerSlots (Func<ServerSlotData, bool> predicate)
         {
-            ServerSlotData[] array = slotsData.Where(predicate).ToArray();
-
-
+            ServerSlotData[] array = _slotsData.Where(predicate).ToArray();
 
             StartCoroutine(CreatingAsyncSlots(array));
         }
 
         private IEnumerator CreatingAsyncSlots (ServerSlotData[] slots)
         {
-              yield return new WaitForSeconds(timeoutSpawnButtons);
+            yield return new WaitForSeconds(_timeoutSpawnButtons);
 
             int i = 0;
 
 
             while (i < slots.Length)
             {
-                yield return new WaitForSeconds(timeoutSpawnButton);
-                ServerSlot slot = Instantiate(slotServerPrefab, contentButtons);
+                yield return new WaitForSeconds(_timeoutSpawnButton);
+
+                ServerSlot slot = Instantiate(_slotServerPrefab, _contentButtons);
 
                 slot.SetData(slots[i]);
-                slot.onClick += SelectServer;
+
+                slot.OnClick += SelectServer;
+
                 try
                 {
-                    float countPlayers = serversRequestData.First(x => x.name == slots[i].NameServer).countPlayers;
+                    float countPlayers = _serversRequestData.First(x => x.name == slots[i].NameServer).countPlayers;
+
                     slot.SetOccupancyRate(countPlayers);
                 }
                 catch
@@ -104,14 +104,15 @@ namespace Assets.Scripts.Server
 
                 }
                 i++;
+
                 yield return null;
             }
         }
 
         private void SelectServer(ServerSlotData data)
         {
-            loadingWait = LoadingWaitManager.Manager.CreateLoadingWait();
-            loadingWait.SetText($"Подключение к серверу {data.NameServer}");
+            _loadingWait = LoadingWaitManager.Manager.CreateLoadingWait();
+            _loadingWait.SetText($"Подключение к серверу {data.NameServer}");
 
             PhotonNetwork.PhotonServerSettings.AppSettings.AppIdRealtime = data.AppId;
 
@@ -129,10 +130,12 @@ namespace Assets.Scripts.Server
         {
 #if UNITY_EDITOR
             PhotonNetwork.LogLevel = PunLogLevel.Informational;
+
             PhotonNetwork.PhotonServerSettings.EnableSupportLogger = true;
 
 #else
             PhotonNetwork.LogLevel = PunLogLevel.ErrorsOnly;
+
             PhotonNetwork.PhotonServerSettings.EnableSupportLogger = false;
 
 #endif
@@ -140,7 +143,7 @@ namespace Assets.Scripts.Server
 
         public void DestroyLoadingWaitWindow()
         {
-            loadingWait.Remove();
+            _loadingWait.Remove();
         }
         #region Server Callbacks
 
@@ -162,35 +165,37 @@ namespace Assets.Scripts.Server
         public override void OnDisconnected(DisconnectCause cause)
         {
             DestroyLoadingWaitWindow();
+
             ManagerWindowsNotfications.Manager.CreateNotfication($"Не удалось подключиться к серверу.\n Код ошибки: {cause}\n Возможно сервер переполнен. Проверьте подключение к Интернету.", MessageNotficationType.Error);
         }
 
         public void SendRequest()
         {
-            idRequest = requestManager.GenerateRequestID();
+            _idRequest = _requestManager.GenerateRequestID();
 
-            requestManager.OnRequestFinish += ReceiveRequest;
+            _requestManager.OnRequestFinish += ReceiveRequest;
 
-            requestManager.SendRequestToServer(idRequest, PATH_REQUEST_DATA_SERVERS);
+            _requestManager.SendRequestToServer(_idRequest, PATH_REQUEST_DATA_SERVERS);
 
 
-            loadingWait = LoadingWaitManager.Manager.CreateLoadingWait();
-            loadingWait.SetText("Получение данных о списке серверов...");
+            _loadingWait = LoadingWaitManager.Manager.CreateLoadingWait();
+            _loadingWait.SetText("Получение данных о списке серверов...");
         }
 
         public void ReceiveRequest(string id, string text, RequestResult requestResult, long responseCode)
         {
-            if (idRequest == id)
+            if (_idRequest == id)
             {
                 DestroyLoadingWaitWindow();
             }
+
             if (requestResult == RequestResult.OK && responseCode == 200)
             {
-                requestManager.OnRequestFinish -= ReceiveRequest;
+                _requestManager.OnRequestFinish -= ReceiveRequest;
 
                 try
                 {
-                serversRequestData = JsonConvert.DeserializeObject<ServerRequestData[]>(text);
+                _serversRequestData = JsonConvert.DeserializeObject<ServerRequestData[]>(text);
                 }
                 catch 
                 {
@@ -205,13 +210,9 @@ namespace Assets.Scripts.Server
 
 
                 ShoeServerSlots(serverUsers => serverUsers.DevelopServer == false);
-
-
-
             }
         }
 
         #endregion
 
     }
-}

@@ -4,23 +4,23 @@ public class ServerSlotData : ScriptableObject
     {
         [Header("Название сервера")]
         [SerializeField]
-        private string nameServer = "NameServer";
+        private string _nameServer = "NameServer";
 
         [Header("AppId сервера")]
         [TextArea]
         [SerializeField]
-        private string appId = "AppId";
+        private string _appId = "AppId";
 
-    [Header("Максимальное количество игроков на сервере")]
-    [SerializeField]
-    private long maxCountPlayers = 20;
-
-    [Header("Сервер для разработчиков")]
+        [Header("Максимальное количество игроков на сервере")]
         [SerializeField]
-        private bool developServer = false;
+        private long _maxCountPlayers = 20;
 
-        public string NameServer { get => nameServer; }
-        public string AppId { get => appId; }
-        public bool DevelopServer { get => developServer; }
-       public long MaxCountPlayers { get => maxCountPlayers; }
+        [Header("Сервер для разработчиков")]
+        [SerializeField]
+        private bool _developServer = false;
+
+        public string NameServer  => _nameServer;
+        public string AppId  => _appId;
+        public bool DevelopServer  => _developServer;
+        public long MaxCountPlayers =>  _maxCountPlayers;
 }

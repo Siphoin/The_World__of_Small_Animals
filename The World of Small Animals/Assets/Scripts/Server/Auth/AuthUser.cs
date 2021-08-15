@@ -95,7 +95,9 @@ using UnityEngine;
         {
             manager = this;
             requestManager = RequestManager.Manager;
-            requestManager.onRequestFinish += ReceiveRequest;
+
+            requestManager.OnRequestFinish += ReceiveRequest;
+
             base.Ini();
         }
 
