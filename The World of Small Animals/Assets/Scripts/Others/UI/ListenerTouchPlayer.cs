@@ -10,35 +10,37 @@ using UnityEngine;
 
 
     [Header("Канвас, на котором будет появлться эффект")]
-    [SerializeField] private Transform mainCanvas;
+    [SerializeField] private Transform _mainCanvas;
 
-    private  CharacterController myPlayer;
+    private  CharacterController _myPlayer;
 
-    private GameObject touchEffectPrefab;
+    private GameObject _touchEffectPrefab;
         // Use this for initialization
         void Awake()
         {
 
-        if (mainCanvas == null)
+        if (_mainCanvas == null)
         {
             throw new ListenerTouchPlayerException("mainCanvas not seted");
         }
-        myPlayer = GameObject.FindGameObjectWithTag(TAG_MY_PLAYER).GetComponent<CharacterController>();
+
+        _myPlayer = GameObject.FindGameObjectWithTag(TAG_MY_PLAYER).GetComponent<CharacterController>();
 
 
-        touchEffectPrefab = Resources.Load<GameObject>(PATH_PREFAB_TOUCH_EFFECT);
+        _touchEffectPrefab = Resources.Load<GameObject>(PATH_PREFAB_TOUCH_EFFECT);
 
-        if (touchEffectPrefab == null)
+        if (_touchEffectPrefab == null)
         {
             throw new ListenerTouchPlayerException("touch effect prefab not found");
         }
 
-        myPlayer.onMove += MyPlayer_onMove;
+        _myPlayer.OnMove += MyPlayer_onMove;
         }
 
     private void MyPlayer_onMove(Vector3 position)
     {
-        GameObject touchEffect = Instantiate(touchEffectPrefab, mainCanvas);
+        GameObject touchEffect = Instantiate(_touchEffectPrefab, _mainCanvas);
+
        touchEffect.transform.position = Camera.main.WorldToScreenPoint(position);
     }
 
@@ -46,9 +48,9 @@ using UnityEngine;
     {
         try
         {
-            if (myPlayer != null)
+            if (_myPlayer != null)
             {
-                myPlayer.onMove -= MyPlayer_onMove;
+                _myPlayer.OnMove -= MyPlayer_onMove;
             }
         }
         catch
