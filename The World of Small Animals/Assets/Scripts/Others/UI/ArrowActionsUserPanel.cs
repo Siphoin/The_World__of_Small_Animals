@@ -17,29 +17,28 @@ public class ArrowActionsUserPanel : MonoBehaviour
     private const string NAME_ANIMATION_USER_PANEL_SNOW = "user_panel_snow";
 
     [Header("Панель пользователя")]
-    [SerializeField] private Animator userPanel;
+    [SerializeField] private Animator _userPanel;
 
-    private Animator animatorArrow;
+    private Animator _animatorArrow;
 
-    private Button button;
+    private Button _button;
 
-    private bool panelShowed = true;
+    private bool _panelShowed = true;
 
 
-        // Use this for initialization
-        void Start()
+      private void Start()
         {
-        if (userPanel == null)
+        if (_userPanel == null)
         {
             throw new ArrowActionsUserPanelException("user panel not seted");
         }
 
-        if (!TryGetComponent(out animatorArrow))
+        if (!TryGetComponent(out _animatorArrow))
         {
             throw new ArrowActionsUserPanelException("animator arrow not seted");
         }
 
-        if (!TryGetComponent(out button))
+        if (!TryGetComponent(out _button))
         {
             throw new ArrowActionsUserPanelException("button not seted");
         }
