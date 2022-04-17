@@ -97,5 +97,5 @@ public class AuthUser : AuthComponent, IRequestSender, IAuthComponent
         }
     }
 
-    void Start() => Ini();
+  private void Start() => Ini();
 }
