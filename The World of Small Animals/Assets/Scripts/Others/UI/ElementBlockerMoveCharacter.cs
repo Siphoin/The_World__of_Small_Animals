@@ -8,23 +8,23 @@ public class ElementBlockerMoveCharacter : MonoBehaviour, IFinderLocalPlayer
     private const string TAG_MY_PLAYER = "MyPlayer";
 
 
-    private CharacterController myPlayer;
+    private CharacterController _myPlayer;
 
-    private EventTrigger eventTrigger;
+    private EventTrigger _eventTrigger;
 
     [Header("Тип элемента")]
-    [SerializeField] private ElementBlockerUIType elementType = ElementBlockerUIType.Button;
+    [SerializeField] private ElementBlockerUIType _elementType = ElementBlockerUIType.Button;
 
     private void Start()
     {
 
-        if (!TryGetComponent(out eventTrigger))
+        if (!TryGetComponent(out _eventTrigger))
         {
             throw new ElementBlockerMoveCharacterException("event trigger component not found");
         }
 
 
-        switch (elementType)
+        switch (_elementType)
         {
             case ElementBlockerUIType.Object:
                 AddEventsObject();
@@ -62,30 +62,30 @@ public class ElementBlockerMoveCharacter : MonoBehaviour, IFinderLocalPlayer
 
     private void Deselect(BaseEventData arg0)
     {
-        if (myPlayer != null)
+        if (_myPlayer != null)
         {
-            myPlayer.Enable();
+            _myPlayer.Enable();
         }
     }
 
     private void Select(BaseEventData arg0)
     {
-        if (myPlayer != null)
+        if (_myPlayer != null)
         {
-            myPlayer.Disable();
+            _myPlayer.Disable();
         }
     }
 
-    private void AddEventOnTrigger (EventTrigger.Entry eventTarget)
-    {
-        eventTrigger.triggers.Add(eventTarget);
-    }
+    
 
     private EventTrigger.Entry CreateNewEventTrigger (UnityAction<BaseEventData> action, EventTriggerType type)
     {
         var ev = new EventTrigger.Entry();
+        
         ev.eventID = type;
+        
         ev.callback.AddListener(action);
+        
         return ev;
     }
 
@@ -95,7 +95,7 @@ public class ElementBlockerMoveCharacter : MonoBehaviour, IFinderLocalPlayer
         try
         {
 
-            myPlayer = FindLocalPlayerWithTag(TAG_MY_PLAYER);
+            _myPlayer = FindLocalPlayerWithTag(TAG_MY_PLAYER);
 
 
         }
@@ -123,6 +123,8 @@ public class ElementBlockerMoveCharacter : MonoBehaviour, IFinderLocalPlayer
 
         }
     }
+    
+    private void AddEventOnTrigger (EventTrigger.Entry eventTarget) => eventTrigger.triggers.Add(eventTarget);
 
     public CharacterController FindLocalPlayerWithTag(string tag)
     {
