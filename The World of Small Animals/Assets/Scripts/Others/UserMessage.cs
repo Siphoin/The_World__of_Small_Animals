@@ -83,6 +83,6 @@ public class UserMessage : UserMessageBase, ISeterText, ISeterColor,  IPunObserv
         base.CheckCloudMessageisLast();
     }
 
-    void Start() => Ini();
+ private void Start() => Ini();
 
 }
