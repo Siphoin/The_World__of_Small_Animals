@@ -7,30 +7,31 @@ using UnityEngine.UI;
     {
     [Header("Fill прогресса")]
     [SerializeField]
-    private Image fillImage;
+    private Image _fillImage;
 
-    public float Value { get => fillImage.fillAmount; }
+    public float Value { get => _fillImage.fillAmount; }
 
 
-        // Use this for initialization
+      
         void Start()
         {
-        if (fillImage == null)
+        
+        if (_fillImage == null)
         {
             throw new RadialProgressException("fill image not seted");
         }
 
-        if (LerpingValue && LerpingSpeed <= 0)
+        if (_LerpingValue && _LerpingSpeed <= 0)
         {
             throw new RadialProgressException("lerping speed <= 0");
         }
 
-        fillImage.type = Image.Type.Filled;
+        _fillImage.type = _Image.Type.Filled;
 
         }
     public void UpdateProgress (float value)
     {
-        if (LerpingValue)
+        if (_LerpingValue)
         {
             StopAllCoroutines();
             StartCoroutine(UpdateProgresAsync(value));
@@ -38,7 +39,7 @@ using UnityEngine.UI;
 
         else
         {
-            fillImage.fillAmount = value;
+            _fillImage.fillAmount = value;
         }
     }
 
@@ -46,7 +47,6 @@ using UnityEngine.UI;
     public IEnumerator UpdateProgresAsync(float value)
     {
         float lerpValue = 0f;
-
 
         value = Mathf.Clamp(value, 0f, 1.0f);
 
@@ -56,11 +56,11 @@ using UnityEngine.UI;
 
             yield return new WaitForSeconds(time);
 
-            lerpValue += time;
+            _lerpValue += time;
 
-            fillImage.fillAmount = Mathf.Lerp(fillImage.fillAmount, value, lerpValue);
+            _fillImage.fillAmount = Mathf.Lerp(_fillImage.fillAmount, value, _lerpValue);
 
-            if (lerpValue >= 1.0f)
+            if (_lerpValue >= 1.0f)
             {
                 yield break;
             }
