@@ -15,8 +15,8 @@ using UnityEngine;
     private  CharacterController _myPlayer;
 
     private GameObject _touchEffectPrefab;
-        // Use this for initialization
-        void Awake()
+    
+       private void Awake()
         {
 
         if (_mainCanvas == null)
