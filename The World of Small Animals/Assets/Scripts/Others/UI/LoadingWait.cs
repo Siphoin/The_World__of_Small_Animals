@@ -5,35 +5,32 @@ using System;
 public class LoadingWait : Window, ISeterText
     {
     [Header("Текст информации о запросе")]
-    [SerializeField] private TextMeshProUGUI textWait;
+    [SerializeField] private TextMeshProUGUI _textWait;
 
-    private static LoadingWait activeWait = null;
+    private static LoadingWait _activeWait = null;
 
-    // Use this for initialization
-    void Start()
+   
+  private  void Start()
         {
 
-        if (textWait == null)
+        if (_textWait == null)
         {
             throw new LoadingWaitException("text wait not seted");
         }
 
 
-        if (activeWait != null)
+        if (_activeWait != null)
         {
             Exit();
         }
         else
         {
-        activeWait = this;
+        _activeWait = this;
         DontDestroyOnLoad(gameObject);
         }
 
         }
 
-    public void SetText(string text)
-    {
-        textWait.text = text;
-    }
+    public void SetText(string text) => _textWait.text = text;
 
 }
