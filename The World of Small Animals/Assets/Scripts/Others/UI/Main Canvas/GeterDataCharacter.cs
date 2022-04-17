@@ -4,13 +4,6 @@ using UnityEngine;
     public class GeterDataCharacter : MonoBehaviour
     {
         public CharacterRequestData CharacterData { get; private set; }
-        // Use this for initialization
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
 
     protected void Ini ()
     {
