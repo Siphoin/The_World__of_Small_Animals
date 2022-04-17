@@ -8,57 +8,52 @@ using UnityEngine;
     private const string PATH_DATA_TEXT_CHOOSE_COLOR = "Data/UI/NickName/NickNameChooseColorText";
 
     [Header("Персонаж")]
-    [SerializeField] private PhotonView character;
+    [SerializeField] private PhotonView _character;
 
 
     private PhotonView view;
 
-    private TextMeshProUGUI textNickName;
+    private TextMeshProUGUI _textNickName;
 
-    private NickNameChooseColor nickNameChooseColorParams;
+    private NickNameChooseColor _nickNameChooseColorParams;
 
 
-    // Use this for initialization
-    void Start()
+    
+  private  void Start()
         {
-        if (character == null)
+        if (_character == null)
         {
             throw new NickNameTextException("parent character not seted");
         }
 
 
-        if (!TryGetComponent(out textNickName))
+        if (!TryGetComponent(out _textNickName))
         {
             throw new NickNameTextException($"text nickname {name} not have component TextMeshProUGUI");
         }
 
 
-        if (!character.TryGetComponent(out view))
+        if (!_character.TryGetComponent(out _view))
         {
             throw new NickNameTextException($"parent character {transform.parent.name} not have component Photon View");
         }
 
-        nickNameChooseColorParams = Resources.Load<NickNameChooseColor>(PATH_DATA_TEXT_CHOOSE_COLOR);
+        _nickNameChooseColorParams = Resources.Load<NickNameChooseColor>(PATH_DATA_TEXT_CHOOSE_COLOR);
 
-        if (nickNameChooseColorParams == null)
+        if (_nickNameChooseColorParams == null)
         {
             throw new NickNameTextException("params color nickname text not found");
         }
 
-       SetText(view.Owner.NickName);
+       SetText(_view.Owner.NickName);
+       
        SetColorText();
 
 
         }
 
-    public void SetText(string text)
-    {
-        textNickName.text = text;
-    }
-
-    private void SetColorText ()
-    {
-        textNickName.color = view.IsMine ? nickNameChooseColorParams.IsMineColorText : nickNameChooseColorParams.DefaultColorText;
-    }
+    public void SetText(string text) => _textNickName.text = text;
+    
+    private void SetColorText () => _textNickName.color = _view.IsMine ? _nickNameChooseColorParams.IsMineColorText : _nickNameChooseColorParams.DefaultColorText;
 
 }
