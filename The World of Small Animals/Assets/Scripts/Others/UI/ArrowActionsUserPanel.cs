@@ -43,15 +43,15 @@ public class ArrowActionsUserPanel : MonoBehaviour
             throw new ArrowActionsUserPanelException("button not seted");
         }
 
-        button.onClick.AddListener(SetStateShowUserPanel);
+        _button.onClick.AddListener(SetStateShowUserPanel);
     }
 
     private void SetStateShowUserPanel()
     {
-        panelShowed = !panelShowed;
+        _panelShowed = !_panelShowed;
 
-        animatorArrow.Play(panelShowed == true ? NAME_ANIMATION_ARROW_SHOW : NAME_ANIMATION_ARROW_HIDE);
+        _animatorArrow.Play(_panelShowed == true ? NAME_ANIMATION_ARROW_SHOW : NAME_ANIMATION_ARROW_HIDE);
 
-        userPanel.Play(panelShowed == true ? NAME_ANIMATION_USER_PANEL_SNOW : NAME_ANIMATION_USER_PANEL_HIDE);
+        _userPanel.Play(_panelShowed == true ? NAME_ANIMATION_USER_PANEL_SNOW : NAME_ANIMATION_USER_PANEL_HIDE);
     }
 }
