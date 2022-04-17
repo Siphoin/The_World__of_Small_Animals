@@ -157,7 +157,7 @@ using UnityEngine.UI;
         }
     }
 
-    void Start() => Ini();
+   private void Start() => Ini();
 
     public void SetColor(Color color) => _image.color = color;
 }
