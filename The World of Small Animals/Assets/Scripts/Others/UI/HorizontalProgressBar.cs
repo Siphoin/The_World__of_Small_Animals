@@ -3,14 +3,7 @@ using UnityEngine;
 
 public class HorizontalProgressBar : ProgressBar, IProgressBar
     {
-
-    // Use this for initialization
-    void Start()
-        {
-
-        }
-
-
+    
     public IEnumerator UpdateProgresAsync(float value)
     {
         float lerpValue = 0f;
