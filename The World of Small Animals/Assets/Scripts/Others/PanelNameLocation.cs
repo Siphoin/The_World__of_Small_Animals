@@ -21,6 +21,6 @@ public class PanelNameLocation : MonoBehaviour
         _textNameLocation.text = text;
     }
 
-    void Start() => Ini();
+   private void Start() => Ini();
 
 }
