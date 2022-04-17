@@ -111,35 +111,20 @@ public class RequestManager : MonoBehaviour, IRemoveObject
         }
     }
 
-    private void ShowErrorNotficationServer (UnityWebRequest requestTarget)
-    {
-        ManagerWindowsNotfications.Manager.CreateNotfication($"Произошла ошибка сервера\nОшибка: {requestTarget.downloadHandler.error}\nКод ошибки: {requestTarget.result}", MessageNotficationType.Error, true);
-    }
+    private void ShowErrorNotficationServer (UnityWebRequest requestTarget) => ManagerWindowsNotfications.Manager.CreateNotfication($"Произошла ошибка сервера\nОшибка: {requestTarget.downloadHandler.error}\nКод ошибки: {requestTarget.result}", MessageNotficationType.Error, true);
 
-    private void ShowErrorNotficationServer(WWW requestTarget)
-    {
-        ManagerWindowsNotfications.Manager.CreateNotfication($"Произошла ошибка сервера\nОшибка: {requestTarget.error}", MessageNotficationType.Error, true);
-    }
+    private void ShowErrorNotficationServer(WWW requestTarget) => ManagerWindowsNotfications.Manager.CreateNotfication($"Произошла ошибка сервера\nОшибка: {requestTarget.error}", MessageNotficationType.Error, true);
 
     private void ShowLogError (UnityWebRequest requestTarget)
     {
         Debug.LogError($"Server request error: (URL: {requestTarget.url}). Error: {requestTarget.downloadHandler.error} Result: {requestTarget.result}");
     }
 
-    private void ShowLogError(WWW requestTarget)
-    {
-        Debug.LogError($"Server request error: (URL: {requestTarget.url}). Error: {requestTarget.error}");
-    }
+    private void ShowLogError(WWW requestTarget) =>  Debug.LogError($"Server request error: (URL: {requestTarget.url}). Error: {requestTarget.error}");
 
-    private void SendObserversEventRequest (string id, string dataText, RequestResult result, long requestCode)
-    {
-        OnRequestFinish?.Invoke(id, dataText, result, requestCode);
-    }
+    private void SendObserversEventRequest (string id, string dataText, RequestResult result, long requestCode) => OnRequestFinish?.Invoke(id, dataText, result, requestCode);
 
-    private void SendObserversEventRequestTexture(string id, Texture2D texture, RequestResult result, long requestCode)
-    {
-        OnRequestGetTextureFinish?.Invoke(id, texture, result, requestCode);
-    }
+    private void SendObserversEventRequestTexture(string id, Texture2D texture, RequestResult result, long requestCode) => OnRequestGetTextureFinish?.Invoke(id, texture, result, requestCode);
 
 
 
@@ -617,10 +602,7 @@ public class RequestManager : MonoBehaviour, IRemoveObject
         StartCoroutine(SendRequest(idRequest, page, requestType, form, catchError));
     }
 
-    public void SendRequestGetTextureToServer(string idRequest, string page, bool catchError = true)
-    {
-        StartCoroutine(SendRequestGetImage(idRequest, page, catchError));
-    }
+    public void SendRequestGetTextureToServer(string idRequest, string page, bool catchError = true) => StartCoroutine(SendRequestGetImage(idRequest, page, catchError));
 
     #endregion
 
