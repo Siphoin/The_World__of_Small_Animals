@@ -27,12 +27,13 @@ public class WindowNotfication : Window, ISeterText
     }
 
 
-    // Use this for initialization
-    void Start()
-        {
+   private void Start()
+     {
+        
         Ini();
 
         buttonExit.onClick.AddListener(Exit);
+        
         buttonExitTwo.onClick.AddListener(Exit);
     }
 
