@@ -11,38 +11,32 @@ using UnityEngine.UI;
 
 
     [Header("Кнопка закрытия/скрытия окнв")]
-    [SerializeField] private Button buttonExit;
+    [SerializeField] private Button _buttonExit;
 
     [Header("Вариант закрытия окна")]
-    [SerializeField] private MiniWindowActionExitType typeExit;
+    [SerializeField] private MiniWindowActionExitType _typeExit;
 
-    private CharacterController myPlayer;
+    private CharacterController _myPlayer;
 
-        // Use this for initialization
-        void Start()
-        {
-
-        }
-
-       protected void Ini ()
+    protected void Ini ()
     {
         if (buttonExit == null)
         {
             throw new MiniWindowException("button exit not seted");
         }
 
-        myPlayer = FindLocalPlayerWithTag(TAG_MY_PLAYER);
+        _myPlayer = FindLocalPlayerWithTag(TAG_MY_PLAYER);
 
 
-        buttonExit.onClick.AddListener(Exit);
+        _buttonExit.onClick.AddListener(Exit);
     }
 
     private void Exit()
     {
-        myPlayer.Enable(TIME_OUT_ENABLE_MOVE_LOCAL_PLAYER);
+        _myPlayer.Enable(TIME_OUT_ENABLE_MOVE_LOCAL_PLAYER);
 
 
-        switch (typeExit)
+        switch (_typeExit)
         {
             case MiniWindowActionExitType.Destroy:
 
@@ -62,18 +56,13 @@ using UnityEngine.UI;
         }
     }
 
-    public void Remove()
-    {
-        Destroy(gameObject);
-    }
-
-    public void Remove(float time)
-    {
-        Destroy(gameObject, time);
-    }
 
     public CharacterController FindLocalPlayerWithTag(string tag)
     {
         return GameObject.FindGameObjectWithTag(tag).GetComponent<CharacterController>();
     }
+    
+    public void Remove() => Destroy(gameObject);
+
+    public void Remove(float time) =>  Destroy(gameObject, time);
 }
