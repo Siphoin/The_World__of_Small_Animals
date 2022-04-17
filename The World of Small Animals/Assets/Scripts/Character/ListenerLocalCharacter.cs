@@ -14,8 +14,7 @@ public class ListenerLocalCharacter : MonoBehaviour, IFinderLocalPlayer, IInvoke
 
        private CharacterSettings _characterSettings;
 
-    // Use this for initialization
-    void Start()
+ private void Start()
         {
 
         _characterSettings = Resources.Load<CharacterSettings>(PATH_SETTINGS_CHARACTER);
@@ -77,13 +76,7 @@ public class ListenerLocalCharacter : MonoBehaviour, IFinderLocalPlayer, IInvoke
         return GameObject.FindGameObjectWithTag(tag).GetComponent<CharacterController>();
     }
 
-    public void CallInvokingEveryMethod(Action method, float time)
-    {
-        InvokeRepeating(method.Method.Name, time, time);
-    }
+    public void CallInvokingEveryMethod(Action method, float time) => InvokeRepeating(method.Method.Name, time, time);
 
-    public void CallInvokingMethod(Action method, float time)
-    {
-        Invoke(method.Method.Name, time);
-    }
+    public void CallInvokingMethod(Action method, float time) => Invoke(method.Method.Name, time);
 }
