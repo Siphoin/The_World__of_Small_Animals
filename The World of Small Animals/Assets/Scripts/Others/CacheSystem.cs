@@ -91,8 +91,5 @@ public static class CacheSystem
 
 
 
-   private static void ShowErrorNotfication (string text)
-    {
-        ManagerWindowsNotfications.Manager.CreateNotfication(text, MessageNotficationType.Error);
-    }
+   private static void ShowErrorNotfication (string text) => ManagerWindowsNotfications.Manager.CreateNotfication(text, MessageNotficationType.Error);
     }
