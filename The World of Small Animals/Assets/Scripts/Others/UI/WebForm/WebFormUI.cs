@@ -31,11 +31,7 @@ public class WebFormUI : MonoBehaviour, IRequestSender
     public event Action onRequestFalled;
 
     private Dictionary<string, WebFormFragment> requiredFragments = new Dictionary<string, WebFormFragment>();
-        // Use this for initialization
-        void Awake()
-        {
-        Ini();
-        }
+    
 
 
     private void Ini ()
@@ -208,4 +204,6 @@ public class WebFormUI : MonoBehaviour, IRequestSender
         }
         return true;
     }
+    
+    private void Awake() => Ini();
 }
