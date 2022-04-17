@@ -13,11 +13,6 @@ using System;
     [SerializeField] private InputWebFormType typeInput = InputWebFormType.Text;
 
 
-    // Use this for initialization
-    void Start()
-        {
-        Ini();
-        }
 
     public object GetValue()
     {
@@ -83,4 +78,6 @@ using System;
 
         inputField.text = (string)value;
     }
+    
+       private void Start() => Ini();
 }
