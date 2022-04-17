@@ -158,10 +158,8 @@ public class AuthCharacter : AuthComponent, IRequestSender, IAuthComponent
     }
 
 
-    void Start() => Ini();
+    private  void Start() => Ini();
+    
     private void SetAuthingStatus (bool status) => isAuthing = status;
-
-
-
 
 }
