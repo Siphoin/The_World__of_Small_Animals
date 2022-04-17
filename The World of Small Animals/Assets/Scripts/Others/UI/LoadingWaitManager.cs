@@ -4,28 +4,28 @@ using UnityEngine;
     public class LoadingWaitManager : MonoBehaviour, IRemoveObject
     {
     private const string PATH_PREFAB_WAIT_LOADING = "Prefabs/UI/loadingRequestWindow";
-    private LoadingWait loadingWaitPrefab;
+    
+    private LoadingWait _loadingWaitPrefab;
 
-    private static LoadingWaitManager manager;
+    private static LoadingWaitManager _manager;
 
     public static LoadingWaitManager Manager { get => manager; }
 
-    // Use this for initialization
-    void Awake()
+   private void Awake()
         {
-        if (manager == null)
+        if (_manager == null)
         {
 
             loadingWaitPrefab = Resources.Load<LoadingWait>(PATH_PREFAB_WAIT_LOADING);
 
-            if (loadingWaitPrefab == null)
+            if (_loadingWaitPrefab == null)
             {
                 throw new LoadingWaitException("loading wait prefab not found");
             }
 
 
             DontDestroyOnLoad(gameObject);
-            manager = this;
+            _manager = this;
         }
 
         else
@@ -34,18 +34,13 @@ using UnityEngine;
         }
         }
 
-    public void Remove()
-    {
-        Destroy(gameObject);
-    }
-
-    public void Remove(float time)
-    {
-        Destroy(gameObject, time);
-    }
 
     public  LoadingWait CreateLoadingWait ()
     {
-        return Instantiate(loadingWaitPrefab);
+        return Instantiate(_loadingWaitPrefab);
     }
+    
+    public void Remove() => Destroy(gameObject);
+
+    public void Remove(float time) =>  Destroy(gameObject, time);
 }
