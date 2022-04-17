@@ -8,20 +8,16 @@ public class SmileMessage : UserMessageBase, IPunObservable, ISeterSprite, ISete
     private const string PATH_SMILES_DATA = "Data/UI/Smiles/SmileContainer";
 
 
-    private long indexSpriteSmile;
+    private long _indexSpriteSmile;
 
     [Header("Изображение для вывода спрайта")]
-    [SerializeField] Image imageSmile;
+    [SerializeField] Image _imageSmile;
 
-    private Sprite[] listSmiles = new Sprite[0];
+    private Sprite[] _listSmiles = new Sprite[0];
 
-    public long IndexSpriteSmile { get => indexSpriteSmile; set => indexSpriteSmile = value; }
+    public long IndexSpriteSmile { get => _indexSpriteSmile; set => _indexSpriteSmile = value; }
 
-    // Use this for initialization
-    void Start()
-        {
-        Ini();
-        }
+   
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
@@ -36,17 +32,18 @@ public class SmileMessage : UserMessageBase, IPunObservable, ISeterSprite, ISete
         else
         {
 
-            if (listSmiles.Length == 0)
+            if (_listSmiles.Length == 0)
             {
                 LoadSmilesData();
 
             }
-            indexSpriteSmile = (long)stream.ReceiveNext();
+            _indexSpriteSmile = (long)stream.ReceiveNext();
 
-            isLast = (bool)stream.ReceiveNext();
+            _isLast = (bool)stream.ReceiveNext();
+            
             CheckCloudMessageisLast();
 
-            indexMessage = (int)stream.ReceiveNext();
+            _indexMessage = (int)stream.ReceiveNext();
 
             transform.SetSiblingIndex(indexMessage);
 
@@ -56,21 +53,21 @@ public class SmileMessage : UserMessageBase, IPunObservable, ISeterSprite, ISete
 
     private void LoadSmilesData()
     {
-        SmileContainer smileContainer = Resources.Load<SmileContainer>(PATH_SMILES_DATA);
+        SmileContainer _smileContainer = Resources.Load<SmileContainer>(PATH_SMILES_DATA);
 
-        if (smileContainer == null)
+        if (_smileContainer == null)
         {
             throw new UserMessageException("smile container not found");
         }
 
-        listSmiles = smileContainer.SmilesSprites;
+        _listSmiles = _smileContainer.SmilesSprites;
     }
 
     public void SetSprite(Sprite sprite)
     {
         Ini();
 
-        imageSmile.sprite = sprite;
+        _imageSmile.sprite = sprite;
     }
 
     public void SetListSprites (Sprite[] list)
@@ -84,22 +81,19 @@ public class SmileMessage : UserMessageBase, IPunObservable, ISeterSprite, ISete
             throw new UserMessageException("list smiles or null or length = 0");
         }
 
-        listSmiles = list;
+        _listSmiles = list;
     }
 
     public override void Ini()
     {
-        if (imageSmile == null)
+        if (_imageSmile == null)
         {
             throw new UserMessageException("image smile not seted");
         }
         base.Ini();
     }
 
-    public void SetSpriteAtCurrentIndex ()
-    {
-        SetSprite(listSmiles[indexSpriteSmile]);
-    }
+    
 
     private void Update()
     {
@@ -120,9 +114,11 @@ public class SmileMessage : UserMessageBase, IPunObservable, ISeterSprite, ISete
         }
         base.CheckCloudMessageisLast();
     }
+    
+      private  void Start() => Ini();
 
-    public void SetIndexSprite (int index)
-    {
-        indexSpriteSmile = index;
-    }
+    public void SetIndexSprite (int index) =>  _indexSpriteSmile = index;
+    
+    public void SetSpriteAtCurrentIndex () =>  SetSprite(_listSmiles[_indexSpriteSmile]);
+   
 }
