@@ -21,6 +21,9 @@ public class ServerSlotData : ScriptableObject
 
         public string NameServer  => _nameServer;
         public string AppId  => _appId;
-        public bool DevelopServer  => _developServer;
+        
         public long MaxCountPlayers =>  _maxCountPlayers;
+        
+        public bool DevelopServer  => _developServer;
+       
 }
