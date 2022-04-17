@@ -7,13 +7,7 @@ using UnityEngine.UI;
     public class CheckboxWebForm : WebFormFragment, IWebFormFragment
     {
     private Toggle toggle;
-    // Use this for initialization
-    void Start()
-        {
-        Ini();
-        }
-
-        // Update is called once per frame
+   
 
     public object GetValue()
     {
@@ -39,4 +33,6 @@ using UnityEngine.UI;
 
         toggle.isOn = (bool)value;
     }
+    
+    private void Start() => Ini();
 }
