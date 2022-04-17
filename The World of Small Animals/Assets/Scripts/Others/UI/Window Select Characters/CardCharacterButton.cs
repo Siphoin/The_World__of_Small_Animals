@@ -29,11 +29,6 @@ using UnityEngine.UI;
     public bool SetTextNameCardIsDefault { get => setTextNameCardIsDefault; set => setTextNameCardIsDefault = value; }
     public CharacterRequestData CurrentData { get => currentData; }
 
-    // Use this for initialization
-    void Start()
-        {
-        Ini();
-        }
 
     private void Ini ()
     {
@@ -113,4 +108,6 @@ using UnityEngine.UI;
 
         textNameCard.text = text;
     }
+    
+    private void Start() => Ini();
 }
