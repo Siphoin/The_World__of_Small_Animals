@@ -16,8 +16,8 @@ public class ManagerWindowsNotfications : MonoBehaviour, IRemoveObject
 
     public static ManagerWindowsNotfications Manager { get => manager; }
 
-    // Use this for initialization
-    void Awake()
+   
+   private void Awake()
         {
         if (manager == null)
         {
@@ -46,15 +46,6 @@ public class ManagerWindowsNotfications : MonoBehaviour, IRemoveObject
         }
         }
 
-    public void Remove()
-    {
-        Destroy(gameObject);
-    }
-
-    public void Remove(float time)
-    {
-        Destroy(gameObject, time);
-    }
 
     public WindowNotfication CreateNotfication (string text, MessageNotficationType typeNotfication = MessageNotficationType.Message, bool loadStartScene = false)
     {
@@ -89,5 +80,9 @@ public class ManagerWindowsNotfications : MonoBehaviour, IRemoveObject
 
         return notfication;
     }
+    
+    public void Remove() => Destroy(gameObject);
+
+    public void Remove(float time) => Destroy(gameObject, time);
 
 }
