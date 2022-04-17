@@ -9,40 +9,35 @@ using UnityEngine.UI;
     public class ButtonBlockerMoveCharacter : MonoBehaviour, IPointerUpHandler, IPointerExitHandler
 {
 
- private   Button button;
-    private CharacterController myPlayer;
+    private  Button _button;
+    private CharacterController _myPlayer;
 
-    private bool clicked = false;
+    private bool _clicked = false;
 
 
-        // Use this for initialization
-        void Start()
+       private void Start()
         {
         Destroy(this);
         if (!TryGetComponent(out button))
         {
             throw new ButtonBlockerMoveCharacterException($"{name} not have component UnityEngine.UI.Button");
         }
-        myPlayer = GameObject.FindGameObjectWithTag("MyPlayer").GetComponent<CharacterController>();
+        
+        _myPlayer = GameObject.FindGameObjectWithTag("MyPlayer").GetComponent<CharacterController>();
 
-        button.onClick.AddListener(BlockPlayer);
+        _button.onClick.AddListener(BlockPlayer);
     }
 
     private void BlockPlayer()
     {
-        clicked = true;
-        myPlayer.Disable();
+        _clicked = true;
+        _myPlayer.Disable();
     }
 
-    // Update is called once per frame
-    void Update()
-        {
-
-        }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        if (clicked)
+        if (_clicked)
         {
             clicked = false;
             myPlayer.Enable();
@@ -51,10 +46,10 @@ using UnityEngine.UI;
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (clicked)
+        if (_clicked)
         {
-            clicked = false;
-            myPlayer.Enable();
+            _clicked = false;
+            _myPlayer.Enable();
         }
     }
 }
