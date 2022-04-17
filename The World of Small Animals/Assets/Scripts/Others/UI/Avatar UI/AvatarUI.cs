@@ -16,11 +16,6 @@ public class AvatarUI : MonoBehaviour, ISeterSprite
     private Image image;
 
     private CharacterCameraAngles characterCameraAngles;
-    // Use this for initialization
-    void Start()
-        {
-
-        }
 
 
     private void Ini ()
@@ -78,8 +73,5 @@ public class AvatarUI : MonoBehaviour, ISeterSprite
         SetSprite(characterCameraAngles.CameraAngles[index]);
     }
 
-    public void SetSprite(Sprite sprite)
-    {
-        image.sprite = sprite;
-    }
+    public void SetSprite(Sprite sprite) => image.sprite = sprite;
 }
