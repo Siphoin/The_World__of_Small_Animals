@@ -181,7 +181,7 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
         CheckRotation();
     }
 
-    void Update()
+  private  void Update()
     {
         if (_photonView.IsMine)
         {
@@ -191,7 +191,7 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
 
     }
 
-    void FixedUpdate () {
+   private void FixedUpdate () {
 
         if (_photonView.IsMine)
         {
@@ -199,10 +199,7 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
         }
     }
 
-    private void StartMoving()
-    {
-        SetActiveCharacter(true);
-    }
+    
 
     private void CheckMove()
     {
@@ -342,25 +339,13 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
         }
     }
 
-    public void SendRPC(Action action, RpcTarget target = RpcTarget.All, params object[] parameters)
-    {
-        _photonView.RPC(action.Method.Name, target, parameters);
-    }
+    public void SendRPC(Action action, RpcTarget target = RpcTarget.All, params object[] parameters) => _photonView.RPC(action.Method.Name, target, parameters);
 
     public void SendSecureRPC(Action action, RpcTarget target = RpcTarget.All, bool encrypt = true, params object[] parameters)
-    {
-        _photonView.RpcSecure(action.Method.Name, target, encrypt,  parameters);
-    }
 
-    public void CallInvokingEveryMethod(Action method, float time)
-    {
-        InvokeRepeating(method.Method.Name, time, time);
-    }
+    public void CallInvokingEveryMethod(Action method, float time) => InvokeRepeating(method.Method.Name, time, time);
 
-    public void CallInvokingMethod(Action method, float time)
-    {
-        Invoke(method.Method.Name, time);
-    }
+    public void CallInvokingMethod(Action method, float time) =>  Invoke(method.Method.Name, time);
 
     private void OnCollisionStay2D(Collision2D collision)
     {
@@ -370,13 +355,16 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
         }
     }
 
+    private void SetCameraAngleSprite() => SetSprite(_characterCameraAnglesSettings.CameraAngles[_numberCameraAngle]);
+    
+    private void StartMoving() => SetActiveCharacter(true);
+    
     public void Enable() => SetStateMoveCharacter(true);
 
     public void Disable(float timeOut) => CallInvokingMethod(Disable, timeOut);
 
     public void Enable(float timeOut) => CallInvokingMethod(Enable, timeOut);
 
-    private void SetCameraAngleSprite() => SetSprite(_characterCameraAnglesSettings.CameraAngles[_numberCameraAngle]);
-
     public void SetSprite(Sprite sprite) => _spriteRenderer.sprite = sprite;
+       
 }
