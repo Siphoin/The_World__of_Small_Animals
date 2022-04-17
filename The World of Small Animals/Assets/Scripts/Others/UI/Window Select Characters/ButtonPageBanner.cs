@@ -22,11 +22,7 @@ public class ButtonPageBanner : MonoBehaviour, ISeterColor
     public event Action<int> onSelect;
 
     private int currentIndexPage = -1;
-        // Use this for initialization
-        void Start()
-        {
-        Ini();
-        }
+    
 
     private void Ini ()
     {
@@ -96,4 +92,6 @@ public class ButtonPageBanner : MonoBehaviour, ISeterColor
         button.interactable = color != colorActive;
         image.color = color;
     }
+    
+          private  void Start() =>  Ini();
 }
