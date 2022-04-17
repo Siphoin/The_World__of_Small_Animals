@@ -18,10 +18,7 @@ public class ListenerCallbacksServer : MonoBehaviourPunCallbacks
 
 
 
-    public override void OnDisconnected(DisconnectCause cause)
-    {
-        CreateErrorNotfication($"Соединение с сервером было прервано.\nКод ошибки: {cause} Проверьте подключение к сети Интернет.");
-    }
+    public override void OnDisconnected(DisconnectCause cause) => CreateErrorNotfication($"Соединение с сервером было прервано.\nКод ошибки: {cause} Проверьте подключение к сети Интернет.");
 
     public override void OnLeftRoom() => CreateErrorNotfication($"Соединение с локацией было прервано. Проверьте подключение к сети Интернет.");
 
