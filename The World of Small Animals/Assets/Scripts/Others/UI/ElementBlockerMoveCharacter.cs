@@ -33,7 +33,7 @@ public class ElementBlockerMoveCharacter : MonoBehaviour, IFinderLocalPlayer
         AddEventsButton();
                 break;
             default:
-                throw new ElementBlockerMoveCharacterException($"element blocker type not valid: Value {elementType}");
+                throw new ElementBlockerMoveCharacterException($"element blocker type not valid: Value {_elementType}");
         }
 
     }

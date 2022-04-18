@@ -18,7 +18,7 @@ using UnityEngine.UI;
        private void Start()
         {
         Destroy(this);
-        if (!TryGetComponent(out button))
+        if (!TryGetComponent(out _button))
         {
             throw new ButtonBlockerMoveCharacterException($"{name} not have component UnityEngine.UI.Button");
         }
@@ -39,7 +39,7 @@ using UnityEngine.UI;
     {
         if (_clicked)
         {
-            clicked = false;
+            _clicked = false;
             myPlayer.Enable();
         }
     }

@@ -39,7 +39,7 @@ public class SmileMessage : UserMessageBase, IPunObservable, ISeterSprite, ISete
             }
             _indexSpriteSmile = (long)stream.ReceiveNext();
 
-            _isLast = (bool)stream.ReceiveNext();
+            isLast = (bool)stream.ReceiveNext();
             
             CheckCloudMessageisLast();
 
@@ -110,7 +110,7 @@ public class SmileMessage : UserMessageBase, IPunObservable, ISeterSprite, ISete
     {
         if (isLast)
         {
-            imageSmile.color = GetAlphaColor(imageSmile.color);
+            imageSmile.color = GetAlphaColor(_imageSmile.color);
         }
         base.CheckCloudMessageisLast();
     }
