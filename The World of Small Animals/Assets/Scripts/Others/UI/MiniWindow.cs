@@ -20,7 +20,7 @@ using UnityEngine.UI;
 
     protected void Ini ()
     {
-        if (buttonExit == null)
+        if (_buttonExit == null)
         {
             throw new MiniWindowException("button exit not seted");
         }
@@ -52,7 +52,7 @@ using UnityEngine.UI;
 
                 break;
             default:
-                throw new MiniWindowException($"invalid type exit: {typeExit}");
+                throw new MiniWindowException($"invalid type exit: {_typeExit}");
         }
     }
 

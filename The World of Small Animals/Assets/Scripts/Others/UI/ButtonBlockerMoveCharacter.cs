@@ -40,7 +40,7 @@ using UnityEngine.UI;
         if (_clicked)
         {
             _clicked = false;
-            myPlayer.Enable();
+            _myPlayer.Enable();
         }
     }
 

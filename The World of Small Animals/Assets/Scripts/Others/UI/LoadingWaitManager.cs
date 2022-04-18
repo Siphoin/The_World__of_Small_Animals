@@ -9,14 +9,14 @@ using UnityEngine;
 
     private static LoadingWaitManager _manager;
 
-    public static LoadingWaitManager Manager { get => manager; }
+    public static LoadingWaitManager Manager { get => _manager; }
 
    private void Awake()
         {
         if (_manager == null)
         {
 
-            loadingWaitPrefab = Resources.Load<LoadingWait>(PATH_PREFAB_WAIT_LOADING);
+            _loadingWaitPrefab = Resources.Load<LoadingWait>(PATH_PREFAB_WAIT_LOADING);
 
             if (_loadingWaitPrefab == null)
             {

@@ -341,7 +341,7 @@ public class CharacterController : MonoBehaviour, ISeterSprite, IPunObservable, 
 
     public void SendRPC(Action action, RpcTarget target = RpcTarget.All, params object[] parameters) => _photonView.RPC(action.Method.Name, target, parameters);
 
-    public void SendSecureRPC(Action action, RpcTarget target = RpcTarget.All, bool encrypt = true, params object[] parameters) => _photonView.RPCSecure(action.Method.Name, target, parameters);
+    public void SendSecureRPC(Action action, RpcTarget target = RpcTarget.All, bool encrypt = true, params object[] parameters) => _photonView.RpcSecure(action.Method.Name, target, encrypt, parameters);
 
     public void CallInvokingEveryMethod(Action method, float time) => InvokeRepeating(method.Method.Name, time, time);
 

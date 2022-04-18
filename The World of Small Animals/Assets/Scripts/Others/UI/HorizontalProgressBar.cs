@@ -16,7 +16,7 @@ public class HorizontalProgressBar : ProgressBar, IProgressBar
 
             lerpValue += time;
 
-            slider.value = Mathf.Lerp(slider.value, value, lerpValue);
+            _slider.value = Mathf.Lerp(_slider.value, value, lerpValue);
 
             if (lerpValue >= 1.0f)
             {
@@ -39,7 +39,7 @@ public class HorizontalProgressBar : ProgressBar, IProgressBar
 
         else
         {
-            slider.value = value;
+            _slider.value = value;
         }
     }
 
