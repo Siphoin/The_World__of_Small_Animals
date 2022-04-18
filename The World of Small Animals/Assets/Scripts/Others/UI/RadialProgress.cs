@@ -58,9 +58,9 @@ using UnityEngine.UI;
 
             lerpValue += time;
 
-            _fillImage.fillAmount = Mathf.Lerp(_fillImage.fillAmount, value, _lerpValue);
+            _fillImage.fillAmount = Mathf.Lerp(_fillImage.fillAmount, value, lerpValue);
 
-            if (_lerpValue >= 1.0f)
+            if (lerpValue >= 1.0f)
             {
                 yield break;
             }
