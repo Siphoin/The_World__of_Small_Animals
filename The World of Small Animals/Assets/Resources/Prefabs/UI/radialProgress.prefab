@@ -164,6 +164,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b72614a43182cb94497204bc0b4c76b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lerpingValue: 1
-  lerpingSpeed: 0.04
-  fillImage: {fileID: 5033872882608513004}
+  _lerpingValue: 1
+  _lerpingSpeed: 0.5
+  _fillImage: {fileID: 5033872882608513004}
