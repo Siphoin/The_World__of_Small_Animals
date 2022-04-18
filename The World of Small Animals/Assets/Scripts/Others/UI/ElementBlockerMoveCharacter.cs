@@ -115,7 +115,7 @@ public class ElementBlockerMoveCharacter : MonoBehaviour, IFinderLocalPlayer
 
             if (TryGetComponent(out window))
             {
-                myPlayer.Enable();
+                _myPlayer.Enable();
             }
         }
         catch
@@ -124,7 +124,7 @@ public class ElementBlockerMoveCharacter : MonoBehaviour, IFinderLocalPlayer
         }
     }
     
-    private void AddEventOnTrigger (EventTrigger.Entry eventTarget) => eventTrigger.triggers.Add(eventTarget);
+    private void AddEventOnTrigger (EventTrigger.Entry eventTarget) => _eventTrigger.triggers.Add(eventTarget);
 
     public CharacterController FindLocalPlayerWithTag(string tag)
     {

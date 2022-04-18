@@ -21,7 +21,7 @@ using UnityEngine.UI;
 
     protected void Ini ()
         {
-        if (_LerpingValue && _LerpingSpeed <= 0)
+        if (LerpingValue && LerpingSpeed <= 0)
         {
             throw new ProgressBarException("lerping speed <= 0");
         }

@@ -11,7 +11,7 @@ using UnityEngine;
     [SerializeField] private PhotonView _character;
 
 
-    private PhotonView view;
+    private PhotonView _view;
 
     private TextMeshProUGUI _textNickName;
 

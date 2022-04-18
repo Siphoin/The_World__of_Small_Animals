@@ -21,17 +21,17 @@ using UnityEngine.UI;
             throw new RadialProgressException("fill image not seted");
         }
 
-        if (_LerpingValue && _LerpingSpeed <= 0)
+        if (LerpingValue && LerpingSpeed <= 0)
         {
             throw new RadialProgressException("lerping speed <= 0");
         }
 
-        _fillImage.type = _Image.Type.Filled;
+        _fillImage.type = Image.Type.Filled;
 
         }
     public void UpdateProgress (float value)
     {
-        if (_LerpingValue)
+        if (LerpingValue)
         {
             StopAllCoroutines();
             StartCoroutine(UpdateProgresAsync(value));
@@ -56,7 +56,7 @@ using UnityEngine.UI;
 
             yield return new WaitForSeconds(time);
 
-            _lerpValue += time;
+            lerpValue += time;
 
             _fillImage.fillAmount = Mathf.Lerp(_fillImage.fillAmount, value, _lerpValue);
 

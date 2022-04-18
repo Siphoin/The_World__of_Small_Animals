@@ -47,6 +47,6 @@ public class HorizontalProgressBar : ProgressBar, IProgressBar
     {
         Ini();
 
-        slider.maxValue = value;
+        _slider.maxValue = value;
     }
 }
