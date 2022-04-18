@@ -74,7 +74,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 16777215
+    rgba: 4294967295
   m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -225,7 +225,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbee5b75c41dba645b3ad4e05dfa7878, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textNameLocation: {fileID: 7220345558223653563}
+  _textNameLocation: {fileID: 7220345558223653563}
 --- !u!95 &7992998565708040414
 Animator:
   serializedVersion: 3

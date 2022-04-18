@@ -270,8 +270,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46e63b9c0513f4c418d6f13358906671, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textNameServer: {fileID: 3375316729415667314}
-  radialProgress: {fileID: 8687525337647265901}
+  _textNameServer: {fileID: 3375316729415667314}
+  _radialProgress: {fileID: 8687525337647265901}
 --- !u!95 &3375316729867110251
 Animator:
   serializedVersion: 3
